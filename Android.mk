@@ -1,5 +1,3 @@
-ifeq ($(BOARD_USES_SNAPDRAGONCAMERA_VERSION),2)
-
 LOCAL_PATH:= $(call my-dir)
 
 include $(CLEAR_VARS)
@@ -23,7 +21,7 @@ LOCAL_AAPT_FLAGS := \
         --version-name "$(version_name_package)" \
         --version-code $(version_code_package) \
 
-LOCAL_PACKAGE_NAME := SnapdragonCamera2
+LOCAL_PACKAGE_NAME := SnapdragonCamera
 
 #LOCAL_SDK_VERSION := current
 LOCAL_RENDERSCRIPT_TARGET_API := 23
@@ -44,5 +42,3 @@ endif
 include $(BUILD_PACKAGE)
 
 include $(call all-makefiles-under, $(LOCAL_PATH))
-
-endif # BOARD_USES_SNAPDRAGONCAMERA_VERSION
