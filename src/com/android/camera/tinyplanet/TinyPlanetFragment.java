@@ -49,7 +49,7 @@ import com.android.camera.exif.ExifInterface;
 import com.android.camera.tinyplanet.TinyPlanetPreview.PreviewSizeListener;
 import com.android.camera.util.XmpUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;

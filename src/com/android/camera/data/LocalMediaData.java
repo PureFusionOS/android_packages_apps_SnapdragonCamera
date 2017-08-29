@@ -39,7 +39,7 @@ import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapEncoder;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.File;
 import java.text.DateFormat;

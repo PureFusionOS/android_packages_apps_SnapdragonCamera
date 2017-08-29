@@ -37,7 +37,7 @@ import com.android.camera.CaptureModule;
 import com.android.camera.Storage;
 import com.android.camera.imageprocessor.filter.BeautificationFilter;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class OneUICameraControls extends RotatableLayout {
 

@@ -32,7 +32,7 @@ import android.widget.TextView;
 
 import com.android.camera.data.MediaDetails;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

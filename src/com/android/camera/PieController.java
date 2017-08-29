@@ -28,7 +28,7 @@ import com.android.camera.ui.PieItem.OnClickListener;
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.RotateTextToast;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

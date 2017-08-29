@@ -39,7 +39,7 @@ import com.android.camera.util.CameraUtil;
 import com.android.camera.util.GcamHelper;
 import com.android.camera.util.MultiMap;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.ArrayList;
 import java.util.Collections;

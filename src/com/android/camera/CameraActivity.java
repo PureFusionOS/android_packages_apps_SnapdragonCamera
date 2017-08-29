@@ -114,7 +114,7 @@ import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.MemoryCategory;
 import com.bumptech.glide.load.engine.executor.FifoPriorityThreadPoolExecutor;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -1552,7 +1552,7 @@ public class CameraActivity extends Activity
         //as Android doesn’t have any default intent to share the state.
         // if the led flash light is open, turn it off
         Log.d(TAG, "send the turn off Flashlight broadcast");
-        Intent intent = new Intent("org.omnirom.snap.action.CLOSE_FLASHLIGHT");
+        Intent intent = new Intent("org.fusion.sdcam.action.CLOSE_FLASHLIGHT");
         intent.putExtra("camera_led", true);
         sendBroadcast(intent);
     }

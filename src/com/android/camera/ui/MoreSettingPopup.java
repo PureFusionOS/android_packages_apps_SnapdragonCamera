@@ -29,7 +29,7 @@ import android.widget.ListView;
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.ArrayList;
 

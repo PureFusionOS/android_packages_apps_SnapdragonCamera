@@ -56,7 +56,7 @@ import com.android.camera.ui.PanoCaptureProcessView;
 import com.android.camera.ui.RotateLayout;
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class PanoCaptureUI implements
         SurfaceHolder.Callback,

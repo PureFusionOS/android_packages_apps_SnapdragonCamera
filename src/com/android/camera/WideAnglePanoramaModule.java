@@ -54,7 +54,7 @@ import com.android.camera.ui.RotateTextToast;
 import com.android.camera.util.CameraUtil;
 import com.android.camera.util.UsageStatistics;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

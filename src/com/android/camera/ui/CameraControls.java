@@ -37,7 +37,7 @@ import com.android.camera.Storage;
 import com.android.camera.TsMakeupManager;
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.ArrayList;
 

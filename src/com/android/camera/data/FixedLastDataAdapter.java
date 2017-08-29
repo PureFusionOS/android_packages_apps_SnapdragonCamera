@@ -23,7 +23,7 @@ import android.view.View;
 
 import com.android.camera.ui.FilmStripView;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * A {@link LocalDataAdapter} which puts a {@link LocalData} fixed at the last

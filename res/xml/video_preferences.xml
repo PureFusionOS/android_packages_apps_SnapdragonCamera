@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 
-<PreferenceGroup xmlns:camera="http://schemas.android.com/apk/res/org.omnirom.snap"
+<PreferenceGroup xmlns:camera="http://schemas.android.com/apk/res/org.fusion.sdcam"
     camera:title="@string/pref_camcorder_settings_category">
     <IconListPreference
         camera:entries="@array/pref_video_quality_entries"

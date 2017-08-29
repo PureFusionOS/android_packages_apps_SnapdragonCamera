@@ -26,7 +26,7 @@ import android.util.Log;
 
 import com.android.camera.util.ApiHelper;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /*
  * This class controls the sound playback according to the API level.

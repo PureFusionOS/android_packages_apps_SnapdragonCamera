@@ -27,7 +27,7 @@ import com.android.camera.data.LocalMediaData.PhotoData;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.exif.ExifTag;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.File;
 import java.io.FileNotFoundException;

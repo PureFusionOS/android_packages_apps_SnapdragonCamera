@@ -29,7 +29,7 @@ import android.widget.TextView;
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.text.NumberFormat;
 import java.util.Locale;

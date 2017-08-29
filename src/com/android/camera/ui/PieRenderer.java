@@ -38,7 +38,7 @@ import com.android.camera.CameraActivity;
 import com.android.camera.drawable.TextDrawable;
 import com.android.camera.ui.ProgressRenderer.VisibilityListener;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import com.android.camera.ui.RotateTextToast;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class CameraErrorCallback
         implements android.hardware.Camera.ErrorCallback {

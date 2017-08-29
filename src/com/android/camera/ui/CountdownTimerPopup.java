@@ -27,7 +27,7 @@ import android.widget.NumberPicker.OnValueChangeListener;
 
 import com.android.camera.ListPreference;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.Locale;
 

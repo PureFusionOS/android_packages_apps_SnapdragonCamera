@@ -38,7 +38,7 @@ import com.android.camera.util.CameraUtil;
 import com.android.camera.util.PhotoSphereHelper;
 import com.android.camera.util.UsageStatistics;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class ModuleSwitcher extends RotateImageView
         implements OnTouchListener {

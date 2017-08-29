@@ -48,7 +48,7 @@ import android.widget.Toast;
 
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.Arrays;
 import java.util.List;

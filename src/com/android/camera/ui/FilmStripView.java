@@ -44,7 +44,7 @@ import com.android.camera.data.LocalData;
 import com.android.camera.ui.FilmstripBottomControls.BottomControlsListener;
 import com.android.camera.util.PhotoSphereHelper.PanoramaViewHelper;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.Arrays;
 

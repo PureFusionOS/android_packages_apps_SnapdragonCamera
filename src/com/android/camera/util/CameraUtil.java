@@ -71,7 +71,7 @@ import com.android.camera.CameraSettings;
 import com.android.camera.SettingsManager;
 import com.android.camera.ui.RotateTextToast;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.Closeable;
 import java.io.IOException;

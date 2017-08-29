@@ -23,7 +23,7 @@ import android.util.SparseIntArray;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.exif.ExifTag;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

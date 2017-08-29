@@ -24,7 +24,7 @@ import android.view.View;
 import com.android.camera.ui.FilmStripView.DataAdapter;
 import com.android.camera.ui.FilmStripView.ImageData;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * A {@link LocalDataAdapter} which puts a {@link LocalData} fixed at the first

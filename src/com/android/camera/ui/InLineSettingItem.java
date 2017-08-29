@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.android.camera.ListPreference;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * A one-line camera setting could be one of three types: knob, switch or restore

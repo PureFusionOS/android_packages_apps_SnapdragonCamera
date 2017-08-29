@@ -21,7 +21,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 // A popup window that shows one or more camera settings.
 abstract public class AbstractSettingPopup extends RotateLayout {

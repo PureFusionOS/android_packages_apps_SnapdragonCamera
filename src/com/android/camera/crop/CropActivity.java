@@ -42,7 +42,7 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

@@ -61,7 +61,7 @@ import com.android.camera.util.SettingTranslation;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.IOException;
 import java.io.InputStream;

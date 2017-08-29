@@ -41,7 +41,7 @@ import com.android.camera.ui.RotateLayout;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class TsMakeupManager implements OnSeekBarChangeListener {
     public static final String MAKEUP_ON = "On";

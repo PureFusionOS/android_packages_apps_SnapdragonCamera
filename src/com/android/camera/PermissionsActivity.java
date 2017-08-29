@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * Activity that shows permissions request dialogs and handles lack of critical permissions.

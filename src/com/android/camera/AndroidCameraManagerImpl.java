@@ -43,7 +43,7 @@ import android.view.SurfaceHolder;
 
 import com.android.camera.app.CameraApp;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.IOException;
 

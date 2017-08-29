@@ -23,7 +23,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * GridView is a view which directly overlays the preview and draws

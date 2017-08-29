@@ -37,7 +37,7 @@ import android.widget.TextView;
 
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 
 public class BestPictureActionDialogLayout extends RelativeLayout implements View.OnClickListener {

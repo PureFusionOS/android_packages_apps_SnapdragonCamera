@@ -41,7 +41,7 @@ import android.widget.TextView;
 
 import com.android.camera.TsMakeupManager;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class MenuHelp extends RotatableLayout {
 

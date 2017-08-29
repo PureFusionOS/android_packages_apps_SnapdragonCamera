@@ -35,7 +35,7 @@ import android.view.View;
 
 import com.android.camera.SettingsManager;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class FlashToggleButton extends RotateImageView {
     private SettingsManager mSettingsManager;

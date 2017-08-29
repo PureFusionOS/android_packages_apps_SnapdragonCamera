@@ -53,7 +53,7 @@ import com.android.camera.CameraActivity;
 import com.android.camera.PanoCaptureModule;
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

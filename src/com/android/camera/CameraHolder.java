@@ -29,7 +29,7 @@ import android.util.Log;
 import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.app.CameraApp;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

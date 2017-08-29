@@ -23,25 +23,25 @@
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
         android:label="Tests for Camera2 application."
-        android:targetPackage="org.omnirom.snap" />
+        android:targetPackage="org.fusion.sdcam" />
 
     <instrumentation
         android:name="com.android.camera.CameraTestRunner"
         android:label="Camera continuous test runner"
-        android:targetPackage="org.omnirom.snap" />
+        android:targetPackage="org.fusion.sdcam" />
 
     <instrumentation
         android:name="com.android.camera.exif.ExifTestRunner"
         android:label="Tests for ExifParser."
-        android:targetPackage="org.omnirom.snap" />
+        android:targetPackage="org.fusion.sdcam" />
 
     <instrumentation
         android:name="com.android.camera.jpegstream.JpegStreamTestRunner"
         android:label="Tests for JpegStream classes."
-        android:targetPackage="org.omnirom.snap" />
+        android:targetPackage="org.fusion.sdcam" />
 
     <instrumentation
         android:name="com.android.camera.stress.CameraStressTestRunner"
         android:label="Camera stress test runner"
-        android:targetPackage="org.omnirom.snap" />
+        android:targetPackage="org.fusion.sdcam" />
 </manifest>

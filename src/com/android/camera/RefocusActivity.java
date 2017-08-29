@@ -59,7 +59,7 @@ import android.widget.ImageView;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.File;
 import java.io.FileInputStream;

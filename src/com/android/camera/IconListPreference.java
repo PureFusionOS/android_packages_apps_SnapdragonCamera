@@ -21,7 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.List;
 

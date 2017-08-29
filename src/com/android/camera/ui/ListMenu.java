@@ -34,7 +34,7 @@ import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
 import com.android.camera.SettingsManager;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -110,7 +110,7 @@ import com.android.camera.util.SettingTranslation;
 import com.android.internal.util.MemInfoReader;
 
 import org.codeaurora.snapcam.filter.ClearSightImageProcessor;
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.File;
 import java.io.FileOutputStream;

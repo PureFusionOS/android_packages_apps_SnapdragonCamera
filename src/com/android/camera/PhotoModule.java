@@ -102,7 +102,7 @@ import com.android.internal.util.MemInfoReader;
 
 import org.codeaurora.snapcam.filter.GDepth;
 import org.codeaurora.snapcam.filter.GImage;
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

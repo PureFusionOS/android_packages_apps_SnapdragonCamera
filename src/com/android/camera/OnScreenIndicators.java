@@ -23,7 +23,7 @@ import android.hardware.Camera.Parameters;
 import android.view.View;
 import android.widget.ImageView;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * The on-screen indicators of the pie menu button. They show the camera

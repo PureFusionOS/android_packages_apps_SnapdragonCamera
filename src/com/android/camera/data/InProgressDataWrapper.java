@@ -25,7 +25,7 @@ import android.widget.FrameLayout;
 
 import com.android.camera.util.PhotoSphereHelper;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 /**
  * A wrapper class for in-progress data. Data that's still being processed

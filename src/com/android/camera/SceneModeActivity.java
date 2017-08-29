@@ -51,7 +51,7 @@ import com.android.camera.ui.DotsViewItem;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.util.CameraUtil;
 
-import org.omnirom.snap.R;
+import org.fusion.sdcam.R;
 
 public class SceneModeActivity extends Activity {
     private ViewPager mPager;
