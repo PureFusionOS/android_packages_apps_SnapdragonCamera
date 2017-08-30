@@ -27,7 +27,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.codeaurora.snapcam.filter;
+package org.fusion.sdcam.filter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -73,8 +73,8 @@ import com.android.camera.Storage;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.util.CameraUtil;
 
-import org.codeaurora.snapcam.filter.ClearSightNativeEngine.CamSystemCalibrationData;
-import org.codeaurora.snapcam.filter.ClearSightNativeEngine.ClearsightImage;
+import org.fusion.sdcam.filter.ClearSightNativeEngine.CamSystemCalibrationData;
+import org.fusion.sdcam.filter.ClearSightNativeEngine.ClearsightImage;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;

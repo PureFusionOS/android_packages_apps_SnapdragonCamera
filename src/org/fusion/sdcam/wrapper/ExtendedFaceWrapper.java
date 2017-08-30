@@ -27,7 +27,7 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package org.codeaurora.snapcam.wrapper;
+package org.fusion.sdcam.wrapper;
 
 import android.hardware.Camera.Face;
 import android.os.Bundle;

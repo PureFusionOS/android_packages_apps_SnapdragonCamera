@@ -34,7 +34,7 @@ import android.view.View;
 import com.android.camera.PhotoUI;
 import com.android.camera.util.CameraUtil;
 
-import org.codeaurora.snapcam.wrapper.ExtendedFaceWrapper;
+import org.fusion.sdcam.wrapper.ExtendedFaceWrapper;
 import org.fusion.sdcam.R;
 
 public class FaceView extends View

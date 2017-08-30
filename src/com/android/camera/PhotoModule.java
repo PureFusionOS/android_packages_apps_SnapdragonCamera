@@ -100,8 +100,8 @@ import com.android.camera.util.PersistUtil;
 import com.android.camera.util.UsageStatistics;
 import com.android.internal.util.MemInfoReader;
 
-import org.codeaurora.snapcam.filter.GDepth;
-import org.codeaurora.snapcam.filter.GImage;
+import org.fusion.sdcam.filter.GDepth;
+import org.fusion.sdcam.filter.GImage;
 import org.fusion.sdcam.R;
 
 import java.io.ByteArrayOutputStream;

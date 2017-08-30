@@ -26,7 +26,7 @@
  * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.codeaurora.snapcam.filter;
+package org.fusion.sdcam.filter;
 
 import android.graphics.Rect;
 import android.hardware.camera2.CaptureResult;
@@ -34,7 +34,7 @@ import android.media.Image;
 import android.media.Image.Plane;
 import android.util.Log;
 
-import org.codeaurora.snapcam.filter.ClearSightNativeEngine.CamSystemCalibrationData;
+import org.fusion.sdcam.filter.ClearSightNativeEngine.CamSystemCalibrationData;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;

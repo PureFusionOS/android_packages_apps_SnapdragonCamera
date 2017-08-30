@@ -109,7 +109,7 @@ import com.android.camera.util.PersistUtil;
 import com.android.camera.util.SettingTranslation;
 import com.android.internal.util.MemInfoReader;
 
-import org.codeaurora.snapcam.filter.ClearSightImageProcessor;
+import org.fusion.sdcam.filter.ClearSightImageProcessor;
 import org.fusion.sdcam.R;
 
 import java.io.File;
