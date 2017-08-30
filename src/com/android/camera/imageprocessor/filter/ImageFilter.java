@@ -41,7 +41,7 @@ import java.util.List;
 
 public interface ImageFilter {
 
-    public static final boolean DEBUG =
+    boolean DEBUG =
             (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_LOG) ||
                     (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
 

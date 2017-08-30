@@ -1310,11 +1310,11 @@ public class PhotoUI implements PieListener,
 
     public enum SURFACE_STATUS {
         HIDE,
-        SURFACE_VIEW;
+        SURFACE_VIEW
     }
 
     public interface SurfaceTextureSizeChangedListener {
-        public void onSurfaceTextureSizeChanged(int uncroppedWidth, int uncroppedHeight);
+        void onSurfaceTextureSizeChanged(int uncroppedWidth, int uncroppedHeight);
     }
 
     private class DecodeTask extends AsyncTask<Void, Void, Bitmap> {

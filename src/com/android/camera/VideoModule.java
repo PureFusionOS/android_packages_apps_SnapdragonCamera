@@ -1866,6 +1866,7 @@ public class VideoModule implements CameraModule,
         mUI.showTimeLapseUI(false);
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     private void pauseVideoRecording() {
         Log.v(TAG, "pauseVideoRecording");
         mMediaRecorderPausing = true;

@@ -117,7 +117,6 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
     private BitmapArrayOutputStream mBitmapStream;
     private final Object mBitmapStreamLock = new Object();
 
-    ;
     private boolean mIsFrameProcessing = false;
     private PANO_STATUS mPanoStatus = PANO_STATUS.INACTIVE;
     private final Object mPreviewBitmapLock = new Object();
@@ -718,7 +717,7 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
         return rtv;
     }
 
-    private int callNativeInstanceRelease() {
+    private void callNativeInstanceRelease() {
         if (DEBUG) {
             Log.d(TAG, "native instance release");
         }
@@ -726,7 +725,6 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
         if (DEBUG) {
             Log.d(TAG, "native instance release done");
         }
-        return rtv;
     }
 
     private int callNativeProcessPreviewFrame(byte[] frameData, boolean[] isKey, int[] framePosition, int[] moveSpeed) {
@@ -751,7 +749,7 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
         return rtv;
     }
 
-    private int callNativeCancelPanorama() {
+    private void callNativeCancelPanorama() {
         if (DEBUG) {
             Log.d(TAG, "native cancel panorama");
         }
@@ -759,7 +757,6 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
         if (DEBUG) {
             Log.d(TAG, "native cancel panorama done");
         }
-        return rtv;
     }
 
     private int callNativeGetResultSize() {
@@ -773,7 +770,7 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
         return rtv;
     }
 
-    private int callNativeCompletePanorama(byte[] jpegOutData, int size) {
+    private void callNativeCompletePanorama(byte[] jpegOutData, int size) {
         if (DEBUG) {
             Log.d(TAG, "native complete panorama");
         }
@@ -781,7 +778,6 @@ public class PanoCaptureProcessView extends View implements SensorEventListener 
         if (DEBUG) {
             Log.d(TAG, "native complete panorama done");
         }
-        return rtv;
     }
 
     private native int nativeInstanceInit(int width, int height, int stride, int orientation, int colorFormat);

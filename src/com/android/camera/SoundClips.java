@@ -53,9 +53,9 @@ public class SoundClips {
     }
 
     public interface Player {
-        public void release();
+        void release();
 
-        public void play(int action);
+        void play(int action);
     }
 
     /**

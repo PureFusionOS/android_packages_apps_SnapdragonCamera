@@ -34,7 +34,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -348,11 +347,10 @@ public class PanoCaptureUI implements
         }
     }
 
-    public boolean collapseCameraControls() {
+    public void collapseCameraControls() {
         // TODO: Mode switcher should behave like a popup and should hide itself when there
         // is a touch outside of it.
         mSwitcher.closePopup();
-        return true;
     }
 
     public SurfaceHolder getSurfaceHolder() {

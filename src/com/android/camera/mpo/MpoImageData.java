@@ -92,23 +92,21 @@ public class MpoImageData {
      * Adds the given MpoTag to its default IFD and returns an existing MpoTag
      * with the same TID or null if none exist.
      */
-    protected MpoTag addTag(MpoTag tag) {
+    protected void addTag(MpoTag tag) {
         if (tag != null) {
             int ifd = tag.getIfd();
-            return addTag(tag, ifd);
+            addTag(tag, ifd);
         }
-        return null;
     }
 
     /**
      * Adds the given MpoTag to the given IFD and returns an existing MpoTag
      * with the same tag ID or null if none exist.
      */
-    protected MpoTag addTag(MpoTag tag, int ifdId) {
+    protected void addTag(MpoTag tag, int ifdId) {
         if (tag != null && MpoTag.isValidIfd(ifdId)) {
-            return getMpIfdData(ifdId).setTag(tag);
+            getMpIfdData(ifdId).setTag(tag);
         }
-        return null;
     }
 
     /**

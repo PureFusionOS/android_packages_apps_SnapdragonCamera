@@ -54,15 +54,15 @@ public abstract class CameraPreference {
 
     public abstract void reloadValue();
 
-    static public interface OnPreferenceChangedListener {
-        public void onSharedPreferenceChanged(ListPreference pref);
+    public interface OnPreferenceChangedListener {
+        void onSharedPreferenceChanged(ListPreference pref);
 
-        public void onSharedPreferenceChanged();
+        void onSharedPreferenceChanged();
 
-        public void onRestorePreferencesClicked();
+        void onRestorePreferencesClicked();
 
-        public void onOverriddenPreferencesClicked();
+        void onOverriddenPreferencesClicked();
 
-        public void onCameraPickerClicked(int cameraId);
+        void onCameraPickerClicked(int cameraId);
     }
 }

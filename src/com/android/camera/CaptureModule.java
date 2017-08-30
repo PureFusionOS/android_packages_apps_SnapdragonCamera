@@ -19,6 +19,7 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
@@ -65,6 +66,7 @@ import android.media.MediaActionSound;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Handler;
@@ -3195,6 +3197,7 @@ public class CaptureModule implements CameraModule, PhotoController,
                 UPDATE_RECORD_TIME, actualNextUpdateDelay);
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     private void pauseVideoRecording() {
         Log.v(TAG, "pauseVideoRecording");
         mMediaRecorderPausing = true;

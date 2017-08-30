@@ -224,7 +224,7 @@ public class MosaicFrameProcessor {
     }
 
     public interface ProgressListener {
-        public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
-                               float progressX, float progressY);
+        void onProgress(boolean isFinished, float panningRateX, float panningRateY,
+                        float progressX, float progressY);
     }
 }

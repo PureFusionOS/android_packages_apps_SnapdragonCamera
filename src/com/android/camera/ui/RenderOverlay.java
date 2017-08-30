@@ -117,15 +117,15 @@ public class RenderOverlay extends FrameLayout {
 
     interface Renderer {
 
-        public boolean handlesTouch();
+        boolean handlesTouch();
 
-        public boolean onTouchEvent(MotionEvent evt);
+        boolean onTouchEvent(MotionEvent evt);
 
-        public void setOverlay(RenderOverlay overlay);
+        void setOverlay(RenderOverlay overlay);
 
-        public void layout(int left, int top, int right, int bottom);
+        void layout(int left, int top, int right, int bottom);
 
-        public void draw(Canvas canvas);
+        void draw(Canvas canvas);
 
     }
 

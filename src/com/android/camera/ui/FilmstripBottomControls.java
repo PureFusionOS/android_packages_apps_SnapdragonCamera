@@ -115,20 +115,20 @@ public class FilmstripBottomControls extends RelativeLayout
      * Classes implementing this interface can listen for events on the bottom
      * controls.
      */
-    public static interface BottomControlsListener {
+    public interface BottomControlsListener {
         /**
          * Called when the user pressed the "view photosphere" button.
          */
-        public void onViewPhotoSphere();
+        void onViewPhotoSphere();
 
         /**
          * Called when the user pressed the "edit" button.
          */
-        public void onEdit();
+        void onEdit();
 
         /**
          * Called when the user pressed the "tiny planet" button.
          */
-        public void onTinyPlanet();
+        void onTinyPlanet();
     }
 }

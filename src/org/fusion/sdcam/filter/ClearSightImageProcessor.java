@@ -540,8 +540,6 @@ public class ClearSightImageProcessor {
                 service.getContentResolver(), "jpeg");
     }
 
-    ;
-
     public void saveDebugImageAsJpeg(MediaSaveService service, YuvImage image, boolean isBayer,
                                      NamedEntity namedEntity, int count, long ts) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -694,11 +692,11 @@ public class ClearSightImageProcessor {
     }
 
     public interface Callback {
-        public void onReleaseShutterLock();
+        void onReleaseShutterLock();
 
-        public void onClearSightSuccess(byte[] thumnailBytes);
+        void onClearSightSuccess(byte[] thumnailBytes);
 
-        public void onClearSightFailure(byte[] thumnailBytes);
+        void onClearSightFailure(byte[] thumnailBytes);
     }
 
     private static class ReprocessableImage {

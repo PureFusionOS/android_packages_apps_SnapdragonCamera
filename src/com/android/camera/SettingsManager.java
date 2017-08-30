@@ -217,11 +217,10 @@ public class SettingsManager implements ListMenu.SettingsListener {
         mDependency = parseJson("dependency.json");
     }
 
-    public static SettingsManager createInstance(Context context) {
+    public static void createInstance(Context context) {
         if (sInstance == null) {
             sInstance = new SettingsManager(context.getApplicationContext());
         }
-        return sInstance;
     }
 
     public static SettingsManager getInstance() {

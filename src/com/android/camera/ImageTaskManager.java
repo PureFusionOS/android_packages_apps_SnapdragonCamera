@@ -23,9 +23,9 @@ import android.net.Uri;
  */
 public interface ImageTaskManager {
 
-    public void addTaskListener(TaskListener l);
+    void addTaskListener(TaskListener l);
 
-    public void removeTaskListener(TaskListener l);
+    void removeTaskListener(TaskListener l);
 
     /**
      * Get task progress by Uri.
@@ -34,17 +34,17 @@ public interface ImageTaskManager {
      * @return Integer from 0 to 100, or -1. The percentage of the task done
      * so far. -1 means not found.
      */
-    public int getTaskProgress(Uri uri);
+    int getTaskProgress(Uri uri);
 
     /**
      * Callback interface for task events.
      */
-    public interface TaskListener {
-        public void onTaskQueued(String filePath, Uri imageUri);
+    interface TaskListener {
+        void onTaskQueued(String filePath, Uri imageUri);
 
-        public void onTaskDone(String filePath, Uri imageUri);
+        void onTaskDone(String filePath, Uri imageUri);
 
-        public void onTaskProgress(
+        void onTaskProgress(
                 String filePath, Uri imageUri, int progress);
     }
 }

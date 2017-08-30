@@ -121,7 +121,7 @@ public class ProgressRenderer {
         return mVisible;
     }
 
-    public static interface VisibilityListener {
-        public void onHidden();
+    public interface VisibilityListener {
+        void onHidden();
     }
 }

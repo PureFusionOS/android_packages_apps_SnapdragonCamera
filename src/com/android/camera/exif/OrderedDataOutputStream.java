@@ -30,31 +30,27 @@ public class OrderedDataOutputStream extends FilterOutputStream {
         super(out);
     }
 
-    public OrderedDataOutputStream setByteOrder(ByteOrder order) {
+    public void setByteOrder(ByteOrder order) {
         mByteBuffer.order(order);
-        return this;
     }
 
-    public OrderedDataOutputStream writeShort(short value) throws IOException {
+    public void writeShort(short value) throws IOException {
         mByteBuffer.rewind();
         mByteBuffer.putShort(value);
         out.write(mByteBuffer.array(), 0, 2);
         mSize += 2;
-        return this;
     }
 
-    public OrderedDataOutputStream writeInt(int value) throws IOException {
+    public void writeInt(int value) throws IOException {
         mByteBuffer.rewind();
         mByteBuffer.putInt(value);
         out.write(mByteBuffer.array());
         mSize += 4;
-        return this;
     }
 
-    public OrderedDataOutputStream writeRational(Rational rational) throws IOException {
+    public void writeRational(Rational rational) throws IOException {
         writeInt((int) rational.getNumerator());
         writeInt((int) rational.getDenominator());
-        return this;
     }
 
     public int size() {

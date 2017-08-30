@@ -419,8 +419,8 @@ public class ModuleSwitcher extends RotateImageView
     }
 
     public interface ModuleSwitchListener {
-        public void onModuleSelected(int i);
+        void onModuleSelected(int i);
 
-        public void onShowSwitcherPopup();
+        void onShowSwitcherPopup();
     }
 }

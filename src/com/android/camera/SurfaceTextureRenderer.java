@@ -188,7 +188,7 @@ public class SurfaceTextureRenderer {
         }
     }
     public interface FrameDrawer {
-        public void onDrawFrame(GL10 gl);
+        void onDrawFrame(GL10 gl);
     }
 
     public class RenderThread extends Thread {

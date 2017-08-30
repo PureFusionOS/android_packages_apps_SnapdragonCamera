@@ -131,7 +131,7 @@ public class CountdownTimerPopup extends AbstractSettingPopup {
         }
     }
 
-    static public interface Listener {
-        public void onListPrefChanged(ListPreference pref);
+    public interface Listener {
+        void onListPrefChanged(ListPreference pref);
     }
 }

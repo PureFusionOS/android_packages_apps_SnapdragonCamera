@@ -71,8 +71,6 @@ public class CountDownView extends FrameLayout {
         return mRemainingSecs > 0;
     }
 
-    ;
-
     private void remainingSecondsChanged(int newVal) {
         mRemainingSecs = newVal;
         if (newVal == 0) {
@@ -167,7 +165,7 @@ public class CountDownView extends FrameLayout {
     }
 
     public interface OnCountDownFinishedListener {
-        public void onCountDownFinished();
+        void onCountDownFinished();
     }
 
     private class MainHandler extends Handler {

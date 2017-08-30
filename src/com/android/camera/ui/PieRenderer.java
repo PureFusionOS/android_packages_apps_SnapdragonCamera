@@ -1089,10 +1089,10 @@ public class PieRenderer extends OverlayRenderer
         update();
     }
 
-    static public interface PieListener {
-        public void onPieOpened(int centerX, int centerY);
+    public interface PieListener {
+        void onPieOpened(int centerX, int centerY);
 
-        public void onPieClosed();
+        void onPieClosed();
     }
 
     private class Disappear implements Runnable {

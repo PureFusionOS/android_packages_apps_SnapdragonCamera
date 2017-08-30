@@ -135,8 +135,8 @@ public class ListSubMenu extends ListView implements
         return mY;
     }
 
-    static public interface Listener {
-        public void onListPrefChanged(ListPreference pref);
+    public interface Listener {
+        void onListPrefChanged(ListPreference pref);
     }
 
     private class ListPrefSettingAdapter extends SimpleAdapter {

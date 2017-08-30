@@ -17,11 +17,11 @@
 package com.android.camera.ui;
 
 public interface FocusIndicator {
-    public void showStart();
+    void showStart();
 
-    public void showSuccess(boolean timeout);
+    void showSuccess(boolean timeout);
 
-    public void showFail(boolean timeout);
+    void showFail(boolean timeout);
 
-    public void clear();
+    void clear();
 }

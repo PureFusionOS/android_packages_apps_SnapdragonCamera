@@ -169,7 +169,7 @@ public class PreviewGestures
         mVideoMenu = menu;
     }
 
-    public boolean dispatchTouch(MotionEvent m) {
+    public void dispatchTouch(MotionEvent m) {
         if (setToFalse) {
             waitUntilNextDown = false;
             setToFalse = false;
@@ -177,14 +177,14 @@ public class PreviewGestures
         if (waitUntilNextDown) {
             if (MotionEvent.ACTION_UP != m.getActionMasked()
                     && MotionEvent.ACTION_CANCEL != m.getActionMasked())
-                return true;
+                return;
             else {
                 setToFalse = true;
-                return true;
+                return;
             }
         }
         if (!mEnabled) {
-            return false;
+            return;
         }
         mCurrent = m;
         if (MotionEvent.ACTION_DOWN == m.getActionMasked()) {
@@ -194,18 +194,20 @@ public class PreviewGestures
 
         // If pie is open, redirects all the touch events to pie.
         if (mPie != null && mPie.isOpen()) {
-            return sendToPie(m);
+            sendToPie(m);
+            return;
         }
 
         if (mTrackingFocus != null && mTrackingFocus.isVisible()) {
-            return sendToTrackingFocus(m);
+            sendToTrackingFocus(m);
+            return;
         }
 
         if (mCaptureUI != null) {
             if (mCaptureUI.isPreviewMenuBeingShown()) {
                 waitUntilNextDown = true;
                 mCaptureUI.removeFilterMenu(true);
-                return true;
+                return;
             }
         }
 
@@ -215,12 +217,12 @@ public class PreviewGestures
                     waitUntilNextDown = true;
                     mPhotoMenu.closeView();
                 }
-                return true;
+                return;
             }
             if (mPhotoMenu.isPreviewMenuBeingShown()) {
                 waitUntilNextDown = true;
                 mPhotoMenu.animateSlideOutPreviewMenu();
-                return true;
+                return;
             }
         }
 
@@ -230,13 +232,13 @@ public class PreviewGestures
                     waitUntilNextDown = true;
                     mVideoMenu.closeView();
                 }
-                return true;
+                return;
             }
 
             if (mVideoMenu.isPreviewMenuBeingShown()) {
                 waitUntilNextDown = true;
                 mVideoMenu.animateSlideOutPreviewMenu();
-                return true;
+                return;
             }
         }
 
@@ -255,7 +257,6 @@ public class PreviewGestures
                 mZoom.onScaleEnd(mScale);
             }
         }
-        return true;
     }
 
     public boolean waitUntilNextDown() {
@@ -274,12 +275,12 @@ public class PreviewGestures
         mOverlay.directDispatchTouch(mDown, mPie);
     }
 
-    private boolean sendToPie(MotionEvent m) {
-        return mOverlay.directDispatchTouch(m, mPie);
+    private void sendToPie(MotionEvent m) {
+        mOverlay.directDispatchTouch(m, mPie);
     }
 
-    private boolean sendToTrackingFocus(MotionEvent m) {
-        return mOverlay.directDispatchTouch(m, mTrackingFocus);
+    private void sendToTrackingFocus(MotionEvent m) {
+        mOverlay.directDispatchTouch(m, mTrackingFocus);
     }
 
     // OnScaleGestureListener implementation
@@ -304,7 +305,7 @@ public class PreviewGestures
     }
 
     public interface SingleTapListener {
-        public void onSingleTapUp(View v, int x, int y);
+        void onSingleTapUp(View v, int x, int y);
     }
 }
 

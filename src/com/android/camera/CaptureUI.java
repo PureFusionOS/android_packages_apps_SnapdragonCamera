@@ -1257,11 +1257,10 @@ public class CaptureUI implements FocusOverlayManager.FocusUI,
         mSurfaceViewMono.setVisibility(View.GONE);
     }
 
-    public boolean collapseCameraControls() {
+    public void collapseCameraControls() {
         // Remove all the popups/dialog boxes
         boolean ret = false;
         mCameraControls.showRefocusToast(false);
-        return ret;
     }
 
     public void showRefocusToast(boolean show) {

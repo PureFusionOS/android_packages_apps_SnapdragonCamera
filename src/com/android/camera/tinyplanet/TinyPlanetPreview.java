@@ -107,12 +107,12 @@ public class TinyPlanetPreview extends View {
      * Classes implementing this interface get informed about changes to the
      * preview size.
      */
-    public static interface PreviewSizeListener {
+    public interface PreviewSizeListener {
         /**
          * Called when the preview size has changed.
          *
          * @param sizePx the size in pixels of the square preview area
          */
-        public void onSizeChanged(int sizePx);
+        void onSizeChanged(int sizePx);
     }
 }

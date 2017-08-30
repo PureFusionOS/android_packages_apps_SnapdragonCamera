@@ -722,35 +722,33 @@ public class CameraSettings {
         return false;
     }
 
-    private static boolean filterUnsupportedOptions(PreferenceGroup group,
-                                                    ListPreference pref, List<String> supported) {
+    private static void filterUnsupportedOptions(PreferenceGroup group,
+                                                 ListPreference pref, List<String> supported) {
 
         // Remove the preference if the parameter is not supported or there is
         // only one options for the settings.
         if (supported == null || supported.size() <= 1) {
             removePreference(group, pref.getKey());
-            return true;
+            return;
         }
 
         pref.filterUnsupported(supported);
         if (pref.getEntries().length <= 1) {
             removePreference(group, pref.getKey());
-            return true;
+            return;
         }
 
         resetIfInvalid(pref);
-        return false;
     }
 
-    private static boolean filterSimilarPictureSize(PreferenceGroup group,
-                                                    ListPreference pref) {
+    private static void filterSimilarPictureSize(PreferenceGroup group,
+                                                 ListPreference pref) {
         pref.filterDuplicated();
         if (pref.getEntries().length <= 1) {
             removePreference(group, pref.getKey());
-            return true;
+            return;
         }
         resetIfInvalid(pref);
-        return false;
     }
 
     private static void resetIfInvalid(ListPreference pref) {
@@ -1156,13 +1154,13 @@ public class CameraSettings {
         return ret;
     }
 
-    public static List<String> getSupportedDegreesOfBlur(Parameters params) {
+    public static void getSupportedDegreesOfBlur(Parameters params) {
         String str = params.get(KEY_QC_SUPPORTED_DEGREES_OF_BLUR);
         if (str == null) {
-            return null;
+            return;
         }
         Log.d(TAG, "getSupportedDegreesOfBlur str =" + str);
-        return split(str);
+        split(str);
     }
 
     private static void formatPictureSizes(Context context,

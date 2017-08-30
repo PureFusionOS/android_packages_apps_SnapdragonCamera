@@ -494,7 +494,7 @@ class AndroidCameraManagerImpl implements CameraManager {
          *
          * @return {@code false} if the wait was interrupted, {@code true} otherwise.
          */
-        public boolean waitDone() {
+        public void waitDone() {
             final Object waitDoneLock = new Object();
             final Runnable unlockRunnable = () -> {
                 synchronized (waitDoneLock) {
@@ -508,13 +508,11 @@ class AndroidCameraManagerImpl implements CameraManager {
                     waitDoneLock.wait();
                 } catch (InterruptedException ex) {
                     Log.v(TAG, "waitDone interrupted");
-                    return false;
                 }
             }
-            return true;
         }
 
-        public boolean waitDone(long timeout) {
+        public void waitDone(long timeout) {
             final Object waitDoneLock = new Object();
             final Runnable unlockRunnable = () -> {
                 synchronized (waitDoneLock) {
@@ -529,10 +527,8 @@ class AndroidCameraManagerImpl implements CameraManager {
                     mCameraHandler.removeCallbacks(unlockRunnable);
                 } catch (InterruptedException ex) {
                     Log.v(TAG, "waitDone interrupted");
-                    return false;
                 }
             }
-            return true;
         }
 
         /**

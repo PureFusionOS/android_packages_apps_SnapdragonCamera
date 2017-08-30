@@ -138,10 +138,10 @@ public class MoreSettingPopup extends AbstractSettingPopup
         }
     }
 
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
+    public interface Listener {
+        void onSettingChanged(ListPreference pref);
 
-        public void onPreferenceClicked(ListPreference pref);
+        void onPreferenceClicked(ListPreference pref);
     }
 
     private class MoreSettingAdapter extends ArrayAdapter<ListPreference> {

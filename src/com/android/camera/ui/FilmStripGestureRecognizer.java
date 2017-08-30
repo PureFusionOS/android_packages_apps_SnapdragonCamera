@@ -59,9 +59,9 @@ public class FilmStripGestureRecognizer {
 
         boolean onScale(float focusX, float focusY, float scale);
 
-        boolean onDown(float x, float y);
+        void onDown(float x, float y);
 
-        boolean onUp(float x, float y);
+        void onUp(float x, float y);
 
         void onScaleEnd();
     }

@@ -114,7 +114,7 @@ public class CameraRootView extends FrameLayout {
     }
 
     public interface MyDisplayListener {
-        public void onDisplayChanged();
+        void onDisplayChanged();
     }
 /*
     @Override

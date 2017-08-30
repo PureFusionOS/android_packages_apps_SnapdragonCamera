@@ -166,12 +166,11 @@ class ExifData {
      * Adds the given ExifTag to its default IFD and returns an existing ExifTag
      * with the same TID or null if none exist.
      */
-    protected ExifTag addTag(ExifTag tag) {
+    protected void addTag(ExifTag tag) {
         if (tag != null) {
             int ifd = tag.getIfd();
-            return addTag(tag, ifd);
+            addTag(tag, ifd);
         }
-        return null;
     }
 
     /**

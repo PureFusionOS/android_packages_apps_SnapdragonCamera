@@ -179,7 +179,7 @@ public class ListMenuItem extends RelativeLayout {
         }
     }
 
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
+    public interface Listener {
+        void onSettingChanged(ListPreference pref);
     }
 }

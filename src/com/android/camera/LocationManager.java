@@ -134,7 +134,7 @@ public class LocationManager {
     }
 
     public interface Listener {
-        public void onErrorListener(int error);
+        void onErrorListener(int error);
     }
 
     private class LocationListener

@@ -159,7 +159,7 @@ public class PieItem {
         setAlpha(mAlpha);
     }
 
-    public static interface OnClickListener {
+    public interface OnClickListener {
         void onClick(PieItem item);
     }
 

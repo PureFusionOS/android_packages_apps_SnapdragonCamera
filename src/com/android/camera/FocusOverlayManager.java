@@ -580,35 +580,35 @@ public class FocusOverlayManager {
     }
 
     public interface FocusUI {
-        public boolean hasFaces();
+        boolean hasFaces();
 
-        public void clearFocus();
+        void clearFocus();
 
-        public void setFocusPosition(int x, int y);
+        void setFocusPosition(int x, int y);
 
-        public void onFocusStarted();
+        void onFocusStarted();
 
-        public void onFocusSucceeded(boolean timeOut);
+        void onFocusSucceeded(boolean timeOut);
 
-        public void onFocusFailed(boolean timeOut);
+        void onFocusFailed(boolean timeOut);
 
-        public void pauseFaceDetection();
+        void pauseFaceDetection();
 
-        public void resumeFaceDetection();
+        void resumeFaceDetection();
     }
 
     public interface Listener {
-        public void autoFocus();
+        void autoFocus();
 
-        public void cancelAutoFocus();
+        void cancelAutoFocus();
 
-        public boolean capture();
+        boolean capture();
 
-        public void startFaceDetection();
+        void startFaceDetection();
 
-        public void stopFaceDetection();
+        void stopFaceDetection();
 
-        public void setFocusParameters();
+        void setFocusParameters();
     }
 
     private class MainHandler extends Handler {

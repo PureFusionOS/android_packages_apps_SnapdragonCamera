@@ -192,6 +192,6 @@ class PanoProgressBar extends ImageView {
     }
 
     public interface OnDirectionChangeListener {
-        public void onDirectionChange(int direction);
+        void onDirectionChange(int direction);
     }
 }

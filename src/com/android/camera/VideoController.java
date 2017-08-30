@@ -23,26 +23,26 @@ import com.android.camera.ShutterButton.OnShutterButtonListener;
 
 public interface VideoController extends OnShutterButtonListener, OnPauseButtonListener {
 
-    public void onReviewDoneClicked(View view);
+    void onReviewDoneClicked(View view);
 
-    public void onReviewCancelClicked(View viwe);
+    void onReviewCancelClicked(View viwe);
 
-    public void onReviewPlayClicked(View view);
+    void onReviewPlayClicked(View view);
 
-    public boolean isVideoCaptureIntent();
+    boolean isVideoCaptureIntent();
 
-    public boolean isInReviewMode();
+    boolean isInReviewMode();
 
-    public int onZoomChanged(int index);
+    int onZoomChanged(int index);
 
-    public void onSingleTapUp(View view, int x, int y);
+    void onSingleTapUp(View view, int x, int y);
 
-    public void stopPreview();
+    void stopPreview();
 
-    public void updateCameraOrientation();
+    void updateCameraOrientation();
 
     // Callbacks for camera preview UI events.
-    public void onPreviewUIReady();
+    void onPreviewUIReady();
 
-    public void onPreviewUIDestroyed();
+    void onPreviewUIDestroyed();
 }

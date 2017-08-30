@@ -1180,7 +1180,7 @@ public class VideoUI implements PieRenderer.PieListener,
 
     public enum SURFACE_STATUS {
         HIDE,
-        SURFACE_VIEW;
+        SURFACE_VIEW
     }
 
     private class SettingsPopup extends PopupWindow {

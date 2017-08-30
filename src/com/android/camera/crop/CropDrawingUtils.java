@@ -164,10 +164,10 @@ public abstract class CropDrawingUtils {
         return m;
     }
 
-    public static boolean setBitmapToDisplayMatrix(Matrix m, RectF imageBounds,
-                                                   RectF displayBounds) {
+    public static void setBitmapToDisplayMatrix(Matrix m, RectF imageBounds,
+                                                RectF displayBounds) {
         m.reset();
-        return m.setRectToRect(imageBounds, displayBounds, Matrix.ScaleToFit.CENTER);
+        m.setRectToRect(imageBounds, displayBounds, Matrix.ScaleToFit.CENTER);
     }
 
     public static boolean setImageToScreenMatrix(Matrix dst, RectF image,

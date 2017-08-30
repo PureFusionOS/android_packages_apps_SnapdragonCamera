@@ -96,10 +96,10 @@ public class PanoramaMetadataLoader {
      * Classes implementing this interface can get information about loaded
      * photo sphere metadata.
      */
-    public static interface PanoramaMetadataCallback {
+    public interface PanoramaMetadataCallback {
         /**
          * Called with the loaded metadata or <code>null</code>.
          */
-        public void onPanoramaMetadataLoaded(PanoramaMetadata metadata);
+        void onPanoramaMetadataLoaded(PanoramaMetadata metadata);
     }
 }

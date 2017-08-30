@@ -214,9 +214,9 @@ public class CropObject {
         return edgeSelected != MOVE_NONE && selectEdge(edgeSelected);
     }
 
-    public boolean moveCurrentSelection(float dX, float dY) {
+    public void moveCurrentSelection(float dX, float dY) {
         if (mMovingEdges == MOVE_NONE) {
-            return false;
+            return;
         }
         RectF crop = mBoundedRect.getInner();
 
@@ -225,7 +225,6 @@ public class CropObject {
         int movingEdges = mMovingEdges;
         if (movingEdges == MOVE_BLOCK) {
             mBoundedRect.moveInner(dX, dY);
-            return true;
         } else {
             float dx = 0;
             float dy = 0;
@@ -285,7 +284,6 @@ public class CropObject {
                 mBoundedRect.resizeInner(crop);
             }
         }
-        return true;
     }
 
     private int calculateSelectedEdge(float x, float y) {

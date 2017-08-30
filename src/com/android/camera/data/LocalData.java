@@ -33,45 +33,45 @@ import java.util.Comparator;
  * can guarantee thread safety for LocalData.
  */
 public interface LocalData extends FilmStripView.ImageData {
-    static final String TAG = "CAM_LocalData";
+    String TAG = "CAM_LocalData";
 
-    public static final String MIME_TYPE_JPEG = "image/jpeg";
+    String MIME_TYPE_JPEG = "image/jpeg";
 
-    public static final int ACTION_NONE = 0;
-    public static final int ACTION_PLAY = 1;
-    public static final int ACTION_DELETE = (1 << 1);
+    int ACTION_NONE = 0;
+    int ACTION_PLAY = 1;
+    int ACTION_DELETE = (1 << 1);
 
     // Local data types. Returned by getLocalDataType().
     /**
      * Constant for denoting a camera preview.
      */
-    public static final int LOCAL_CAMERA_PREVIEW = 1;
+    int LOCAL_CAMERA_PREVIEW = 1;
     /**
      * Constant for denoting an arbitrary view.
      */
-    public static final int LOCAL_VIEW = 2;
+    int LOCAL_VIEW = 2;
     /**
      * Constant for denoting a still image.
      */
-    public static final int LOCAL_IMAGE = 3;
+    int LOCAL_IMAGE = 3;
     /**
      * Constant for denoting a video.
      */
-    public static final int LOCAL_VIDEO = 4;
+    int LOCAL_VIDEO = 4;
     /**
      * Constant for denoting a still image, with valid PhotoSphere metadata.
      */
-    public static final int LOCAL_PHOTO_SPHERE = 5;
+    int LOCAL_PHOTO_SPHERE = 5;
     /**
      * Constant for denoting a still image, with valid 360 PhotoSphere metadata.
      */
-    public static final int LOCAL_360_PHOTO_SPHERE = 6;
+    int LOCAL_360_PHOTO_SPHERE = 6;
     /**
      * Constant for denoting an in-progress item which should not be touched
      * before the related task is done. Data of this type should not support
      * any actions like sharing, editing, etc.
      */
-    public static final int LOCAL_IN_PROGRESS_DATA = 7;
+    int LOCAL_IN_PROGRESS_DATA = 7;
 
     View getView(Activity a, int width, int height, int placeHolderResourceId,
                  LocalDataAdapter adapter, boolean full);
@@ -121,8 +121,8 @@ public interface LocalData extends FilmStripView.ImageData {
      * @param clockwise     True if the rotation goes clockwise.
      * @return Whether the rotation is supported.
      */
-    boolean rotate90Degrees(Context context, LocalDataAdapter adapter,
-                            int currentDataId, boolean clockwise);
+    void rotate90Degrees(Context context, LocalDataAdapter adapter,
+                         int currentDataId, boolean clockwise);
 
     void onFullScreen(boolean fullScreen);
 
@@ -176,7 +176,7 @@ public interface LocalData extends FilmStripView.ImageData {
      */
     long getContentId();
 
-    static class NewestFirstComparator implements Comparator<LocalData> {
+    class NewestFirstComparator implements Comparator<LocalData> {
 
         /**
          * Compare taken/modified date of LocalData in descent order to make

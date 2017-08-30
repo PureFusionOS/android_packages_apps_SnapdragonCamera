@@ -2122,7 +2122,7 @@ public class CameraActivity extends Activity
     }
 
     public interface OnActionBarVisibilityListener {
-        public void onActionBarVisibilityChanged(boolean isVisible);
+        void onActionBarVisibilityChanged(boolean isVisible);
     }
 
     protected interface OnStorageUpdateDoneListener {

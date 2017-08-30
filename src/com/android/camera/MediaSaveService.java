@@ -201,11 +201,11 @@ public class MediaSaveService extends Service {
     }
 
     public interface Listener {
-        public void onQueueStatus(boolean full);
+        void onQueueStatus(boolean full);
     }
 
     public interface OnMediaSavedListener {
-        public void onMediaSaved(Uri uri);
+        void onMediaSaved(Uri uri);
     }
 
     class LocalBinder extends Binder {

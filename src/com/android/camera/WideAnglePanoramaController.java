@@ -21,15 +21,15 @@ package com.android.camera;
  */
 public interface WideAnglePanoramaController {
 
-    public void onPreviewUIReady();
+    void onPreviewUIReady();
 
-    public void onPreviewUIDestroyed();
+    void onPreviewUIDestroyed();
 
-    public void cancelHighResStitching();
+    void cancelHighResStitching();
 
-    public void onShutterButtonClick();
+    void onShutterButtonClick();
 
-    public void onPreviewUILayoutChange(int l, int t, int r, int b);
+    void onPreviewUILayoutChange(int l, int t, int r, int b);
 
-    public int getCameraOrientation();
+    int getCameraOrientation();
 }

@@ -39,8 +39,6 @@ public final class GeometryMathUtils {
     private GeometryMathUtils() {
     }
 
-    ;
-
     // Math operations for 2d vectors
     public static float clamp(float i, float low, float high) {
         return Math.max(Math.min(i, high), low);

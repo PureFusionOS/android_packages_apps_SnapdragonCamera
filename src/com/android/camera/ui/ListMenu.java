@@ -216,19 +216,19 @@ public class ListMenu extends ListView
         }
     }
 
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
+    public interface Listener {
+        void onSettingChanged(ListPreference pref);
 
-        public void onPreferenceClicked(ListPreference pref);
+        void onPreferenceClicked(ListPreference pref);
 
-        public void onPreferenceClicked(ListPreference pref, int y);
+        void onPreferenceClicked(ListPreference pref, int y);
 
-        public void onListMenuTouched();
+        void onListMenuTouched();
     }
 
-    static public interface SettingsListener {
+    public interface SettingsListener {
         // notify SettingsManager
-        public void onSettingChanged(ListPreference pref);
+        void onSettingChanged(ListPreference pref);
     }
 
     private class MoreSettingAdapter extends ArrayAdapter<ListPreference> {

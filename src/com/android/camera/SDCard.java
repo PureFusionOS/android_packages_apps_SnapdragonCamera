@@ -28,10 +28,12 @@
 
 package com.android.camera;
 
+import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Environment;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
@@ -105,6 +107,7 @@ public class SDCard {
         return mRawpath;
     }
 
+    @TargetApi(Build.VERSION_CODES.N)
     private String getSDCardStorageState() {
         return mVolume.getState();
     }

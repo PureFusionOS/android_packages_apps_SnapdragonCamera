@@ -94,11 +94,10 @@ public class InProgressDataWrapper implements LocalData {
     }
 
     @Override
-    public boolean rotate90Degrees(
+    public void rotate90Degrees(
             Context context, LocalDataAdapter adapter,
             int currentDataId, boolean clockwise) {
         // No actions are allowed to modify the wrapped data.
-        return false;
     }
 
     @Override

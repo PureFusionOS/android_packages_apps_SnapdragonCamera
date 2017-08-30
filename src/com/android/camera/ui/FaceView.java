@@ -212,7 +212,6 @@ public class FaceView extends View
             }
             CameraUtil.prepareMatrix(mMatrix, mMirror, mDisplayOrientation, rw, rh);
             int dx = (getWidth() - rw) / 2;
-            ;
             int dy = (getHeight() - rh) / 2;
 
             // Focus indicator is directional. Rotate the matrix and the canvas

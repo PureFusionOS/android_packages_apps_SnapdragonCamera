@@ -20,5 +20,5 @@ package com.android.camera.util;
  * A simple done-handler interface.
  */
 public interface DoneHandler {
-    public void onDone();
+    void onDone();
 }

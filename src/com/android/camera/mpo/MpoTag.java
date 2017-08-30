@@ -46,9 +46,9 @@ public class MpoTag extends ExifTag {
         super(tagId, type, componentCount, ifd, hasDefinedComponentCount);
     }
 
-    public boolean setValue(List<MpEntry> entries) {
+    public void setValue(List<MpEntry> entries) {
         if (getTagId() != (short) MpoInterface.TAG_MP_ENTRY) {
-            return false;
+            return;
         }
 
         byte[] bytes = new byte[entries.size() * MpEntry.SIZE];
@@ -56,7 +56,7 @@ public class MpoTag extends ExifTag {
             MpEntry entry = entries.get(i);
             entry.getBytes(ByteBuffer.wrap(bytes, i * MpEntry.SIZE, MpEntry.SIZE));
         }
-        return setValue(bytes);
+        setValue(bytes);
     }
 
     public List<MpEntry> getMpEntryValue() {
@@ -145,7 +145,7 @@ public class MpoTag extends ExifTag {
             mDependantImage2 = depImage2;
         }
 
-        public boolean getBytes(ByteBuffer buffer) {
+        public void getBytes(ByteBuffer buffer) {
             try {
                 buffer.putInt(mImageAttrib);
                 buffer.putInt(mImageSize);
@@ -154,10 +154,8 @@ public class MpoTag extends ExifTag {
                 buffer.putShort(mDependantImage2);
             } catch (BufferOverflowException e) {
                 Log.w(TAG, "Buffer size too small");
-                return false;
             }
 
-            return true;
         }
     }
 }

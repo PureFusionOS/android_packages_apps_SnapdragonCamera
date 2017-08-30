@@ -60,18 +60,12 @@ public class UsageStatistics {
     public static void onEvent(String category, String action, String label) {
     }
 
-    ;
-
     public static void onEvent(String category, String action, String label, long optionalValue) {
     }
-
-    ;
 
     public static void onEvent(String category, String action, String label, long optionalValue,
                                String fileNameHash) {
     }
-
-    ;
 
     public static void onEvent(String category, String action, String label,
                                long optionalValue, String fileNameHash, String parameters) {
