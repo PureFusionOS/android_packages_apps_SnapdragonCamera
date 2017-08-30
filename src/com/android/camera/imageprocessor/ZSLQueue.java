@@ -31,29 +31,25 @@ package com.android.camera.imageprocessor;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.media.Image;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import com.android.camera.CaptureModule;
 import com.android.camera.util.PersistUtil;
-import android.os.SystemProperties;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 public class ZSLQueue {
     private static final String CIRCULAR_BUFFER_SIZE_PERSIST = "persist.camera.zsl.buffer.size";
     private static final int CIRCULAR_BUFFER_SIZE_DEFAULT = 5;
+    private static final boolean DEBUG_QUEUE =
+            (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_LOG) ||
+                    (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
+    private static final String TAG = "ZSLQueue";
     private int mCircularBufferSize = CIRCULAR_BUFFER_SIZE_DEFAULT;
     private ImageItem[] mBuffer;
     private int mImageHead;
     private int mMetaHead;
-    private Object mLock = new Object();
+    private final Object mLock = new Object();
     private CaptureModule mModule;
-    private static final boolean DEBUG_QUEUE  =
-            (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_LOG) ||
-            (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
-    private static final String TAG = "ZSLQueue";
 
     public ZSLQueue(CaptureModule module) {
         mCircularBufferSize = SystemProperties.getInt(CIRCULAR_BUFFER_SIZE_PERSIST, CIRCULAR_BUFFER_SIZE_DEFAULT);
@@ -68,47 +64,47 @@ public class ZSLQueue {
     private int findMeta(long timestamp, int index) {
         int startIndex = index;
         do {
-            if(mBuffer[index] != null && mBuffer[index].getMetadata() != null &&
-                    mBuffer[index].getMetadata().get(CaptureResult.SENSOR_TIMESTAMP).longValue() == timestamp) {
+            if (mBuffer[index] != null && mBuffer[index].getMetadata() != null &&
+                    mBuffer[index].getMetadata().get(CaptureResult.SENSOR_TIMESTAMP) == timestamp) {
                 return index;
             }
             index = (index + 1) % mBuffer.length;
-        } while(index != startIndex);
+        } while (index != startIndex);
         return -1;
     }
 
     private int findImage(long timestamp, int index) {
         int startIndex = index;
         do {
-            if(mBuffer[index] != null && mBuffer[index].getImage() != null &&
+            if (mBuffer[index] != null && mBuffer[index].getImage() != null &&
                     mBuffer[index].getImage().getTimestamp() == timestamp) {
                 return index;
             }
             index = (index + 1) % mBuffer.length;
-        } while(index != startIndex);
+        } while (index != startIndex);
         return -1;
     }
 
     public void add(Image image, Image rawImage) {
         int lastIndex = -1;
         synchronized (mLock) {
-            if(mBuffer == null)
+            if (mBuffer == null)
                 return;
-            if(mBuffer[mImageHead] != null) {
+            if (mBuffer[mImageHead] != null) {
                 mBuffer[mImageHead].closeImage();
             } else {
                 mBuffer[mImageHead] = new ImageItem();
             }
-            if(mBuffer[mImageHead].getMetadata() != null) {
-                if((mBuffer[mImageHead].getMetadata().get(CaptureResult.SENSOR_TIMESTAMP)).longValue() == image.getTimestamp()) {
-                    mBuffer[mImageHead].setImage(image,rawImage);
+            if (mBuffer[mImageHead].getMetadata() != null) {
+                if (mBuffer[mImageHead].getMetadata().get(CaptureResult.SENSOR_TIMESTAMP) == image.getTimestamp()) {
+                    mBuffer[mImageHead].setImage(image, rawImage);
                     lastIndex = mImageHead;
                     mImageHead = (mImageHead + 1) % mBuffer.length;
-                } else if((mBuffer[mImageHead].getMetadata().get(CaptureResult.SENSOR_TIMESTAMP)).longValue() > image.getTimestamp()) {
+                } else if (mBuffer[mImageHead].getMetadata().get(CaptureResult.SENSOR_TIMESTAMP) > image.getTimestamp()) {
                     image.close();
                 } else {
                     int i = findMeta(image.getTimestamp(), mImageHead);
-                    if(i == -1) {
+                    if (i == -1) {
                         mBuffer[mImageHead].setImage(image, rawImage);
                         mBuffer[mImageHead].setMetadata(null);
                         mImageHead = (mImageHead + 1) % mBuffer.length;
@@ -125,39 +121,39 @@ public class ZSLQueue {
             }
         }
 
-        if(DEBUG_QUEUE) Log.d(TAG, "imageIndex: " + lastIndex + " " + image.getTimestamp());
+        if (DEBUG_QUEUE) Log.d(TAG, "imageIndex: " + lastIndex + " " + image.getTimestamp());
     }
 
     public void add(TotalCaptureResult metadata) {
         int lastIndex = -1;
         synchronized (mLock) {
-            if(mBuffer == null)
+            if (mBuffer == null)
                 return;
             long timestamp = -1;
             try {
-                timestamp = metadata.get(CaptureResult.SENSOR_TIMESTAMP).longValue();
-            } catch(IllegalStateException e) {
+                timestamp = metadata.get(CaptureResult.SENSOR_TIMESTAMP);
+            } catch (IllegalStateException e) {
                 //This happens when corresponding image to this metadata is closed and discarded.
                 return;
             }
-            if(timestamp == -1) {
+            if (timestamp == -1) {
                 return;
             }
-            if(mBuffer[mMetaHead] == null) {
+            if (mBuffer[mMetaHead] == null) {
                 mBuffer[mMetaHead] = new ImageItem();
             } else {
                 mBuffer[mMetaHead].closeMeta();
             }
-            if(mBuffer[mMetaHead].getImage() != null) {
-                if(mBuffer[mMetaHead].getImage().getTimestamp() == timestamp) {
+            if (mBuffer[mMetaHead].getImage() != null) {
+                if (mBuffer[mMetaHead].getImage().getTimestamp() == timestamp) {
                     mBuffer[mMetaHead].setMetadata(metadata);
                     lastIndex = mMetaHead;
                     mMetaHead = (mMetaHead + 1) % mBuffer.length;
-                } else if(mBuffer[mMetaHead].getImage().getTimestamp() > timestamp) {
+                } else if (mBuffer[mMetaHead].getImage().getTimestamp() > timestamp) {
                     //Disard
                 } else {
                     int i = findImage(timestamp, mMetaHead);
-                    if(i == -1) {
+                    if (i == -1) {
                         mBuffer[mMetaHead].setImage(null, null);
                         mBuffer[mMetaHead].setMetadata(metadata);
                         mMetaHead = (mMetaHead + 1) % mBuffer.length;
@@ -174,7 +170,8 @@ public class ZSLQueue {
             }
         }
 
-        if(DEBUG_QUEUE) Log.d(TAG, "Meta: " + lastIndex + " " + metadata.get(CaptureResult.SENSOR_TIMESTAMP));
+        if (DEBUG_QUEUE)
+            Log.d(TAG, "Meta: " + lastIndex + " " + metadata.get(CaptureResult.SENSOR_TIMESTAMP));
     }
 
     public ImageItem tryToGetMatchingItem() {
@@ -210,32 +207,17 @@ public class ZSLQueue {
     }
 
     private boolean checkImageRequirement(TotalCaptureResult captureResult) {
-        if( (captureResult.get(CaptureResult.LENS_STATE) != null &&
-             captureResult.get(CaptureResult.LENS_STATE).intValue() == CaptureResult.LENS_STATE_MOVING)
+        return !((captureResult.get(CaptureResult.LENS_STATE) != null &&
+                captureResult.get(CaptureResult.LENS_STATE) == CaptureResult.LENS_STATE_MOVING)
                 ||
-            (captureResult.get(CaptureResult.CONTROL_AE_STATE) != null &&
-                (captureResult.get(CaptureResult.CONTROL_AE_STATE).intValue() == CaptureResult.CONTROL_AE_STATE_SEARCHING ||
-                 captureResult.get(CaptureResult.CONTROL_AE_STATE).intValue() == CaptureResult.CONTROL_AE_STATE_PRECAPTURE))
+                (captureResult.get(CaptureResult.CONTROL_AE_STATE) != null &&
+                        (captureResult.get(CaptureResult.CONTROL_AE_STATE) == CaptureResult.CONTROL_AE_STATE_SEARCHING ||
+                                captureResult.get(CaptureResult.CONTROL_AE_STATE) == CaptureResult.CONTROL_AE_STATE_PRECAPTURE))
                 ||
-            (captureResult.get(CaptureResult.CONTROL_AF_STATE) != null) &&
-                (captureResult.get(CaptureResult.CONTROL_AF_STATE) == CaptureResult.CONTROL_AF_STATE_ACTIVE_SCAN ||
-                 captureResult.get(CaptureResult.CONTROL_AF_STATE) == CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN)) {
-            return false;
-        }
+                (captureResult.get(CaptureResult.CONTROL_AF_STATE) != null) &&
+                        (captureResult.get(CaptureResult.CONTROL_AF_STATE) == CaptureResult.CONTROL_AF_STATE_ACTIVE_SCAN ||
+                                captureResult.get(CaptureResult.CONTROL_AF_STATE) == CaptureResult.CONTROL_AF_STATE_PASSIVE_SCAN)) && (captureResult.get(CaptureResult.CONTROL_AE_STATE) != null && captureResult.get(CaptureResult.FLASH_MODE) != null && captureResult.get(CaptureResult.CONTROL_AE_STATE) == CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED && captureResult.get(CaptureResult.FLASH_MODE) != CaptureResult.FLASH_MODE_OFF || !(captureResult.get(CaptureResult.CONTROL_AWB_STATE) != null && captureResult.get(CaptureResult.CONTROL_AWB_STATE) == CaptureResult.CONTROL_AWB_STATE_SEARCHING));
 
-        if( captureResult.get(CaptureResult.CONTROL_AE_STATE) != null &&
-            captureResult.get(CaptureResult.FLASH_MODE) != null &&
-            captureResult.get(CaptureResult.CONTROL_AE_STATE).intValue() == CaptureResult.CONTROL_AE_STATE_FLASH_REQUIRED &&
-            captureResult.get(CaptureResult.FLASH_MODE).intValue() != CaptureResult.FLASH_MODE_OFF) {
-            return true;
-        }
-
-        if( captureResult.get(CaptureResult.CONTROL_AWB_STATE) != null &&
-            captureResult.get(CaptureResult.CONTROL_AWB_STATE).intValue() == CaptureResult.CONTROL_AWB_STATE_SEARCHING ) {
-            return false;
-        }
-
-        return true;
     }
 
     static class ImageItem {
@@ -247,17 +229,19 @@ public class ZSLQueue {
             return mImage;
         }
 
-        public Image getRawImage() {return mRawImage;}
+        public Image getRawImage() {
+            return mRawImage;
+        }
 
         public void setImage(Image image, Image rawImage) {
-            if(mImage != null) {
+            if (mImage != null) {
                 mImage.close();
             }
-            if(mRawImage != null) {
+            if (mRawImage != null) {
                 mRawImage.close();
             }
             mImage = image;
-            mRawImage =rawImage;
+            mRawImage = rawImage;
         }
 
         public TotalCaptureResult getMetadata() {
@@ -269,10 +253,10 @@ public class ZSLQueue {
         }
 
         public void closeImage() {
-            if(mImage != null) {
+            if (mImage != null) {
                 mImage.close();
             }
-            if(mRawImage != null) {
+            if (mRawImage != null) {
                 mRawImage.close();
             }
             mImage = null;
@@ -283,10 +267,7 @@ public class ZSLQueue {
         }
 
         public boolean isValid() {
-            if(mImage != null && mMetadata != null) {
-                return true;
-            }
-            return false;
+            return mImage != null && mMetadata != null;
         }
     }
 }

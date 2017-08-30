@@ -35,12 +35,9 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
@@ -61,36 +58,30 @@ import java.util.List;
 
 public class BestpictureFilter implements ImageFilter {
     public static final int NUM_REQUIRED_IMAGE = 10;
+    private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE =
+            "android.media.action.STILL_IMAGE_CAMERA_SECURE";
+    private final static int TIME_DELAY = 50;
+    private static String TAG = "BestpictureFilter";
+    private static boolean mIsSupported = false;
+    final String[] NAMES = {"00.jpg", "01.jpg", "02.jpg", "03.jpg",
+            "04.jpg", "05.jpg", "06.jpg", "07.jpg", "08.jpg"
+            , "09.jpg"};
     private int mWidth;
     private int mHeight;
     private int mStrideY;
     private int mStrideVU;
-    private static String TAG = "BestpictureFilter";
-    private static boolean mIsSupported = false;
     private CaptureModule mModule;
     private CameraActivity mActivity;
     private int mOrientation = 0;
-    final String[] NAMES = {"00.jpg", "01.jpg", "02.jpg", "03.jpg",
-            "04.jpg", "05.jpg", "06.jpg", "07.jpg", "08.jpg"
-            ,"09.jpg"};
-    private static final String INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE =
-            "android.media.action.STILL_IMAGE_CAMERA_SECURE";
-    private final static int TIME_DELAY = 50;
     private int mSavedCount = 0;
     private PhotoModule.NamedImages mNamedImages;
     private ByteBuffer mBY;
     private ByteBuffer mBVU;
-    private Object mClosingLock = new Object();
+    private final Object mClosingLock = new Object();
     private boolean mIsOn = false;
     private PostProcessor mProcessor;
     private ProgressDialog mProgressDialog;
     private ImageFilter.ResultImage mBestpictureResultImage;
-
-    private static void Log(String msg) {
-        if (DEBUG) {
-            Log.d(TAG, msg);
-        }
-    }
 
     public BestpictureFilter(CaptureModule module, CameraActivity activity, PostProcessor processor) {
         mModule = module;
@@ -99,10 +90,20 @@ public class BestpictureFilter implements ImageFilter {
         mNamedImages = new PhotoModule.NamedImages();
     }
 
+    private static void Log(String msg) {
+        if (DEBUG) {
+            Log.d(TAG, msg);
+        }
+    }
+
+    public static boolean isSupportedStatic() {
+        return mIsSupported;
+    }
+
     @Override
     public List<CaptureRequest> setRequiredImages(CaptureRequest.Builder builder) {
-        List<CaptureRequest> list = new ArrayList<CaptureRequest>();
-        for(int i=0; i < NUM_REQUIRED_IMAGE; i++) {
+        List<CaptureRequest> list = new ArrayList<>();
+        for (int i = 0; i < NUM_REQUIRED_IMAGE; i++) {
             list.add(builder.build());
         }
         return list;
@@ -121,9 +122,9 @@ public class BestpictureFilter implements ImageFilter {
     @Override
     public void init(int width, int height, int strideY, int strideVU) {
         Log("init");
-        mWidth = width/2*2;
-        mHeight = height/2*2;
-        mStrideY = strideY/2*2;
+        mWidth = width / 2 * 2;
+        mHeight = height / 2 * 2;
+        mStrideY = strideY / 2 * 2;
         mStrideVU = strideVU / 2 * 2;
         mIsOn = true;
         Log("width: " + mWidth + " height: " + mHeight + " strideY: " + mStrideY + " strideVU: " + mStrideVU);
@@ -141,7 +142,7 @@ public class BestpictureFilter implements ImageFilter {
     @Override
     public void addImage(final ByteBuffer bY, final ByteBuffer bVU, final int imageNum, Object param) {
         Log("addImage");
-        if(imageNum == 0) {
+        if (imageNum == 0) {
             showProgressDialog();
             mOrientation = CameraUtil.getJpegRotation(mModule.getMainCameraId(), mModule.getDisplayOrientation());
             mSavedCount = 0;
@@ -156,29 +157,24 @@ public class BestpictureFilter implements ImageFilter {
             long date = (name == null) ? -1 : name.date;
             mActivity.getMediaSaveService().addImage(
                     bytes, title, date, null, mWidth, mHeight,
-                    mOrientation, null, new MediaSaveService.OnMediaSavedListener() {
-                        @Override
-                        public void onMediaSaved(final  Uri uri) {
-                            if (uri != null) {
-                                mActivity.notifyNewMedia(uri);
-                                new Thread() {
-                                    public void run() {
-                                        while(mSavedCount < NUM_REQUIRED_IMAGE) {
-                                            try {
-                                                Thread.sleep(10);
-                                            } catch (Exception e) {
-                                            }
+                    mOrientation, null, uri -> {
+                        if (uri != null) {
+                            mActivity.notifyNewMedia(uri);
+                            new Thread() {
+                                public void run() {
+                                    while (mSavedCount < NUM_REQUIRED_IMAGE) {
+                                        try {
+                                            Thread.sleep(10);
+                                        } catch (Exception ignored) {
                                         }
-                                        mActivity.runOnUiThread(new Runnable() {
-                                            public void run() {
-                                                dismissProgressDialog();
-                                                startBestpictureActivity(uri);
-                                            }
-                                        });
                                     }
-                                }.start();
+                                    mActivity.runOnUiThread(() -> {
+                                        dismissProgressDialog();
+                                        startBestpictureActivity(uri);
+                                    });
+                                }
+                            }.start();
 
-                            }
                         }
                     }
                     , mActivity.getContentResolver(), "jpeg");
@@ -193,11 +189,9 @@ public class BestpictureFilter implements ImageFilter {
     }
 
     private void showProgressDialog() {
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                mProgressDialog = ProgressDialog.show(mActivity, "", "Saving pictures...", true, false);
-                mProgressDialog.show();
-            }
+        mActivity.runOnUiThread(() -> {
+            mProgressDialog = ProgressDialog.show(mActivity, "", "Saving pictures...", true, false);
+            mProgressDialog.show();
         });
     }
 
@@ -222,12 +216,10 @@ public class BestpictureFilter implements ImageFilter {
     }
 
     private void dismissProgressDialog() {
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                    mProgressDialog = null;
-                }
+        mActivity.runOnUiThread(() -> {
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+                mProgressDialog = null;
             }
         });
     }
@@ -245,10 +237,7 @@ public class BestpictureFilter implements ImageFilter {
 
     @Override
     public boolean isSupported() {
-        if (mModule.getCurrentIntentMode() != CaptureModule.INTENT_MODE_NORMAL) {
-            return false;
-        }
-        return mIsSupported;
+        return mModule.getCurrentIntentMode() == CaptureModule.INTENT_MODE_NORMAL && mIsSupported;
     }
 
     @Override
@@ -264,17 +253,13 @@ public class BestpictureFilter implements ImageFilter {
     @Override
     public void manualCapture(CaptureRequest.Builder builder, CameraCaptureSession captureSession,
                               CameraCaptureSession.CaptureCallback callback, Handler handler) throws CameraAccessException {
-        for(int i=0; i < NUM_REQUIRED_IMAGE; i++) {
+        for (int i = 0; i < NUM_REQUIRED_IMAGE; i++) {
             captureSession.capture(builder.build(), callback, handler);
             try {
                 Thread.sleep(TIME_DELAY);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
-    }
-
-    public static boolean isSupportedStatic() {
-        return mIsSupported;
     }
 
     private byte[] nv21ToJpeg(ImageFilter.ResultImage resultImage, int orientation,
@@ -289,6 +274,25 @@ public class BestpictureFilter implements ImageFilter {
         return bytes;
     }
 
+    private void saveBestPicture(byte[] bytes, int imageNum) {
+        if (bytes == null)
+            return;
+        String filesPath = mActivity.getFilesDir() + "/Bestpicture";
+        File file = new File(filesPath);
+        if (!file.exists()) {
+            file.mkdir();
+        }
+        file = new File(filesPath + "/" + NAMES[imageNum]);
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            out.write(bytes, 0, bytes.length);
+            out.close();
+        } catch (Exception ignored) {
+        }
+        mSavedCount++;
+        Log(imageNum + " image is saved");
+    }
+
     private class BitmapOutputStream extends ByteArrayOutputStream {
         public BitmapOutputStream(int size) {
             super(size);
@@ -297,24 +301,5 @@ public class BestpictureFilter implements ImageFilter {
         public byte[] getArray() {
             return buf;
         }
-    }
-
-    private void saveBestPicture(byte[] bytes, int imageNum) {
-        if(bytes == null)
-            return;
-        String filesPath = mActivity.getFilesDir()+"/Bestpicture";
-        File file = new File(filesPath);
-        if(!file.exists()) {
-            file.mkdir();
-        }
-        file = new File(filesPath+"/"+NAMES[imageNum]);
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            out.write(bytes, 0, bytes.length);
-            out.close();
-        } catch (Exception e) {
-        }
-        mSavedCount++;
-        Log(imageNum+" image is saved");
     }
 }

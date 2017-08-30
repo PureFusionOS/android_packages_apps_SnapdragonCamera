@@ -31,10 +31,7 @@ package com.android.camera;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.ImageView;
-import android.view.MotionEvent;
 import android.view.View;
-import android.util.Log;
 
 import com.android.camera.ui.RotateImageView;
 
@@ -44,10 +41,7 @@ import com.android.camera.ui.RotateImageView;
  */
 public class PauseButton extends RotateImageView {
 
-    public interface OnPauseButtonListener {
-        void onButtonPause();
-        void onButtonContinue();
-    }
+    private OnPauseButtonListener mListener;
 
     public PauseButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -80,5 +74,9 @@ public class PauseButton extends RotateImageView {
         mListener = listener;
     }
 
-    private OnPauseButtonListener mListener;
+    public interface OnPauseButtonListener {
+        void onButtonPause();
+
+        void onButtonContinue();
+    }
 }

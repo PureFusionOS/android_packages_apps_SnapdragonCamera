@@ -33,6 +33,7 @@ import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CaptureRequest;
 import android.os.Handler;
+
 import com.android.camera.util.PersistUtil;
 
 import java.nio.ByteBuffer;
@@ -42,7 +43,7 @@ public interface ImageFilter {
 
     public static final boolean DEBUG =
             (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_LOG) ||
-            (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
+                    (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
 
     /* Return the number of required images to process*/
     List<CaptureRequest> setRequiredImages(CaptureRequest.Builder builder);
@@ -65,6 +66,16 @@ public interface ImageFilter {
 
     boolean isSupported();
 
+    /* Whether it is post proc filter or frame proc filter */
+    boolean isFrameListener();
+
+    /* Whether it will use burst capture or manual capture */
+    boolean isManualMode();
+
+    /* if it's manual mode, this function has to be implemented */
+    void manualCapture(CaptureRequest.Builder builder, CameraCaptureSession captureSession,
+                       CameraCaptureSession.CaptureCallback callback, Handler handler) throws CameraAccessException;
+
     class ResultImage {
         public ByteBuffer outBuffer;
         public Rect outRoi;
@@ -80,14 +91,4 @@ public interface ImageFilter {
             this.stride = stride;
         }
     }
-
-    /* Whether it is post proc filter or frame proc filter */
-    boolean isFrameListener();
-
-    /* Whether it will use burst capture or manual capture */
-    boolean isManualMode();
-
-    /* if it's manual mode, this function has to be implemented */
-    void manualCapture(CaptureRequest.Builder builder, CameraCaptureSession captureSession,
-                       CameraCaptureSession.CaptureCallback callback, Handler handler) throws CameraAccessException;
 }

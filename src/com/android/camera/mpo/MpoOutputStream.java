@@ -19,6 +19,13 @@
 
 package com.android.camera.mpo;
 
+import android.util.Log;
+
+import com.android.camera.exif.JpegHeader;
+import com.android.camera.exif.OrderedDataOutputStream;
+import com.android.camera.mpo.MpoTag.MpEntry;
+import com.android.camera.util.PersistUtil;
+
 import java.io.BufferedOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
@@ -27,18 +34,11 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
 
-import android.util.Log;
-
-import com.android.camera.exif.JpegHeader;
-import com.android.camera.exif.OrderedDataOutputStream;
-import com.android.camera.mpo.MpoTag.MpEntry;
-import com.android.camera.util.PersistUtil;
-
 class MpoOutputStream extends FilterOutputStream {
     private static final String TAG = "MpoOutputStream";
     private static final boolean DEBUG =
             (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_LOG) ||
-            (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
+                    (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
     private static final int STREAMBUFFER_SIZE = 0x00010000; // 64Kb
 
     private static final int STATE_SOI = 0;
@@ -70,6 +70,45 @@ class MpoOutputStream extends FilterOutputStream {
         super(new BufferedOutputStream(ou, STREAMBUFFER_SIZE));
     }
 
+    static void writeTagValue(MpoTag tag, OrderedDataOutputStream dataOutputStream)
+            throws IOException {
+        switch (tag.getDataType()) {
+            case MpoTag.TYPE_ASCII:
+                byte buf[] = tag.getStringByte();
+                if (buf.length == tag.getComponentCount()) {
+                    buf[buf.length - 1] = 0;
+                    dataOutputStream.write(buf);
+                } else {
+                    dataOutputStream.write(buf);
+                    dataOutputStream.write(0);
+                }
+                break;
+            case MpoTag.TYPE_LONG:
+            case MpoTag.TYPE_UNSIGNED_LONG:
+                for (int i = 0, n = tag.getComponentCount(); i < n; i++) {
+                    dataOutputStream.writeInt((int) tag.getValueAt(i));
+                }
+                break;
+            case MpoTag.TYPE_RATIONAL:
+            case MpoTag.TYPE_UNSIGNED_RATIONAL:
+                for (int i = 0, n = tag.getComponentCount(); i < n; i++) {
+                    dataOutputStream.writeRational(tag.getRational(i));
+                }
+                break;
+            case MpoTag.TYPE_UNDEFINED:
+            case MpoTag.TYPE_UNSIGNED_BYTE:
+                buf = new byte[tag.getComponentCount()];
+                tag.getBytes(buf);
+                dataOutputStream.write(buf);
+                break;
+            case MpoTag.TYPE_UNSIGNED_SHORT:
+                for (int i = 0, n = tag.getComponentCount(); i < n; i++) {
+                    dataOutputStream.writeShort((short) tag.getValueAt(i));
+                }
+                break;
+        }
+    }
+
     /**
      * Sets the ExifData to be written into the JPEG file. Should be called
      * before writing image data.
@@ -95,15 +134,15 @@ class MpoOutputStream extends FilterOutputStream {
 
     private boolean isDualCamCropInfo() {
         // first check length
-        if(mCropInfo.position() != DC_CROP_INFO_BYTE_SIZE) {
+        if (mCropInfo.position() != DC_CROP_INFO_BYTE_SIZE) {
             return false;
         }
 
         mCropInfo.rewind();
-        for(int i = 0; i < DC_CROP_INFO.length(); i++) {
-            char c = (char)mCropInfo.get(i);
+        for (int i = 0; i < DC_CROP_INFO.length(); i++) {
+            char c = (char) mCropInfo.get(i);
             //Log.d(TAG, "mCropInfo char @ " + (i) + ": " + c);
-            if(DC_CROP_INFO.charAt(i) != c)
+            if (DC_CROP_INFO.charAt(i) != c)
                 return false;
         }
 
@@ -114,7 +153,7 @@ class MpoOutputStream extends FilterOutputStream {
         // check and write primary image
         mCurrentImageData = mMpoData.getPrimaryMpoImage();
         // don't skip if primary == bayer
-        if(mMpoData.getAuxiliaryImageCount() > 1) {
+        if (mMpoData.getAuxiliaryImageCount() > 1) {
             mSkipCropData = true;
         }
         write(mCurrentImageData.getJpegData());
@@ -155,107 +194,107 @@ class MpoOutputStream extends FilterOutputStream {
                 return;
             }
             switch (mState) {
-            case STATE_SOI:
-                int byteRead = requestByteToBuffer(mBuffer, 2, buffer, offset, length);
-                offset += byteRead;
-                length -= byteRead;
-                if (mBuffer.position() < 2) {
-                    return;
-                }
-                mBuffer.rewind();
-                if (mBuffer.getShort() != JpegHeader.SOI) {
-                    throw new IOException("Not a valid jpeg image, cannot write exif");
-                }
-                out.write(mBuffer.array(), 0, 2);
-                mSize += 2;
-                mState = STATE_FRAME_HEADER;
-                mBuffer.rewind();
-                break;
-            case STATE_FRAME_HEADER:
-                // Copy APP0 and APP1 if it exists
-                // Insert MPO data
-                byteRead = requestByteToBuffer(mBuffer, 4, buffer, offset, length);
-                // Check if this image data doesn't contain SOF.
-                if (mBuffer.position() == 2) {
-                    short tag = mBuffer.getShort();
-                    if (tag == JpegHeader.EOI) {
-                        out.write(mBuffer.array(), 0, 2);
-                        mSize += 2;
-                        mBuffer.rewind();
-                    }
-                }
-                if (mBuffer.position() < 4) {
-                    return;
-                }
-                mBuffer.rewind();
-                short marker = mBuffer.getShort();
-                if (marker == JpegHeader.APP1 || marker == JpegHeader.APP0) {
-                    out.write(mBuffer.array(), 0, 4);
-                    mSize += 4;
-                    mByteToCopy = (mBuffer.getShort() & 0x0000ffff) - 2;
+                case STATE_SOI:
+                    int byteRead = requestByteToBuffer(mBuffer, 2, buffer, offset, length);
                     offset += byteRead;
                     length -= byteRead;
-                } else {
-                    writeMpoData();
-                    if(mSkipCropData)
-                        mState = STATE_SKIP_CROP;
-                    else
-                        mState = STATE_JPEG_DATA;
-                }
-                mBuffer.rewind();
-                break;
-            case STATE_SKIP_CROP:
-                byteRead = requestByteToBuffer(mBuffer, 4, buffer, offset, length);
-                // Check if this image data doesn't contain SOF.
-                if (mBuffer.position() == 2) {
-                    short tag = mBuffer.getShort();
-                    if (tag == JpegHeader.EOI) {
-                        out.write(mBuffer.array(), 0, 2);
-                        mSize += 2;
-                        mBuffer.rewind();
+                    if (mBuffer.position() < 2) {
+                        return;
                     }
-                }
-                if (mBuffer.position() < 4) {
-                    return;
-                }
-
-                offset += byteRead;
-                length -= byteRead;
-                mBuffer.rewind();
-
-                marker = mBuffer.getShort();
-                if (!JpegHeader.isSofMarker(marker)) {
-                    // if not SOF, read first 31 bytes
-                    // try to match dual cam crop magic string
-                    byteRead = requestByteToBuffer(mCropInfo, DC_CROP_INFO_BYTE_SIZE, buffer, offset, length);
-                    if(isDualCamCropInfo()) {
-                        // if crop info, clear with 0
-                        out.write(mBuffer.array(), 0, 4);
-                        mSize += 4;
-
-                        int sizeToClear = mByteToSkip = (mBuffer.getShort() & 0x0000ffff) - 2;
-                        while(sizeToClear > 0) {
-                            out.write(0);
-                            mSize++;
-                            sizeToClear--;
+                    mBuffer.rewind();
+                    if (mBuffer.getShort() != JpegHeader.SOI) {
+                        throw new IOException("Not a valid jpeg image, cannot write exif");
+                    }
+                    out.write(mBuffer.array(), 0, 2);
+                    mSize += 2;
+                    mState = STATE_FRAME_HEADER;
+                    mBuffer.rewind();
+                    break;
+                case STATE_FRAME_HEADER:
+                    // Copy APP0 and APP1 if it exists
+                    // Insert MPO data
+                    byteRead = requestByteToBuffer(mBuffer, 4, buffer, offset, length);
+                    // Check if this image data doesn't contain SOF.
+                    if (mBuffer.position() == 2) {
+                        short tag = mBuffer.getShort();
+                        if (tag == JpegHeader.EOI) {
+                            out.write(mBuffer.array(), 0, 2);
+                            mSize += 2;
+                            mBuffer.rewind();
                         }
-                        mState = STATE_JPEG_DATA;
-                    } else {
-                        // else copy this block
-                        // and move on to next header
+                    }
+                    if (mBuffer.position() < 4) {
+                        return;
+                    }
+                    mBuffer.rewind();
+                    short marker = mBuffer.getShort();
+                    if (marker == JpegHeader.APP1 || marker == JpegHeader.APP0) {
                         out.write(mBuffer.array(), 0, 4);
                         mSize += 4;
                         mByteToCopy = (mBuffer.getShort() & 0x0000ffff) - 2;
+                        offset += byteRead;
+                        length -= byteRead;
+                    } else {
+                        writeMpoData();
+                        if (mSkipCropData)
+                            mState = STATE_SKIP_CROP;
+                        else
+                            mState = STATE_JPEG_DATA;
                     }
-                    mCropInfo.rewind();
-                } else {
-                    // SOF is reached, no crop info detected, skip
-                    out.write(mBuffer.array(), 0, 4);
-                    mSize += 4;
-                    mState = STATE_JPEG_DATA;
-                }
-                mBuffer.rewind();
-                break;
+                    mBuffer.rewind();
+                    break;
+                case STATE_SKIP_CROP:
+                    byteRead = requestByteToBuffer(mBuffer, 4, buffer, offset, length);
+                    // Check if this image data doesn't contain SOF.
+                    if (mBuffer.position() == 2) {
+                        short tag = mBuffer.getShort();
+                        if (tag == JpegHeader.EOI) {
+                            out.write(mBuffer.array(), 0, 2);
+                            mSize += 2;
+                            mBuffer.rewind();
+                        }
+                    }
+                    if (mBuffer.position() < 4) {
+                        return;
+                    }
+
+                    offset += byteRead;
+                    length -= byteRead;
+                    mBuffer.rewind();
+
+                    marker = mBuffer.getShort();
+                    if (JpegHeader.isSofMarker(marker)) {
+                        // if not SOF, read first 31 bytes
+                        // try to match dual cam crop magic string
+                        byteRead = requestByteToBuffer(mCropInfo, DC_CROP_INFO_BYTE_SIZE, buffer, offset, length);
+                        if (isDualCamCropInfo()) {
+                            // if crop info, clear with 0
+                            out.write(mBuffer.array(), 0, 4);
+                            mSize += 4;
+
+                            int sizeToClear = mByteToSkip = (mBuffer.getShort() & 0x0000ffff) - 2;
+                            while (sizeToClear > 0) {
+                                out.write(0);
+                                mSize++;
+                                sizeToClear--;
+                            }
+                            mState = STATE_JPEG_DATA;
+                        } else {
+                            // else copy this block
+                            // and move on to next header
+                            out.write(mBuffer.array(), 0, 4);
+                            mSize += 4;
+                            mByteToCopy = (mBuffer.getShort() & 0x0000ffff) - 2;
+                        }
+                        mCropInfo.rewind();
+                    } else {
+                        // SOF is reached, no crop info detected, skip
+                        out.write(mBuffer.array(), 0, 4);
+                        mSize += 4;
+                        mState = STATE_JPEG_DATA;
+                    }
+                    mBuffer.rewind();
+                    break;
             }
         }
         if (length > 0) {
@@ -323,7 +362,7 @@ class MpoOutputStream extends FilterOutputStream {
                 MpoIfdData.TYPE_MP_INDEX_IFD);
         List<MpEntry> mpEntries = mpEntryTag.getMpEntryValue();
         for (int i = 1; i < mpEntries.size(); i++) { // primary offset is always
-                                                     // 0
+            // 0
             MpEntry entry = mpEntries.get(i);
             entry.setImageOffset(entry.getImageOffset() - mpoOffset);
         }
@@ -368,45 +407,6 @@ class MpoOutputStream extends FilterOutputStream {
             if (tag.getDataSize() > 4) {
                 MpoOutputStream.writeTagValue(tag, dataOutputStream);
             }
-        }
-    }
-
-    static void writeTagValue(MpoTag tag, OrderedDataOutputStream dataOutputStream)
-            throws IOException {
-        switch (tag.getDataType()) {
-        case MpoTag.TYPE_ASCII:
-            byte buf[] = tag.getStringByte();
-            if (buf.length == tag.getComponentCount()) {
-                buf[buf.length - 1] = 0;
-                dataOutputStream.write(buf);
-            } else {
-                dataOutputStream.write(buf);
-                dataOutputStream.write(0);
-            }
-            break;
-        case MpoTag.TYPE_LONG:
-        case MpoTag.TYPE_UNSIGNED_LONG:
-            for (int i = 0, n = tag.getComponentCount(); i < n; i++) {
-                dataOutputStream.writeInt((int) tag.getValueAt(i));
-            }
-            break;
-        case MpoTag.TYPE_RATIONAL:
-        case MpoTag.TYPE_UNSIGNED_RATIONAL:
-            for (int i = 0, n = tag.getComponentCount(); i < n; i++) {
-                dataOutputStream.writeRational(tag.getRational(i));
-            }
-            break;
-        case MpoTag.TYPE_UNDEFINED:
-        case MpoTag.TYPE_UNSIGNED_BYTE:
-            buf = new byte[tag.getComponentCount()];
-            tag.getBytes(buf);
-            dataOutputStream.write(buf);
-            break;
-        case MpoTag.TYPE_UNSIGNED_SHORT:
-            for (int i = 0, n = tag.getComponentCount(); i < n; i++) {
-                dataOutputStream.writeShort((short) tag.getValueAt(i));
-            }
-            break;
         }
     }
 

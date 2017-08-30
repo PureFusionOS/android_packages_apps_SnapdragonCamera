@@ -31,7 +31,7 @@ public class Thumbnail {
     }
 
     private static Bitmap createVideoThumbnailBitmap(String filePath, FileDescriptor fd,
-            int targetWidth) {
+                                                     int targetWidth) {
         Bitmap bitmap = null;
         MediaMetadataRetriever retriever = new MediaMetadataRetriever();
         try {
@@ -41,8 +41,6 @@ public class Thumbnail {
                 retriever.setDataSource(fd);
             }
             bitmap = retriever.getFrameAtTime(-1);
-        } catch (IllegalArgumentException ex) {
-            // Assume this is a corrupt video file
         } catch (RuntimeException ex) {
             // Assume this is a corrupt video file.
         } finally {

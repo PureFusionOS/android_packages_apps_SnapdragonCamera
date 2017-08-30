@@ -111,94 +111,94 @@
 
     <string name="pref_camera_zsl_default" translatable="false">on</string>
 
-         <!-- Default selectable zone af setting. Do not translate. -->
-     <string name="pref_camera_selectablezoneaf_default">auto</string>
+    <!-- Default selectable zone af setting. Do not translate. -->
+    <string name="pref_camera_selectablezoneaf_default">auto</string>
 
-     <!-- Settings screen, Selectable zone af title -->
-     <string name="pref_camera_selectablezoneaf_title"> Selectable Zone Auto Focus</string>
+    <!-- Settings screen, Selectable zone af title -->
+    <string name="pref_camera_selectablezoneaf_title"> Selectable Zone Auto Focus</string>
 
-     <!-- Settings screen, Selectable Zone Af dialog radio button choices -->
-     <string name="pref_camera_selectablezoneaf_entry_auto">Auto</string>
-     <string name="pref_camera_selectablezoneaf_entry_spotmetering">Spot Metering</string>
-     <string name="pref_camera_selectablezoneaf_entry_centerweighted">Center Weighted</string>
-     <string name="pref_camera_selectablezoneaf_entry_frameaverage">Frame Average</string>
+    <!-- Settings screen, Selectable Zone Af dialog radio button choices -->
+    <string name="pref_camera_selectablezoneaf_entry_auto">Auto</string>
+    <string name="pref_camera_selectablezoneaf_entry_spotmetering">Spot Metering</string>
+    <string name="pref_camera_selectablezoneaf_entry_centerweighted">Center Weighted</string>
+    <string name="pref_camera_selectablezoneaf_entry_frameaverage">Frame Average</string>
 
-     <!-- Auto exposure entry values. Do not translate. -->
-     <string name="pref_camera_selectablezoneaf_value_auto">auto</string>
-     <string name="pref_camera_selectablezoneaf_value_spotmetering">spot-metering</string>
-     <string name="pref_camera_selectablezoneaf_value_centerweighted">center-weighted</string>
-     <string name="pref_camera_selectablezoneaf_value_frameaverage">frame-average</string>
+    <!-- Auto exposure entry values. Do not translate. -->
+    <string name="pref_camera_selectablezoneaf_value_auto">auto</string>
+    <string name="pref_camera_selectablezoneaf_value_spotmetering">spot-metering</string>
+    <string name="pref_camera_selectablezoneaf_value_centerweighted">center-weighted</string>
+    <string name="pref_camera_selectablezoneaf_value_frameaverage">frame-average</string>
 
-     <string name="pref_camera_advanced_feature_default">none</string>
+    <string name="pref_camera_advanced_feature_default">none</string>
 
-     <!-- Settings screen, Selectable advanced features title -->
-     <string name="pref_camera_advanced_features_title">Advanced Features</string>
+    <!-- Settings screen, Selectable advanced features title -->
+    <string name="pref_camera_advanced_features_title">Advanced Features</string>
 
-     <!-- Settings screen, Selectable Zone Af dialog radio button choices -->
-     <string name="pref_camera_advanced_feature_entry_none">None</string>
-     <string name="pref_camera_advanced_feature_entry_ubifocus">Ubi Focus</string>
-     <string name="pref_camera_advanced_feature_entry_refocus">Refocus</string>
-     <string name="pref_camera_advanced_feature_entry_chromaflash">Chroma Flash</string>
-     <string name="pref_camera_advanced_feature_entry_optizoom">Opti Zoom</string>
-     <string name="pref_camera_advanced_feature_entry_FSSR">FSSR</string>
-     <string name="pref_camera_advanced_feature_entry_trueportrait">True Portrait</string>
-     <string name="pref_camera_advanced_feature_entry_multi_touch_focus">Multi-touch Focus</string>
-     <string name="pref_camera_advanced_feature_entry_stillmore">Still More</string>
+    <!-- Settings screen, Selectable Zone Af dialog radio button choices -->
+    <string name="pref_camera_advanced_feature_entry_none">None</string>
+    <string name="pref_camera_advanced_feature_entry_ubifocus">Ubi Focus</string>
+    <string name="pref_camera_advanced_feature_entry_refocus">Refocus</string>
+    <string name="pref_camera_advanced_feature_entry_chromaflash">Chroma Flash</string>
+    <string name="pref_camera_advanced_feature_entry_optizoom">Opti Zoom</string>
+    <string name="pref_camera_advanced_feature_entry_FSSR">FSSR</string>
+    <string name="pref_camera_advanced_feature_entry_trueportrait">True Portrait</string>
+    <string name="pref_camera_advanced_feature_entry_multi_touch_focus">Multi-touch Focus</string>
+    <string name="pref_camera_advanced_feature_entry_stillmore">Still More</string>
 
-     <!-- Auto exposure entry values. Do not translate. -->
-     <string name="pref_camera_advanced_feature_value_none">none</string>
-     <string name="pref_camera_advanced_feature_value_ubifocus_on">af-bracket-on</string>
-     <string name="pref_camera_advanced_feature_value_refocus_on">re-focus-on</string>
-     <string name="pref_camera_advanced_feature_value_chromaflash_on">chroma-flash-on</string>
-     <string name="pref_camera_advanced_feature_value_optizoom_on">opti-zoom-on</string>
-     <string name="pref_camera_advanced_feature_value_FSSR_on">FSSR-on</string>
-     <string name="pref_camera_advanced_feature_value_trueportrait_on">true-portrait-on</string>
-     <string name="pref_camera_advanced_feature_value_multi_touch_focus_on">multi-touch-focus-on</string>
-     <string name="pref_camera_advanced_feature_value_stillmore_on">still-more-on</string>
+    <!-- Auto exposure entry values. Do not translate. -->
+    <string name="pref_camera_advanced_feature_value_none">none</string>
+    <string name="pref_camera_advanced_feature_value_ubifocus_on">af-bracket-on</string>
+    <string name="pref_camera_advanced_feature_value_refocus_on">re-focus-on</string>
+    <string name="pref_camera_advanced_feature_value_chromaflash_on">chroma-flash-on</string>
+    <string name="pref_camera_advanced_feature_value_optizoom_on">opti-zoom-on</string>
+    <string name="pref_camera_advanced_feature_value_FSSR_on">FSSR-on</string>
+    <string name="pref_camera_advanced_feature_value_trueportrait_on">true-portrait-on</string>
+    <string name="pref_camera_advanced_feature_value_multi_touch_focus_on">multi-touch-focus-on</string>
+    <string name="pref_camera_advanced_feature_value_stillmore_on">still-more-on</string>
 
-     <string name="pref_camera_advanced_feature_value_ubifocus_off">af-bracket-off</string>
-     <string name="pref_camera_advanced_feature_value_refocus_off">re-focus-off</string>
-     <string name="pref_camera_advanced_feature_value_chromaflash_off">chroma-flash-off</string>
-     <string name="pref_camera_advanced_feature_value_optizoom_off">opti-zoom-off</string>
-     <string name="pref_camera_advanced_feature_value_FSSR_off">FSSR-off</string>
-     <string name="pref_camera_advanced_feature_value_trueportrait_off">true-portrait-off</string>
-     <string name="pref_camera_advanced_feature_value_multi_touch_focus_off">multi-touch-focus-off</string>
-     <string name="pref_camera_advanced_feature_value_stillmore_off">still-more-off</string>
+    <string name="pref_camera_advanced_feature_value_ubifocus_off">af-bracket-off</string>
+    <string name="pref_camera_advanced_feature_value_refocus_off">re-focus-off</string>
+    <string name="pref_camera_advanced_feature_value_chromaflash_off">chroma-flash-off</string>
+    <string name="pref_camera_advanced_feature_value_optizoom_off">opti-zoom-off</string>
+    <string name="pref_camera_advanced_feature_value_FSSR_off">FSSR-off</string>
+    <string name="pref_camera_advanced_feature_value_trueportrait_off">true-portrait-off</string>
+    <string name="pref_camera_advanced_feature_value_multi_touch_focus_off">multi-touch-focus-off</string>
+    <string name="pref_camera_advanced_feature_value_stillmore_off">still-more-off</string>
 
-     <!-- Manual exposure control entry values -->
-     <string name="pref_camera_manual_exp_title">Manual Exposure</string>
-     <string name="pref_camera_manual_exp_entry_ISO_priority">ISO priority</string>
-     <string name="pref_camera_manual_exp_entry_exptime_priority">Exposure time priority</string>
-     <string name="pref_camera_manual_exp_entry_user_setting">User setting</string>
-     <string name="pref_camera_manual_exp_entry_off">Off</string>
+    <!-- Manual exposure control entry values -->
+    <string name="pref_camera_manual_exp_title">Manual Exposure</string>
+    <string name="pref_camera_manual_exp_entry_ISO_priority">ISO priority</string>
+    <string name="pref_camera_manual_exp_entry_exptime_priority">Exposure time priority</string>
+    <string name="pref_camera_manual_exp_entry_user_setting">User setting</string>
+    <string name="pref_camera_manual_exp_entry_off">Off</string>
 
-     <string name="pref_camera_manual_exp_default">off</string>
-     <string name="pref_camera_manual_exp_value_ISO_priority">iso-priority</string>
-     <string name="pref_camera_manual_exp_value_exptime_priority">exp-time-priority</string>
-     <string name="pref_camera_manual_exp_value_user_setting">user-setting</string>
-     <string name="pref_camera_manual_exp_value_off">off</string>
+    <string name="pref_camera_manual_exp_default">off</string>
+    <string name="pref_camera_manual_exp_value_ISO_priority">iso-priority</string>
+    <string name="pref_camera_manual_exp_value_exptime_priority">exp-time-priority</string>
+    <string name="pref_camera_manual_exp_value_user_setting">user-setting</string>
+    <string name="pref_camera_manual_exp_value_off">off</string>
 
-     <!-- Manual white balance entry values -->
-     <string name="pref_camera_manual_wb_title">Manual White balance</string>
-     <string name="pref_camera_manual_wb_entry_color_temperature">Color temperature</string>
-     <string name="pref_camera_manual_wb_entry_rbgb_gains">RBGB gains</string>
-     <string name="pref_camera_manual_wb_entry_off">Off</string>
+    <!-- Manual white balance entry values -->
+    <string name="pref_camera_manual_wb_title">Manual White balance</string>
+    <string name="pref_camera_manual_wb_entry_color_temperature">Color temperature</string>
+    <string name="pref_camera_manual_wb_entry_rbgb_gains">RBGB gains</string>
+    <string name="pref_camera_manual_wb_entry_off">Off</string>
 
-     <string name="pref_camera_manual_wb_default">off</string>
-     <string name="pref_camera_manual_wb_value_color_temperature">color-temperature</string>
-     <string name="pref_camera_manual_wb_value_rbgb_gains">rbgb-gains</string>
-     <string name="pref_camera_manual_wb_value_off">off</string>
+    <string name="pref_camera_manual_wb_default">off</string>
+    <string name="pref_camera_manual_wb_value_color_temperature">color-temperature</string>
+    <string name="pref_camera_manual_wb_value_rbgb_gains">rbgb-gains</string>
+    <string name="pref_camera_manual_wb_value_off">off</string>
 
-     <!-- Manual Focus entry values -->
-     <string name="pref_camera_manual_focus_title">Manual Focus</string>
-     <string name="pref_camera_manual_focus_entry_scale_mode">Scale mode</string>
-     <string name="pref_camera_manual_focus_entry_diopter_mode">Diopter mode</string>
-     <string name="pref_camera_manual_focus_entry_off">Off</string>
+    <!-- Manual Focus entry values -->
+    <string name="pref_camera_manual_focus_title">Manual Focus</string>
+    <string name="pref_camera_manual_focus_entry_scale_mode">Scale mode</string>
+    <string name="pref_camera_manual_focus_entry_diopter_mode">Diopter mode</string>
+    <string name="pref_camera_manual_focus_entry_off">Off</string>
 
-     <string name="pref_camera_manual_focus_default">off</string>
-     <string name="pref_camera_manual_focus_value_scale_mode">scale-mode</string>
-     <string name="pref_camera_manual_focus_value_diopter_mode">diopter-mode</string>
-     <string name="pref_camera_manual_focus_value_off">off</string>
+    <string name="pref_camera_manual_focus_default">off</string>
+    <string name="pref_camera_manual_focus_value_scale_mode">scale-mode</string>
+    <string name="pref_camera_manual_focus_value_diopter_mode">diopter-mode</string>
+    <string name="pref_camera_manual_focus_value_off">off</string>
 
     <!-- Instant Capture entry -->
     <string name="pref_camera_instant_capture_title" translatable="true">Instant Capture</string>
@@ -239,7 +239,7 @@
     <string name="pref_camera_cds_value_on">on</string>
     <string name="pref_camera_cds_value_auto">auto</string>
 
-     <!-- Settings screen, video CDS location dialog choices -->
+    <!-- Settings screen, video CDS location dialog choices -->
     <string name="pref_camera_video_cds_entry_off">Off</string>
     <string name="pref_camera_video_cds_entry_on">On</string>
     <string name="pref_camera_video_cds_entry_auto">Auto</string>
@@ -281,7 +281,7 @@
     <!-- Default video cds mode setting-->
     <string name="pref_camera_video_cds_default" translatable="false">off</string>
 
-     <!-- Settings menu, setting title text for tnr mode-->
+    <!-- Settings menu, setting title text for tnr mode-->
     <string name="pref_camera_tnr_title">TNR mode</string>
 
     <!-- Settings menu, setting title text for video tnr mode-->
@@ -313,74 +313,74 @@
     <string name="pref_selfie_flash_entry_off">Off</string>
     <string name="pref_selfie_flash_entry_on">On</string>
 
-     <!-- Default redeye reduction setting. -->
-     <string name="pref_camera_redeyereduction_default" translatable="false">disable</string>
+    <!-- Default redeye reduction setting. -->
+    <string name="pref_camera_redeyereduction_default" translatable="false">disable</string>
 
-     <!-- Settings screen, Select Redeye Reduction -->
-     <string name="pref_camera_redeyereduction_title">Redeye Reduction</string>
+    <!-- Settings screen, Select Redeye Reduction -->
+    <string name="pref_camera_redeyereduction_title">Redeye Reduction</string>
 
-     <!-- Settings menu, redeye reduction choices -->
-     <string name="pref_camera_redeyereduction_entry_enable">Enable</string>
-     <string name="pref_camera_redeyereduction_entry_disable">Disable</string>
+    <!-- Settings menu, redeye reduction choices -->
+    <string name="pref_camera_redeyereduction_entry_enable">Enable</string>
+    <string name="pref_camera_redeyereduction_entry_disable">Disable</string>
 
-     <string name="pref_camera_selfiemirror_default" translatable="false">disable</string>
-     <string name="pref_camera_selfiemirror_title" translatable="true">Selfie Mirror</string>
-     <string name="pref_camera_selfiemirror_entry_enable">Enable</string>
-     <string name="pref_camera_selfiemirror_entry_disable">Disable</string>
+    <string name="pref_camera_selfiemirror_default" translatable="false">disable</string>
+    <string name="pref_camera_selfiemirror_title" translatable="true">Selfie Mirror</string>
+    <string name="pref_camera_selfiemirror_entry_enable">Enable</string>
+    <string name="pref_camera_selfiemirror_entry_disable">Disable</string>
 
-     <string name="pref_camera_shuttersound_default" translatable="false">enable</string>
-     <string name="pref_camera_shuttersound_title" translatable="true">Shutter Sound</string>
-     <string name="pref_camera_shuttersound_entry_enable">Enable</string>
-     <string name="pref_camera_shuttersound_entry_disable">Disable</string>
+    <string name="pref_camera_shuttersound_default" translatable="false">enable</string>
+    <string name="pref_camera_shuttersound_title" translatable="true">Shutter Sound</string>
+    <string name="pref_camera_shuttersound_entry_enable">Enable</string>
+    <string name="pref_camera_shuttersound_entry_disable">Disable</string>
 
-     <!-- Default mce setting. Do not translate. -->
-     <string name="pref_camera_mce_default">enable</string>
+    <!-- Default mce setting. Do not translate. -->
+    <string name="pref_camera_mce_default">enable</string>
 
-     <!-- The message is shown in toast when the app encounters an unsupported selection for HFR/HSR mode -->
-     <string name="error_app_unsupported_hfr_selection">HFR/HSR is not supported for Image Stabilization/TimeLapse/HDR</string>
+    <!-- The message is shown in toast when the app encounters an unsupported selection for HFR/HSR mode -->
+    <string name="error_app_unsupported_hfr_selection">HFR/HSR is not supported for Image Stabilization/TimeLapse/HDR</string>
 
-     <!-- The message is shown in dialog when the app encounters an unsupported resolution for HFR mode -->
-     <string name="error_app_unsupported_hfr">HFR is not supported for selected resolution</string>
+    <!-- The message is shown in dialog when the app encounters an unsupported resolution for HFR mode -->
+    <string name="error_app_unsupported_hfr">HFR is not supported for selected resolution</string>
 
-     <!-- The message is shown in toast when the app encounters an unsupported resolution for DIS mode -->
-     <string name="error_app_unsupported_dis">Unsupported video resolution for Image Stabilization</string>
+    <!-- The message is shown in toast when the app encounters an unsupported resolution for DIS mode -->
+    <string name="error_app_unsupported_dis">Unsupported video resolution for Image Stabilization</string>
 
-     <!-- The message is shown in dialog when the app
-         encounters an unsupported resolution for HSR mode -->
-     <string name="error_app_unsupported_hsr">
+    <!-- The message is shown in dialog when the app
+        encounters an unsupported resolution for HSR mode -->
+    <string name="error_app_unsupported_hsr">
          HSR is not supported for selected resolution
      </string>
 
-     <!-- The message is shown in dialog when the app encounters an unsupported video codec for HFR mode -->
-     <string name="error_app_unsupported_hfr_codec">Only H264 video encoding is supported when HFR is ON</string>
+    <!-- The message is shown in dialog when the app encounters an unsupported video codec for HFR mode -->
+    <string name="error_app_unsupported_hfr_codec">Only H264 video encoding is supported when HFR is ON</string>
 
-     <!-- The message is shown in dialog when the app encounters an unsupported video resolution-->
-     <string name="error_app_unsupported">Unsupported video resolution for this encoder type</string>
+    <!-- The message is shown in dialog when the app encounters an unsupported video resolution-->
+    <string name="error_app_unsupported">Unsupported video resolution for this encoder type</string>
 
-     <!-- The message is shown in dialog when the app encounters an unsupported video profile-->
-     <string name="error_app_unsupported_profile">Unsupported video profile</string>
+    <!-- The message is shown in dialog when the app encounters an unsupported video profile-->
+    <string name="error_app_unsupported_profile">Unsupported video profile</string>
 
     <!--The message is shown in dialog when the raw snapshot is selected in zsl mode-->
     <string name="error_app_unsupported_raw">Raw picture format is not supported
         in zsl mode, change to JPEG
     </string>
 
-     <!-- Settings screen, AE bracketing and HDR location dialog choices -->
-     <string name="pref_camera_ae_bracket_hdr_entry_ae_bracket">AE-Bracket</string>
+    <!-- Settings screen, AE bracketing and HDR location dialog choices -->
+    <string name="pref_camera_ae_bracket_hdr_entry_ae_bracket">AE-Bracket</string>
 
-     <string name="pref_camera_ae_bracket_hdr_value_ae_bracket">AE-Bracket</string>
+    <string name="pref_camera_ae_bracket_hdr_value_ae_bracket">AE-Bracket</string>
 
-     <string name="pref_camera_ae_bracket_hdr_title">AE-Bracket</string>
+    <string name="pref_camera_ae_bracket_hdr_title">AE-Bracket</string>
 
-     <string name="pref_camera_ae_bracket_hdr_default" translatable="false">Off</string>
+    <string name="pref_camera_ae_bracket_hdr_default" translatable="false">Off</string>
 
-     <string name="pref_camera_ae_bracket_hdr_entry_on">On</string>
+    <string name="pref_camera_ae_bracket_hdr_entry_on">On</string>
 
-     <string name="pref_camera_ae_bracket_hdr_entry_off">Off</string>
+    <string name="pref_camera_ae_bracket_hdr_entry_off">Off</string>
 
-     <string name="err_app_unsupport_ae_bracket_code">no ae bracket support by Apps now</string>
+    <string name="err_app_unsupport_ae_bracket_code">no ae bracket support by Apps now</string>
 
-        <!-- The messsage shown if user selects a snapshot resolution lower than the current video size. -->
+    <!-- The messsage shown if user selects a snapshot resolution lower than the current video size. -->
     <string name="snapshot_lower_than_video">Video snapshot size lower than video size. Capping to Video size. Please select a resolution higher or equal to the current video size. </string>
 
     <!-- The messsage shown if user selects a snapshot resolution in low power mode. -->
@@ -392,65 +392,65 @@
     <!-- The messsage shown if user tries to take snapshot during D1/QCIF resolution. -->
     <string name="snapshot_qcif_and_d1">Only Video size snapshot supported for this resolution. </string>
 
-     <!-- Default hfr setting. Do not translate. -->
-     <string name="pref_camera_hfr_default">off</string>
+    <!-- Default hfr setting. Do not translate. -->
+    <string name="pref_camera_hfr_default">off</string>
 
-     <!-- Settings screen, Select hfr title -->
-     <string name="pref_camera_hfr_title">Video High FrameRate</string>
+    <!-- Settings screen, Select hfr title -->
+    <string name="pref_camera_hfr_title">Video High FrameRate</string>
 
-     <!-- Settings screen, hfr radio button choices -->
-     <string name="pref_camera_hfr_entry_off">Off</string>
-     <string name="pref_camera_hfr_entry_2x">HFR 60</string>
-     <string name="pref_camera_hfr_entry_3x">HFR 90</string>
-     <string name="pref_camera_hfr_entry_4x">HFR 120</string>
-     <string name="pref_camera_hfr_entry_8x">HFR 240</string>
-     <string name="pref_camera_hfr_entry_hsr_60">HSR 60</string>
-     <string name="pref_camera_hfr_entry_hsr_90">HSR 90</string>
-     <string name="pref_camera_hfr_entry_hsr_120">HSR 120</string>
-     <string name="pref_camera_hfr_entry_hsr_240">HSR 240</string>
+    <!-- Settings screen, hfr radio button choices -->
+    <string name="pref_camera_hfr_entry_off">Off</string>
+    <string name="pref_camera_hfr_entry_2x">HFR 60</string>
+    <string name="pref_camera_hfr_entry_3x">HFR 90</string>
+    <string name="pref_camera_hfr_entry_4x">HFR 120</string>
+    <string name="pref_camera_hfr_entry_8x">HFR 240</string>
+    <string name="pref_camera_hfr_entry_hsr_60">HSR 60</string>
+    <string name="pref_camera_hfr_entry_hsr_90">HSR 90</string>
+    <string name="pref_camera_hfr_entry_hsr_120">HSR 120</string>
+    <string name="pref_camera_hfr_entry_hsr_240">HSR 240</string>
 
-     <!-- HFR entry values. Do not translate. -->
-     <string name="pref_camera_hfr_value_off">off</string>
-     <string name="pref_camera_hfr_value_2x">hfr60</string>
-     <string name="pref_camera_hfr_value_3x">hfr90</string>
-     <string name="pref_camera_hfr_value_4x">hfr120</string>
-     <string name="pref_camera_hfr_value_8x">hfr240</string>
-     <string name="pref_camera_hfr_value_hsr_60">hsr60</string>
-     <string name="pref_camera_hfr_value_hsr_90">hsr90</string>
-     <string name="pref_camera_hfr_value_hsr_120">hsr120</string>
-     <string name="pref_camera_hfr_value_hsr_240">hsr240</string>
+    <!-- HFR entry values. Do not translate. -->
+    <string name="pref_camera_hfr_value_off">off</string>
+    <string name="pref_camera_hfr_value_2x">hfr60</string>
+    <string name="pref_camera_hfr_value_3x">hfr90</string>
+    <string name="pref_camera_hfr_value_4x">hfr120</string>
+    <string name="pref_camera_hfr_value_8x">hfr240</string>
+    <string name="pref_camera_hfr_value_hsr_60">hsr60</string>
+    <string name="pref_camera_hfr_value_hsr_90">hsr90</string>
+    <string name="pref_camera_hfr_value_hsr_120">hsr120</string>
+    <string name="pref_camera_hfr_value_hsr_240">hsr240</string>
 
-     <!-- Default noise reduction setting. Do not translate. -->
-     <string name="pref_camera_noise_reduction_default">off</string>
+    <!-- Default noise reduction setting. Do not translate. -->
+    <string name="pref_camera_noise_reduction_default">off</string>
 
-     <!-- Settings screen, Select See More title -->
-     <string name="pref_camera_noise_reduction_title">Noise Reduction</string>
+    <!-- Settings screen, Select See More title -->
+    <string name="pref_camera_noise_reduction_title">Noise Reduction</string>
 
-     <!-- Settings screen, see more radio button choices -->
-     <string name="pref_camera_noise_reduction_entry_off">Off</string>
-     <string name="pref_camera_noise_reduction_entry_fast">Fast</string>
-     <string name="pref_camera_noise_reduction_entry_high_quality">High Quality</string>
+    <!-- Settings screen, see more radio button choices -->
+    <string name="pref_camera_noise_reduction_entry_off">Off</string>
+    <string name="pref_camera_noise_reduction_entry_fast">Fast</string>
+    <string name="pref_camera_noise_reduction_entry_high_quality">High Quality</string>
 
-     <!-- see more entry values. Do not translate. -->
-     <string name="pref_camera_noise_reduction_value_off">off</string>
-     <string name="pref_camera_noise_reduction_value_fast">fast</string>
-     <string name="pref_camera_noise_reduction_value_high_quality">high-quality</string>
+    <!-- see more entry values. Do not translate. -->
+    <string name="pref_camera_noise_reduction_value_off">off</string>
+    <string name="pref_camera_noise_reduction_value_fast">fast</string>
+    <string name="pref_camera_noise_reduction_value_high_quality">high-quality</string>
 
-     <!-- Default see more setting. Do not translate. -->
-     <string name="pref_camera_see_more_default">off</string>
+    <!-- Default see more setting. Do not translate. -->
+    <string name="pref_camera_see_more_default">off</string>
 
-     <!-- Settings screen, Select See More title -->
-     <string name="pref_camera_see_more_title">See More</string>
+    <!-- Settings screen, Select See More title -->
+    <string name="pref_camera_see_more_title">See More</string>
 
-     <!-- Settings screen, see more radio button choices -->
-     <string name="pref_camera_see_more_entry_off">Off</string>
-     <string name="pref_camera_see_more_entry_on">On</string>
+    <!-- Settings screen, see more radio button choices -->
+    <string name="pref_camera_see_more_entry_off">Off</string>
+    <string name="pref_camera_see_more_entry_on">On</string>
 
-     <!-- see more entry values. Do not translate. -->
-     <string name="pref_camera_see_more_value_off">off</string>
-     <string name="pref_camera_see_more_value_on">on</string>
+    <!-- see more entry values. Do not translate. -->
+    <string name="pref_camera_see_more_value_off">off</string>
+    <string name="pref_camera_see_more_value_on">on</string>
 
-        <!-- Denoise Settings screen, setting title text -->
+    <!-- Denoise Settings screen, setting title text -->
     <string name="pref_camera_denoise_title">Wavelet Denoise Mode</string>
     <string name="pref_camera_denoise_default" translatable="false">denoise-on</string>
 
@@ -458,43 +458,43 @@
     <string name="pref_camera_denoise_entry_off">Off</string>
     <string name="pref_camera_denoise_entry_on">On</string>
 
-     <!-- Default iso setting. Do not translate. -->
-     <string name="pref_camera_iso_default">auto</string>
+    <!-- Default iso setting. Do not translate. -->
+    <string name="pref_camera_iso_default">auto</string>
 
-     <!-- Settings screen, Select Iso title -->
-     <string name="pref_camera_iso_title">ISO</string>
+    <!-- Settings screen, Select Iso title -->
+    <string name="pref_camera_iso_title">ISO</string>
 
-     <!-- Settings screen, ISO dialog radio button choices -->
-     <string name="pref_camera_iso_entry_auto">Auto</string>
-     <string name="pref_camera_iso_entry_isodeblur">ISO Auto(HJR)</string>
-     <string name="pref_camera_iso_entry_iso100">ISO100</string>
-     <string name="pref_camera_iso_entry_iso200">ISO200</string>
-     <string name="pref_camera_iso_entry_iso400">ISO400</string>
-     <string name="pref_camera_iso_entry_iso800">ISO800</string>
-     <string name="pref_camera_iso_entry_iso1600">ISO1600</string>
+    <!-- Settings screen, ISO dialog radio button choices -->
+    <string name="pref_camera_iso_entry_auto">Auto</string>
+    <string name="pref_camera_iso_entry_isodeblur">ISO Auto(HJR)</string>
+    <string name="pref_camera_iso_entry_iso100">ISO100</string>
+    <string name="pref_camera_iso_entry_iso200">ISO200</string>
+    <string name="pref_camera_iso_entry_iso400">ISO400</string>
+    <string name="pref_camera_iso_entry_iso800">ISO800</string>
+    <string name="pref_camera_iso_entry_iso1600">ISO1600</string>
 
-     <!-- ISO entry values. Do not translate. -->
-     <string name="pref_camera_iso_value_auto">auto</string>
-     <string name="pref_camera_iso_value_isodeblur">ISO_HJR</string>
-     <string name="pref_camera_iso_value_iso100">ISO100</string>
-     <string name="pref_camera_iso_value_iso200">ISO200</string>
-     <string name="pref_camera_iso_value_iso400">ISO400</string>
-     <string name="pref_camera_iso_value_iso800">ISO800</string>
-     <string name="pref_camera_iso_value_iso1600">ISO1600</string>
+    <!-- ISO entry values. Do not translate. -->
+    <string name="pref_camera_iso_value_auto">auto</string>
+    <string name="pref_camera_iso_value_isodeblur">ISO_HJR</string>
+    <string name="pref_camera_iso_value_iso100">ISO100</string>
+    <string name="pref_camera_iso_value_iso200">ISO200</string>
+    <string name="pref_camera_iso_value_iso400">ISO400</string>
+    <string name="pref_camera_iso_value_iso800">ISO800</string>
+    <string name="pref_camera_iso_value_iso1600">ISO1600</string>
 
-     <!-- Settings screen, Anti Banding title -->
-     <string name="pref_camera_antibanding_title">Anti Banding</string>
+    <!-- Settings screen, Anti Banding title -->
+    <string name="pref_camera_antibanding_title">Anti Banding</string>
 
-     <!-- Default Anti Banding setting. -->
-     <string name="pref_camera_antibanding_default">auto</string>
+    <!-- Default Anti Banding setting. -->
+    <string name="pref_camera_antibanding_default">auto</string>
 
-     <!-- Settings screen, Anti Banding entries -->
-     <string name="pref_camera_antibanding_entry_0">Off</string>
-     <string name="pref_camera_antibanding_entry_1">50 Hz</string>
-     <string name="pref_camera_antibanding_entry_2">60 Hz</string>
-     <string name="pref_camera_antibanding_entry_3">Auto</string>
+    <!-- Settings screen, Anti Banding entries -->
+    <string name="pref_camera_antibanding_entry_0">Off</string>
+    <string name="pref_camera_antibanding_entry_1">50 Hz</string>
+    <string name="pref_camera_antibanding_entry_2">60 Hz</string>
+    <string name="pref_camera_antibanding_entry_3">Auto</string>
 
-        <!-- Default color effect setting. -->
+    <!-- Default color effect setting. -->
     <string name="pref_camera_coloreffect_default" translatable="false">none</string>
     <string name="pref_camera_filter_mode_entry_on">On</string>
     <string name="pref_camera_filter_mode_entry_off">Off</string>
@@ -743,22 +743,22 @@
     <string name="pref_camera_picture_format_value_raw_bayer_ideal_mipi_12grbg">bayer-ideal-mipi-12grbg</string>
     <string name="pref_camera_picture_format_value_raw_bayer_ideal_mipi_12rggb">bayer-ideal-mipi-12rggb</string>
     <string name="pref_camera_picture_format_value_raw_bayer_ideal_mipi_12bggr">bayer-ideal-mipi-12bggr</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8gbrg">bayer-ideal-plain8-8gbrg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8grbg">bayer-ideal-plain8-8grbg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8rggb">bayer-ideal-plain8-8rggb</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8bggr">bayer-ideal-plain8-8bggr</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8gbrg">bayer-ideal-plain16-8gbrg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8grbg">bayer-ideal-plain16-8grbg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8rggb">bayer-ideal-plain16-8rggb</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8bggr">bayer-ideal-plain16-8bggr</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10gbrg">bayer-ideal-plain16-10gbrg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10grbg">bayer-ideal-plain16-10grbg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10rggb">bayer-ideal-plain16-10rggb</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10bggr">bayer-ideal-plain16-10bggr</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12gbrg">bayer-ideal-plain16-12gbrg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12grbg">bayer-ideal-plain16-12grbg</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12rggb">bayer-ideal-plain16-12rggb</string>
-    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12bggr">bayer-ideal-plain16-12bggr</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8gbrg">bayer–ideal–plain8–8gbrg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8grbg">bayer–ideal–plain8–8grbg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8rggb">bayer–ideal–plain8–8rggb</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain8_8bggr">bayer–ideal–plain8–8bggr</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8gbrg">bayer–ideal–plain16–8gbrg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8grbg">bayer–ideal–plain16–8grbg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8rggb">bayer–ideal–plain16–8rggb</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_8bggr">bayer–ideal–plain16–8bggr</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10gbrg">bayer–ideal–plain16–10gbrg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10grbg">bayer–ideal–plain16–10grbg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10rggb">bayer–ideal–plain16–10rggb</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_10bggr">bayer–ideal–plain16–10bggr</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12gbrg">bayer–ideal–plain16–12gbrg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12grbg">bayer–ideal–plain16–12grbg</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12rggb">bayer–ideal–plain16–12rggb</string>
+    <string name="pref_camera_picture_format_value_raw_bayer_ideal_plain16_12bggr">bayer–ideal–plain16–12bggr</string>
     <!-- Settings screen, Picture quality title -->
     <string name="pref_camera_jpegquality_title">Picture quality</string>
 
@@ -767,19 +767,19 @@
     <string name="pref_camera_jpegquality_entry_1">Standard</string>
     <string name="pref_camera_jpegquality_entry_2">High</string>
 
-     <!-- Default auto histogram setting. Do not translate. -->
-     <string name="pref_camera_histogram_default">disable</string>
+    <!-- Default auto histogram setting. Do not translate. -->
+    <string name="pref_camera_histogram_default">disable</string>
 
-     <!-- Settings screen, Select Histogram title -->
-     <string name="pref_camera_histogram_title">Histogram</string>
+    <!-- Settings screen, Select Histogram title -->
+    <string name="pref_camera_histogram_title">Histogram</string>
 
-     <!-- Settings screen, Histogram radio button choices -->
-     <string name="pref_camera_histogram_entry_enable">Enable</string>
-     <string name="pref_camera_histogram_entry_disable">Disable</string>
+    <!-- Settings screen, Histogram radio button choices -->
+    <string name="pref_camera_histogram_entry_enable">Enable</string>
+    <string name="pref_camera_histogram_entry_disable">Disable</string>
 
-     <!-- Histogram entry values. Do not translate. -->
-     <string name="pref_camera_histogram_value_enable">enable</string>
-     <string name="pref_camera_histogram_value_disable">disable</string>
+    <!-- Histogram entry values. Do not translate. -->
+    <string name="pref_camera_histogram_value_enable">enable</string>
+    <string name="pref_camera_histogram_value_disable">disable</string>
 
     <string name="pref_camera_picturesize_entry_1920x1080">HD1080</string>
     <string name="pref_camera_picturesize_entry_1280x768">WXGA</string>
@@ -800,7 +800,7 @@
     <!-- Scene mode that takes an image of a landscape assuming all subjects are relatively far from the phone. -->
     <string name="pref_camera_scenemode_entry_landscape">Landscape</string>
 
-     <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
+    <!-- Scene mode that takes night shots with long exposure and flash to illuminate the subject while still capturing darker detail in the background. -->
     <string name="pref_camera_scenemode_entry_night_portrait">Night Portrait</string>
     <!-- Scene mode to be used in a stage show. -->
     <string name="pref_camera_scenemode_entry_theatre">Theatre</string>
@@ -916,21 +916,21 @@
 
     <!-- The alas of CameraActivity for gesture operation -->
     <string name="camera_gesture_title">Launch camera</string>
-     <string name="pref_camera_tsmakeup_title">Beautification</string>
-     <string name="pref_camera_tsmakeup_entry_on">On</string>
-     <string name="pref_camera_tsmakeup_entry_off">Off</string>
-     <string name="pref_camera_tsmakeup_entry_low">Low</string>
-     <string name="pref_camera_tsmakeup_entry_mid">Mid</string>
-     <string name="pref_camera_tsmakeup_entry_high">High</string>
-     <string name="pref_camera_tsmakeup_default" translatable="false">Off</string>
-     <string name="pref_camera_tsmakeup_level_default" translatable="false">60</string>
-     <string name="pref_camera_tsmakeup_custom">Custom</string>
-     <string name="pref_camera_tsmakeup_level_whiten">Whiten</string>
-     <string name="pref_camera_tsmakeup_level_clean">Soften</string>
-     <string name="text_tsmakeup_alert_title">Warning</string>
-     <string name="text_tsmakeup_alert_msg">The beautification must turn on Face Detection, Continue or Quit?</string>
-     <string name="text_tsmakeup_alert_continue">Continue</string>
-     <string name="text_tsmakeup_alert_quit">Quit</string>
+    <string name="pref_camera_tsmakeup_title">Beautification</string>
+    <string name="pref_camera_tsmakeup_entry_on">On</string>
+    <string name="pref_camera_tsmakeup_entry_off">Off</string>
+    <string name="pref_camera_tsmakeup_entry_low">Low</string>
+    <string name="pref_camera_tsmakeup_entry_mid">Mid</string>
+    <string name="pref_camera_tsmakeup_entry_high">High</string>
+    <string name="pref_camera_tsmakeup_default" translatable="false">Off</string>
+    <string name="pref_camera_tsmakeup_level_default" translatable="false">60</string>
+    <string name="pref_camera_tsmakeup_custom">Custom</string>
+    <string name="pref_camera_tsmakeup_level_whiten">Whiten</string>
+    <string name="pref_camera_tsmakeup_level_clean">Soften</string>
+    <string name="text_tsmakeup_alert_title">Warning</string>
+    <string name="text_tsmakeup_alert_msg">The beautification must turn on Face Detection, Continue or Quit?</string>
+    <string name="text_tsmakeup_alert_continue">Continue</string>
+    <string name="text_tsmakeup_alert_quit">Quit</string>
     <string name="text_tsmakeup_beautify_toast" translatable="true">Beautify</string>
 
     <string name="all_in_focus">All in Focus</string>
@@ -1060,7 +1060,7 @@
 
     <string name="panocapture_direction_is_not_determined" translatable="true">Move constantly in one direciton.</string>
     <string name="panocapture_intro" translatable="true">Press camera button to start.</string>
-    <string name="panocapture_direction_is_changed" translatable="true">Direction is changed. Stopping now...</string>
+    <string name="panocapture_direction_is_changed" translatable="true">Direction is changed. Stopping now…</string>
     <string name="makeup_ui_title" translatable="true">Please choose the strength of the beautification.</string>
     <string name="makeup_ui_ok_button" translatable="true">OK</string>
     <string name="makeup_seekbar_low" translatable="true">low</string>
@@ -1073,18 +1073,18 @@
     <string name="perf_camera2_preferences_category_system" translatable="true">System</string>
 
     <string name="pref_camera2_scene_mode_dual_camera_instructional_content" translatable="true">In dual camera mode, your pictures will be clearer. You can also apply background effects, by editing your dual camera pictures in the Gallery.</string>
-    <string name="pref_camera2_scene_mode_ubi_focus_instructional_content"  translatable="true">With UbiFocus, your camera will take five pictures and combine them into one picture,where everything is in focus. You can choose to re-focus, after you take the picture.</string>
-    <string name="pref_camera2_scene_mode_opti_zoom_instructional_content"  translatable="true">Use Optizoom when you want to zoom in for a clear picture.You can zoom before, or after taking the picture.</string>
-    <string name="pref_camera2_scene_mode_sports_instructional_content"  translatable="true">Sports mode helps you take better sports or action shots.\n\nImporves your photos, but has no effect on video recording.</string>
-    <string name="pref_camera2_scene_mode_hdr_instructional_content"  translatable="true">When you are in mixed lighting conditions such as low light and backlit scenes select "HDR" for best possible pictures.</string>
-    <string name="pref_camera2_scene_mode_best_photo_instructional_content"  translatable="true">Allows you to take a burst of 10 photos, and you can choose the best one(s).</string>
-    <string name="pref_camera2_scene_mode_chroma_flash_instructional_content"  translatable="true">With ChromaFlash, the lighting in your flash photos will be optimized for all of the people and objects in your pictures.This feature applies only to the back camera.</string>
-    <string name="pref_camera2_scene_mode_sharp_photo_instructional_content"  translatable="true">Sharp Phot reduces blur that is due to motion in the scene, or due to hand motion.</string>
-    <string name="pref_camera2_scene_mode_tracking_focus_instructional_content"  translatable="true">Allows you to track and focus a selected person or object while taking pictures or videos. To start, position the focus rectangle on a person or object you want to track.</string>
-    <string name="pref_camera2_scene_mode_time_lapse_instructional_content"  translatable="true">With Time Lapse, you can transform a long video recording into a few seconds of video.This effect applies to videos, but not photos.</string>
-    <string name="pref_camera2_scene_mode_panorama_instructional_content"  translatable="true">Allows you to pan left or right to take a wide landscape photo. You can alse pan up or down to take tall photos.</string>
-    <string name="pref_camera2_scene_mode_blur_buster_instructional_content"  translatable="true">BlurBuster reduces blur from shaky hands.It can be helpful when taking photos in difficult places.</string>
-    <string name="pref_camera2_scene_mode_pro_instructional_content"  translatable="true">With Pro Mode, you can manually control settings for ISO,Exposure, White Balance, and Focus. You will have easy access to all of these advanced settings</string>
+    <string name="pref_camera2_scene_mode_ubi_focus_instructional_content" translatable="true">With UbiFocus, your camera will take five pictures and combine them into one picture,where everything is in focus. You can choose to re-focus, after you take the picture.</string>
+    <string name="pref_camera2_scene_mode_opti_zoom_instructional_content" translatable="true">Use Optizoom when you want to zoom in for a clear picture.You can zoom before, or after taking the picture.</string>
+    <string name="pref_camera2_scene_mode_sports_instructional_content" translatable="true">Sports mode helps you take better sports or action shots.\n\nImporves your photos, but has no effect on video recording.</string>
+    <string name="pref_camera2_scene_mode_hdr_instructional_content" translatable="true">When you are in mixed lighting conditions such as low light and backlit scenes select "HDR" for best possible pictures.</string>
+    <string name="pref_camera2_scene_mode_best_photo_instructional_content" translatable="true">Allows you to take a burst of 10 photos, and you can choose the best one(s).</string>
+    <string name="pref_camera2_scene_mode_chroma_flash_instructional_content" translatable="true">With ChromaFlash, the lighting in your flash photos will be optimized for all of the people and objects in your pictures.This feature applies only to the back camera.</string>
+    <string name="pref_camera2_scene_mode_sharp_photo_instructional_content" translatable="true">Sharp Phot reduces blur that is due to motion in the scene, or due to hand motion.</string>
+    <string name="pref_camera2_scene_mode_tracking_focus_instructional_content" translatable="true">Allows you to track and focus a selected person or object while taking pictures or videos. To start, position the focus rectangle on a person or object you want to track.</string>
+    <string name="pref_camera2_scene_mode_time_lapse_instructional_content" translatable="true">With Time Lapse, you can transform a long video recording into a few seconds of video.This effect applies to videos, but not photos.</string>
+    <string name="pref_camera2_scene_mode_panorama_instructional_content" translatable="true">Allows you to pan left or right to take a wide landscape photo. You can else pan up or down to take tall photos.</string>
+    <string name="pref_camera2_scene_mode_blur_buster_instructional_content" translatable="true">BlurBuster reduces blur from shaky hands.It can be helpful when taking photos in difficult places.</string>
+    <string name="pref_camera2_scene_mode_pro_instructional_content" translatable="true">With Pro Mode, you can manually control settings for ISO,Exposure, White Balance, and Focus. You will have easy access to all of these advanced settings</string>
 
     <string name="pref_camera2_not_show_again">Do not show again</string>
     <string name="pref_camera2_scene_mode_instructional_ok" translatable="true">OK</string>

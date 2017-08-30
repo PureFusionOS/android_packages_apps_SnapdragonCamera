@@ -28,9 +28,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.android.camera.imageprocessor.filter;
 
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.graphics.Camera;
 import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
@@ -42,7 +39,6 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.os.Handler;
 import android.util.Log;
-import android.util.Range;
 
 import com.android.camera.CameraActivity;
 import com.android.camera.CaptureModule;
@@ -51,35 +47,48 @@ import com.android.camera.util.CameraUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UbifocusFilter implements ImageFilter {
     public static final int NUM_REQUIRED_IMAGE = 5;
+    private static final int FOCUS_ADJUST_TIME_OUT = 400;
+    private static final int META_BYTES_SIZE = 25;
+    private static String TAG = "UbifocusFilter";
+    private static boolean mIsSupported = true;
+
+    static {
+        try {
+            System.loadLibrary("jni_ubifocus");
+            mIsSupported = true;
+        } catch (UnsatisfiedLinkError e) {
+            mIsSupported = false;
+        }
+    }
+
+    final String[] NAMES = {"00.jpg", "01.jpg", "02.jpg", "03.jpg",
+            "04.jpg", "DepthMapImage.y", "AllFocusImage.jpg"};
     private int mWidth;
     private int mHeight;
     private int mStrideY;
     private int mStrideVU;
-    private static String TAG = "UbifocusFilter";
-    private static final int FOCUS_ADJUST_TIME_OUT = 400;
-    private static final int META_BYTES_SIZE = 25;
     private int temp;
-    private static boolean mIsSupported = true;
     private ByteBuffer mOutBuf;
     private CaptureModule mModule;
     private CameraActivity mActivity;
     private int mOrientation = 0;
     private float mMinFocusDistance = -1f;
-    private Object mClosingLock = new Object();
+    private final Object mClosingLock = new Object();
     private PostProcessor mPostProcessor;
     private ImageFilter.ResultImage mUbifocusResultImage;
-    final String[] NAMES = {"00.jpg", "01.jpg", "02.jpg", "03.jpg",
-            "04.jpg", "DepthMapImage.y", "AllFocusImage.jpg"};
-
     private int mSavedCount = 0;
+
+    public UbifocusFilter(CaptureModule module, CameraActivity activity, PostProcessor processor) {
+        mModule = module;
+        mActivity = activity;
+        mPostProcessor = processor;
+    }
 
     private static void Log(String msg) {
         if (DEBUG) {
@@ -87,10 +96,8 @@ public class UbifocusFilter implements ImageFilter {
         }
     }
 
-    public UbifocusFilter(CaptureModule module, CameraActivity activity, PostProcessor processor) {
-        mModule = module;
-        mActivity = activity;
-        mPostProcessor = processor;
+    public static boolean isSupportedStatic() {
+        return mIsSupported;
     }
 
     @Override
@@ -111,12 +118,12 @@ public class UbifocusFilter implements ImageFilter {
     @Override
     public void init(int width, int height, int strideY, int strideVU) {
         Log("init");
-        mWidth = width/2*2;
-        mHeight = height/2*2;
-        mStrideY = strideY/2*2;
-        mStrideVU = strideVU/2*2;
+        mWidth = width / 2 * 2;
+        mHeight = height / 2 * 2;
+        mStrideY = strideY / 2 * 2;
+        mStrideVU = strideVU / 2 * 2;
         mOutBuf = ByteBuffer.allocate(mStrideY * mHeight * 3 / 2);
-        Log("width: "+mWidth+" height: "+mHeight+" strideY: "+mStrideY+" strideVU: "+mStrideVU);
+        Log("width: " + mWidth + " height: " + mHeight + " strideY: " + mStrideY + " strideVU: " + mStrideVU);
         nativeInit(mWidth, mHeight, mStrideY, mStrideVU, NUM_REQUIRED_IMAGE);
     }
 
@@ -132,20 +139,20 @@ public class UbifocusFilter implements ImageFilter {
     @Override
     public void addImage(final ByteBuffer bY, final ByteBuffer bVU, final int imageNum, Object param) {
         Log("addImage");
-        if(imageNum == 0) {
+        if (imageNum == 0) {
             mModule.setRefocusLastTaken(false);
             mOrientation = CameraUtil.getJpegRotation(mModule.getMainCameraId(), mModule.getDisplayOrientation());
             mSavedCount = 0;
         }
         int yActualSize = bY.remaining();
         int vuActualSize = bVU.remaining();
-        if(nativeAddImage(bY, bVU, yActualSize, vuActualSize, imageNum) < 0) {
+        if (nativeAddImage(bY, bVU, yActualSize, vuActualSize, imageNum) < 0) {
             Log.e(TAG, "Fail to add image");
         }
         new Thread() {
             public void run() {
                 synchronized (mClosingLock) {
-                    if(mOutBuf == null) {
+                    if (mOutBuf == null) {
                         return;
                     }
                     byte[] bytes = getYUVBytes(bY, bVU, imageNum);
@@ -162,8 +169,8 @@ public class UbifocusFilter implements ImageFilter {
         int[] roi = new int[4];
         int[] depthMapSize = new int[2];
         int status = nativeProcessImage(mOutBuf.array(), roi, depthMapSize);
-        if(status < 0) { //In failure case, library will return the first image as it is.
-            Log.w(TAG, "Fail to process the "+getStringName());
+        if (status < 0) { //In failure case, library will return the first image as it is.
+            Log.w(TAG, "Fail to process the " + getStringName());
         } else {
             byte[] depthMapBuf = new byte[depthMapSize[0] * depthMapSize[1] + META_BYTES_SIZE];
             nativeGetDepthMap(depthMapBuf, depthMapSize[0], depthMapSize[1]);
@@ -171,13 +178,13 @@ public class UbifocusFilter implements ImageFilter {
             saveToPrivateFile(NAMES.length - 1, nv21ToJpeg(mOutBuf, null, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mOrientation, 0));
             mModule.setRefocusLastTaken(true);
         }
-        while(mSavedCount < NUM_REQUIRED_IMAGE) {
+        while (mSavedCount < NUM_REQUIRED_IMAGE) {
             try {
                 Thread.sleep(1);
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
-        ResultImage result = new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0]+roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
+        ResultImage result = new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
         Log("processImage done");
         return result;
     }
@@ -204,7 +211,7 @@ public class UbifocusFilter implements ImageFilter {
             mMinFocusDistance = mModule.getMainCameraCharacteristics().get(CameraCharacteristics.LENS_INFO_MINIMUM_FOCUS_DISTANCE);
         }
         float step = mMinFocusDistance / NUM_REQUIRED_IMAGE;
-        for(int i=0; i < NUM_REQUIRED_IMAGE; i++) {
+        for (int i = 0; i < NUM_REQUIRED_IMAGE; i++) {
             float value = (i * step);
             mModule.setAFModeToPreview(mModule.getMainCameraId(), CaptureRequest.CONTROL_AF_MODE_OFF);
             mModule.setFocusDistanceToPreview(mModule.getMainCameraId(), value);
@@ -215,14 +222,13 @@ public class UbifocusFilter implements ImageFilter {
                 do {
                     Thread.sleep(5);
                     count -= 5;
-                    if(count <= 0) {
+                    if (count <= 0) {
                         break;
                     }
                     focusDistance = mModule.getPreviewCaptureResult().get(CaptureResult.LENS_FOCUS_DISTANCE);
-                    Log("Taken focus value :"+focusDistance);
-                } while(Math.abs(focusDistance - value) >= 1f);
-            } catch (InterruptedException e) {
-            } catch (NullPointerException e) {
+                    Log("Taken focus value :" + focusDistance);
+                } while (Math.abs(focusDistance - value) >= 1f);
+            } catch (InterruptedException | NullPointerException ignored) {
             }
             builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
             builder.set(CaptureRequest.LENS_FOCUS_DISTANCE, value);
@@ -230,15 +236,11 @@ public class UbifocusFilter implements ImageFilter {
         }
     }
 
-    public static boolean isSupportedStatic() {
-        return mIsSupported;
-    }
-
     private byte[] nv21ToJpeg(ByteBuffer bY, ByteBuffer bVU, Rect roi, int orientation, int imageIndex) {
-        ByteBuffer buf =  ByteBuffer.allocate(mStrideY*mHeight*3/2);
+        ByteBuffer buf = ByteBuffer.allocate(mStrideY * mHeight * 3 / 2);
         buf.put(bY);
         bY.rewind();
-        if(bVU != null) {
+        if (bVU != null) {
             buf.put(bVU);
             bVU.rewind();
         }
@@ -251,28 +253,18 @@ public class UbifocusFilter implements ImageFilter {
         return bytes;
     }
 
-    private class BitmapOutputStream extends ByteArrayOutputStream {
-        public BitmapOutputStream(int size) {
-            super(size);
-        }
-
-        public byte[] getArray() {
-            return buf;
-        }
-    }
-
     private void saveToPrivateFile(final int index, final byte[] bytes) {
-        String filesPath = mActivity.getFilesDir()+"/Ubifocus";
+        String filesPath = mActivity.getFilesDir() + "/Ubifocus";
         File file = new File(filesPath);
-        if(!file.exists()) {
+        if (!file.exists()) {
             file.mkdir();
         }
-        file = new File(filesPath+"/"+NAMES[index]);
+        file = new File(filesPath + "/" + NAMES[index]);
         try {
             FileOutputStream out = new FileOutputStream(file);
             out.write(bytes, 0, bytes.length);
             out.close();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -309,17 +301,22 @@ public class UbifocusFilter implements ImageFilter {
     }
 
     private native int nativeInit(int width, int height, int yStride, int vuStride, int numImages);
+
     private native int nativeDeinit();
+
     private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
+
     private native int nativeGetDepthMap(byte[] depthMapBuf, int depthMapWidth, int depthMapHeight);
+
     private native int nativeProcessImage(byte[] buffer, int[] roi, int[] depthMapSize);
 
-    static {
-        try {
-            System.loadLibrary("jni_ubifocus");
-            mIsSupported = true;
-        }catch(UnsatisfiedLinkError e) {
-            mIsSupported = false;
+    private class BitmapOutputStream extends ByteArrayOutputStream {
+        public BitmapOutputStream(int size) {
+            super(size);
+        }
+
+        public byte[] getArray() {
+            return buf;
         }
     }
 }

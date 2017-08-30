@@ -29,23 +29,17 @@
 
 package com.android.camera.mpo;
 
+import com.android.camera.mpo.MpoTag.MpEntry;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.android.camera.mpo.MpoTag.MpEntry;
 
 public class MpoData {
 
     private MpoImageData mPrimaryMpoImage;
-    private ArrayList<MpoImageData> mAuxiliaryImages = new ArrayList<MpoImageData>();
+    private ArrayList<MpoImageData> mAuxiliaryImages = new ArrayList<>();
 
     public MpoData() {
-    }
-
-    public void setPrimaryMpoImage(MpoImageData image) {
-        mPrimaryMpoImage = image;
-        addDefaultAttribIfdTags(mPrimaryMpoImage, 1);
-        addDefaultIndexIfdTags();
     }
 
     public void addAuxiliaryMpoImage(MpoImageData image) {
@@ -55,12 +49,17 @@ public class MpoData {
     }
 
     public boolean removeAuxiliaryMpoImage(MpoImageData image) {
-        boolean ret = mAuxiliaryImages.remove(image);
-        return ret;
+        return mAuxiliaryImages.remove(image);
     }
 
     public MpoImageData getPrimaryMpoImage() {
         return mPrimaryMpoImage;
+    }
+
+    public void setPrimaryMpoImage(MpoImageData image) {
+        mPrimaryMpoImage = image;
+        addDefaultAttribIfdTags(mPrimaryMpoImage, 1);
+        addDefaultIndexIfdTags();
     }
 
     public List<MpoImageData> getAuxiliaryMpoImages() {
@@ -110,7 +109,7 @@ public class MpoData {
         // check, create and add required tags
         MpoTag mpEntryTag = new MpoTag((short) MpoInterface.TAG_MP_ENTRY, MpoTag.TYPE_UNDEFINED,
                 MpoTag.SIZE_UNDEFINED, MpoIfdData.TYPE_MP_INDEX_IFD, false);
-        ArrayList<MpEntry> mpEntries = new ArrayList<MpEntry>(getAuxiliaryImageCount() + 1);
+        ArrayList<MpEntry> mpEntries = new ArrayList<>(getAuxiliaryImageCount() + 1);
         mpEntries.add(new MpEntry()); // primary image
         for (int i = 0; i < getAuxiliaryImageCount(); i++) {
             mpEntries.add(new MpEntry()); // aux images
@@ -142,7 +141,7 @@ public class MpoData {
         // check, create and add required tags
         MpoTag mpEntryTag = new MpoTag((short) MpoInterface.TAG_MP_ENTRY, MpoTag.TYPE_UNDEFINED,
                 MpoTag.SIZE_UNDEFINED, MpoIfdData.TYPE_MP_INDEX_IFD, false);
-        ArrayList<MpEntry> mpEntries = new ArrayList<MpEntry>(getAuxiliaryImageCount() + 1);
+        ArrayList<MpEntry> mpEntries = new ArrayList<>(getAuxiliaryImageCount() + 1);
 
         int imgOffset = 0;
         // primary image

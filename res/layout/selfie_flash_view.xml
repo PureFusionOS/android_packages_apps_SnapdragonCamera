@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright (c) 2015, The Linux Foundation. All Rights Reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -31,5 +30,4 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     android:id="@+id/selfie_flash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:visibility="invisible" >
-</com.android.camera.ui.SelfieFlashView>
+    android:visibility="invisible" />

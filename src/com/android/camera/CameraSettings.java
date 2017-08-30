@@ -23,38 +23,35 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.graphics.BitmapFactory;
-import android.hardware.Camera;
 import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.media.CamcorderProfile;
-import android.media.MediaRecorder;
 import android.media.EncoderCapabilities;
 import android.media.EncoderCapabilities.VideoEncoderCap;
-import java.util.HashMap;
+import android.media.MediaRecorder;
+import android.os.Build;
+import android.os.SystemProperties;
 import android.util.Log;
 
 import com.android.camera.util.ApiHelper;
 import com.android.camera.util.CameraUtil;
 import com.android.camera.util.GcamHelper;
 import com.android.camera.util.MultiMap;
+
 import org.omnirom.snap.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import android.os.Build;
 import java.util.StringTokenizer;
-import android.os.SystemProperties;
 
 /**
- *  Provides utilities and keys for Camera settings.
+ * Provides utilities and keys for Camera settings.
  */
 public class CameraSettings {
-    private static final int NOT_FOUND = -1;
-
     public static final String KEY_VERSION = "pref_version_key";
     public static final String KEY_LOCAL_VERSION = "pref_local_version_key";
     public static final String KEY_RECORD_LOCATION = "pref_camera_recordlocation_key";
@@ -79,7 +76,6 @@ public class CameraSettings {
     public static final String KEY_VIDEO_FIRST_USE_HINT_SHOWN = "pref_video_first_use_hint_shown_key";
     public static final String KEY_PHOTOSPHERE_PICTURESIZE = "pref_photosphere_picturesize_key";
     public static final String KEY_STARTUP_MODULE_INDEX = "camera.startup_module";
-
     public static final String KEY_VIDEO_ENCODER = "pref_camera_videoencoder_key";
     public static final String KEY_AUDIO_ENCODER = "pref_camera_audioencoder_key";
     public static final String KEY_VIDEO_DURATION = "pref_camera_video_duration_key";
@@ -115,7 +111,6 @@ public class CameraSettings {
     public static final String KEY_HDR_MODE = "pref_camera_hdr_mode_key";
     public static final String KEY_HDR_NEED_1X = "pref_camera_hdr_need_1x_key";
     public static final String KEY_DEVELOPER_MENU = "pref_developer_menu_key";
-
     public static final String KEY_VIDEO_SNAPSHOT_SIZE = "pref_camera_videosnapsize_key";
     public static final String KEY_VIDEO_HIGH_FRAME_RATE = "pref_camera_hfr_key";
     public static final String KEY_SEE_MORE = "pref_camera_see_more_key";
@@ -124,39 +119,15 @@ public class CameraSettings {
     public static final String DEFAULT_VIDEO_QUALITY_VALUE = "custom";
     public static final String KEY_SKIN_TONE_ENHANCEMENT = "pref_camera_skinToneEnhancement_key";
     public static final String KEY_SKIN_TONE_ENHANCEMENT_FACTOR = "pref_camera_skinToneEnhancement_factor_key";
-
     public static final String KEY_FACE_RECOGNITION = "pref_camera_facerc_key";
     public static final String KEY_DIS = "pref_camera_dis_key";
-
     public static final String KEY_LONGSHOT = "pref_camera_longshot_key";
     public static final String KEY_INSTANT_CAPTURE = "pref_camera_instant_capture_key";
     public static final String KEY_ZOOM = "pref_camera_zoom_key";
-
     public static final String KEY_BOKEH_MODE = "pref_camera_bokeh_mode_key";
     public static final String KEY_BOKEH_MPO = "pref_camera_bokeh_mpo_key";
     public static final String KEY_BOKEH_BLUR_VALUE = "pref_camera_bokeh_blur_degree_key";
-
     public static final String KEY_GRID = "pref_grid";
-
-    private static final String KEY_QC_SUPPORTED_AE_BRACKETING_MODES = "ae-bracket-hdr-values";
-    private static final String KEY_QC_SUPPORTED_AF_BRACKETING_MODES = "af-bracket-values";
-    private static final String KEY_QC_SUPPORTED_RE_FOCUS_MODES = "re-focus-values";
-    private static final String KEY_QC_SUPPORTED_CF_MODES = "chroma-flash-values";
-    private static final String KEY_QC_SUPPORTED_OZ_MODES = "opti-zoom-values";
-    private static final String KEY_QC_SUPPORTED_FSSR_MODES = "FSSR-values";
-    private static final String KEY_QC_SUPPORTED_TP_MODES = "true-portrait-values";
-    private static final String KEY_QC_SUPPORTED_MTF_MODES = "multi-touch-focus-values";
-    private static final String KEY_QC_SUPPORTED_FACE_RECOGNITION_MODES = "face-recognition-values";
-    private static final String KEY_QC_SUPPORTED_DIS_MODES = "dis-values";
-    private static final String KEY_QC_SUPPORTED_SEE_MORE_MODES = "see-more-values";
-    private static final String KEY_QC_SUPPORTED_NOISE_REDUCTION_MODES = "noise-reduction-mode-values";
-    private static final String KEY_QC_SUPPORTED_STILL_MORE_MODES = "still-more-values";
-    private static final String KEY_QC_SUPPORTED_CDS_MODES = "cds-mode-values";
-    private static final String KEY_QC_SUPPORTED_VIDEO_CDS_MODES = "video-cds-mode-values";
-    private static final String KEY_QC_SUPPORTED_TNR_MODES = "tnr-mode-values";
-    private static final String KEY_QC_SUPPORTED_VIDEO_TNR_MODES = "video-tnr-mode-values";
-    private static final String KEY_SNAPCAM_SUPPORTED_HDR_MODES = "hdr-mode-values";
-    private static final String KEY_SNAPCAM_SUPPORTED_HDR_NEED_1X = "hdr-need-1x-values";
     public static final String KEY_QC_AE_BRACKETING = "ae-bracket-hdr";
     public static final String KEY_QC_AF_BRACKETING = "af-bracket";
     public static final String KEY_QC_RE_FOCUS = "re-focus";
@@ -181,42 +152,27 @@ public class CameraSettings {
     public static final String KEY_QC_NOISE_REDUCTION_MODE = "noise-reduction-mode";
     public static final String KEY_QC_INSTANT_CAPTURE = "instant-capture";
     public static final String KEY_QC_INSTANT_CAPTURE_VALUES = "instant-capture-values";
-
     public static final String KEY_LUMINANCE_CONITION = "luminance-condition";
     public static final String LUMINANCE_CONITION_LOW = "low";
     public static final String LUMINANCE_CONITION_HIGH = "high";
-
     public static final String KEY_INTERNAL_PREVIEW_RESTART = "internal-restart";
     public static final String KEY_QC_ZSL_HDR_SUPPORTED = "zsl-hdr-supported";
     public static final String KEY_QC_LONGSHOT_SUPPORTED = "longshot-supported";
-    private static final String TRUE = "true";
-    private static final String FALSE = "false";
-
     public static final String KEY_AUTO_HDR = "pref_camera_auto_hdr_key";
-
     //for flip
     public static final String KEY_QC_PREVIEW_FLIP = "preview-flip";
     public static final String KEY_QC_VIDEO_FLIP = "video-flip";
     public static final String KEY_QC_SNAPSHOT_PICTURE_FLIP = "snapshot-picture-flip";
     public static final String KEY_QC_SUPPORTED_FLIP_MODES = "flip-mode-values";
-
     public static final String FLIP_MODE_OFF = "off";
     public static final String FLIP_MODE_V = "flip-v";
     public static final String FLIP_MODE_H = "flip-h";
     public static final String FLIP_MODE_VH = "flip-vh";
-
-    private static final String KEY_QC_PICTURE_FORMAT = "picture-format-values";
     public static final String KEY_VIDEO_ROTATION = "pref_camera_video_rotation_key";
-    private static final String VIDEO_QUALITY_HIGH = "high";
-    private static final String VIDEO_QUALITY_MMS = "mms";
-    private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
-
-
     //manual 3A keys and parameter strings
     public static final String KEY_MANUAL_EXPOSURE = "pref_camera_manual_exp_key";
     public static final String KEY_MANUAL_WB = "pref_camera_manual_wb_key";
     public static final String KEY_MANUAL_FOCUS = "pref_camera_manual_focus_key";
-
     public static final String KEY_MANUAL_EXPOSURE_MODES = "manual-exp-modes";
     public static final String KEY_MANUAL_WB_MODES = "manual-wb-modes";
     public static final String KEY_MANUAL_FOCUS_MODES = "manual-focus-modes";
@@ -230,7 +186,6 @@ public class CameraSettings {
     public static final String KEY_MANUAL_ISO = "manual";
     public static final String KEY_CURRENT_ISO = "cur-iso";
     public static final String KEY_CURRENT_EXPOSURE_TIME = "cur-exposure-time";
-
     //manual WB
     public static final String KEY_MIN_WB_GAIN = "min-wb-gain";
     public static final String KEY_MAX_WB_GAIN = "max-wb-gain";
@@ -241,7 +196,6 @@ public class CameraSettings {
     public static final String KEY_MANUAL_WHITE_BALANCE = "manual";
     public static final String KEY_MANUAL_WB_TYPE = "manual-wb-type";
     public static final String KEY_MANUAL_WB_VALUE = "manual-wb-value";
-
     //manual focus
     public static final String KEY_MIN_FOCUS_SCALE = "min-focus-pos-ratio";
     public static final String KEY_MAX_FOCUS_SCALE = "max-focus-pos-ratio";
@@ -251,11 +205,9 @@ public class CameraSettings {
     public static final String KEY_MANUAL_FOCUS_POSITION = "manual-focus-position";
     public static final String KEY_MANUAL_FOCUS_SCALE = "cur-focus-scale";
     public static final String KEY_MANUAL_FOCUS_DIOPTER = "cur-focus-diopter";
-
     public static final String KEY_QC_SUPPORTED_MANUAL_FOCUS_MODES = "manual-focus-modes";
     public static final String KEY_QC_SUPPORTED_MANUAL_EXPOSURE_MODES = "manual-exposure-modes";
     public static final String KEY_QC_SUPPORTED_MANUAL_WB_MODES = "manual-wb-modes";
-
     //Bokeh
     public static final String KEY_QC_IS_BOKEH_MODE_SUPPORTED = "is-bokeh-supported";
     public static final String KEY_QC_IS_BOKEH_MPO_SUPPORTED = "is-bokeh-mpo-supported";
@@ -263,59 +215,77 @@ public class CameraSettings {
     public static final String KEY_QC_BOKEH_MPO_MODE = "bokeh-mpo-mode";
     public static final String KEY_QC_SUPPORTED_DEGREES_OF_BLUR = "supported-blur-degrees";
     public static final String KEY_QC_BOKEH_BLUR_VALUE = "bokeh-blur-value";
-
-    public static final String KEY_TS_MAKEUP_UILABLE       = "pref_camera_tsmakeup_key";
-    public static final String KEY_TS_MAKEUP_PARAM         = "tsmakeup"; // on/of
-    public static final String KEY_TS_MAKEUP_PARAM_WHITEN  = "tsmakeup_whiten"; // 0~100
-    public static final String KEY_TS_MAKEUP_PARAM_CLEAN   = "tsmakeup_clean";  // 0~100
-    public static final String KEY_TS_MAKEUP_LEVEL         = "pref_camera_tsmakeup_level_key";
-    public static final String KEY_TS_MAKEUP_LEVEL_WHITEN  = "pref_camera_tsmakeup_whiten";
-    public static final String KEY_TS_MAKEUP_LEVEL_CLEAN   = "pref_camera_tsmakeup_clean";
-
+    public static final String KEY_TS_MAKEUP_UILABLE = "pref_camera_tsmakeup_key";
+    public static final String KEY_TS_MAKEUP_PARAM = "tsmakeup"; // on/of
+    public static final String KEY_TS_MAKEUP_PARAM_WHITEN = "tsmakeup_whiten"; // 0~100
+    public static final String KEY_TS_MAKEUP_PARAM_CLEAN = "tsmakeup_clean";  // 0~100
+    public static final String KEY_TS_MAKEUP_LEVEL = "pref_camera_tsmakeup_level_key";
+    public static final String KEY_TS_MAKEUP_LEVEL_WHITEN = "pref_camera_tsmakeup_whiten";
+    public static final String KEY_TS_MAKEUP_LEVEL_CLEAN = "pref_camera_tsmakeup_clean";
     public static final String KEY_REFOCUS_PROMPT = "refocus-prompt";
-
     public static final String KEY_SHOW_MENU_HELP = "help_menu";
-
-    public static final String KEY_REQUEST_PERMISSION  = "request_permission";
-
+    public static final String KEY_REQUEST_PERMISSION = "request_permission";
     public static final String KEY_SELFIE_FLASH = "pref_selfie_flash_key";
-
     public static final String EXPOSURE_DEFAULT_VALUE = "0";
-
     public static final int CURRENT_VERSION = 5;
     public static final int CURRENT_LOCAL_VERSION = 2;
-
     public static final int DEFAULT_VIDEO_DURATION = 0; // no limit
+    public static final HashMap<String, Integer>
+            VIDEO_QUALITY_TABLE = new HashMap<>();
+    public static final HashMap<String, Integer>
+            VIDEO_ENCODER_BITRATE = new HashMap<>();
+    private static final int NOT_FOUND = -1;
+    private static final String KEY_QC_SUPPORTED_AE_BRACKETING_MODES = "ae-bracket-hdr-values";
+    private static final String KEY_QC_SUPPORTED_AF_BRACKETING_MODES = "af-bracket-values";
+    private static final String KEY_QC_SUPPORTED_RE_FOCUS_MODES = "re-focus-values";
+    private static final String KEY_QC_SUPPORTED_CF_MODES = "chroma-flash-values";
+    private static final String KEY_QC_SUPPORTED_OZ_MODES = "opti-zoom-values";
+    private static final String KEY_QC_SUPPORTED_FSSR_MODES = "FSSR-values";
+    private static final String KEY_QC_SUPPORTED_TP_MODES = "true-portrait-values";
+    private static final String KEY_QC_SUPPORTED_MTF_MODES = "multi-touch-focus-values";
+    private static final String KEY_QC_SUPPORTED_FACE_RECOGNITION_MODES = "face-recognition-values";
+    private static final String KEY_QC_SUPPORTED_DIS_MODES = "dis-values";
+    private static final String KEY_QC_SUPPORTED_SEE_MORE_MODES = "see-more-values";
+    private static final String KEY_QC_SUPPORTED_NOISE_REDUCTION_MODES = "noise-reduction-mode-values";
+    private static final String KEY_QC_SUPPORTED_STILL_MORE_MODES = "still-more-values";
+    private static final String KEY_QC_SUPPORTED_CDS_MODES = "cds-mode-values";
+    private static final String KEY_QC_SUPPORTED_VIDEO_CDS_MODES = "video-cds-mode-values";
+    private static final String KEY_QC_SUPPORTED_TNR_MODES = "tnr-mode-values";
+    private static final String KEY_QC_SUPPORTED_VIDEO_TNR_MODES = "video-tnr-mode-values";
+    private static final String KEY_SNAPCAM_SUPPORTED_HDR_MODES = "hdr-mode-values";
+    private static final String KEY_SNAPCAM_SUPPORTED_HDR_NEED_1X = "hdr-need-1x-values";
+    private static final String TRUE = "true";
+    private static final String FALSE = "false";
+    private static final String KEY_QC_PICTURE_FORMAT = "picture-format-values";
+    private static final String VIDEO_QUALITY_HIGH = "high";
+    private static final String VIDEO_QUALITY_MMS = "mms";
+    private static final String VIDEO_QUALITY_YOUTUBE = "youtube";
     private static final int MMS_VIDEO_DURATION = (CamcorderProfile.get(CamcorderProfile.QUALITY_LOW) != null) ?
-          CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration :30;
+            CamcorderProfile.get(CamcorderProfile.QUALITY_LOW).duration : 30;
     private static final int YOUTUBE_VIDEO_DURATION = 15 * 60; // 15 mins
-
     private static final String TAG = "CameraSettings";
-
-    private final Context mContext;
-    private final Parameters mParameters;
-    private final CameraInfo[] mCameraInfo;
-    private final int mCameraId;
-
+    private static final HashMap<Integer, String>
+            VIDEO_ENCODER_TABLE = new HashMap<>();
+    // Following maps help find a corresponding time-lapse or high-speed quality
+    // given a normal quality.
+    // Ideally, one should be able to traverse by offsetting +1000, +2000 respectively,
+    // But the profile values are messed-up in AOSP
+    private static final HashMap<Integer, Integer>
+            VIDEO_QUALITY_TO_TIMELAPSE = new HashMap<>();
+    private static final HashMap<Integer, Integer>
+            VIDEO_QUALITY_TO_HIGHSPEED = new HashMap<>();
     public static String mKeyIso = null;
     public static String mKeyIsoValues = null;
-
-    private static final HashMap<Integer, String>
-            VIDEO_ENCODER_TABLE = new HashMap<Integer, String>();
-    public static final HashMap<String, Integer>
-            VIDEO_QUALITY_TABLE = new HashMap<String, Integer>();
-    public static final HashMap<String, Integer>
-            VIDEO_ENCODER_BITRATE = new HashMap<String, Integer>();
 
     static {
         //video encoders
         VIDEO_ENCODER_TABLE.put(MediaRecorder.VideoEncoder.H263, "h263");
         VIDEO_ENCODER_TABLE.put(MediaRecorder.VideoEncoder.H264, "h264");
         int h265 = ApiHelper.getIntFieldIfExists(MediaRecorder.VideoEncoder.class,
-                       "HEVC", null, MediaRecorder.VideoEncoder.DEFAULT);
+                "HEVC", null, MediaRecorder.VideoEncoder.DEFAULT);
         if (h265 == MediaRecorder.VideoEncoder.DEFAULT) {
             h265 = ApiHelper.getIntFieldIfExists(MediaRecorder.VideoEncoder.class,
-                       "H265", null, MediaRecorder.VideoEncoder.DEFAULT);
+                    "H265", null, MediaRecorder.VideoEncoder.DEFAULT);
         }
         VIDEO_ENCODER_TABLE.put(h265, "h265");
         VIDEO_ENCODER_TABLE.put(MediaRecorder.VideoEncoder.MPEG_4_SP, "m4v");
@@ -326,65 +296,54 @@ public class CameraSettings {
         VIDEO_QUALITY_TABLE.put("2560x1440", CamcorderProfile.QUALITY_QHD);
         VIDEO_QUALITY_TABLE.put("2048x1080", CamcorderProfile.QUALITY_2k);
         VIDEO_QUALITY_TABLE.put("1920x1080", CamcorderProfile.QUALITY_1080P);
-        VIDEO_QUALITY_TABLE.put("1280x720",  CamcorderProfile.QUALITY_720P);
-        VIDEO_QUALITY_TABLE.put("720x480",   CamcorderProfile.QUALITY_480P);
-        VIDEO_QUALITY_TABLE.put("640x480",   CamcorderProfile.QUALITY_VGA);
-        VIDEO_QUALITY_TABLE.put("352x288",   CamcorderProfile.QUALITY_CIF);
-        VIDEO_QUALITY_TABLE.put("320x240",   CamcorderProfile.QUALITY_QVGA);
-        VIDEO_QUALITY_TABLE.put("176x144",   CamcorderProfile.QUALITY_QCIF);
+        VIDEO_QUALITY_TABLE.put("1280x720", CamcorderProfile.QUALITY_720P);
+        VIDEO_QUALITY_TABLE.put("720x480", CamcorderProfile.QUALITY_480P);
+        VIDEO_QUALITY_TABLE.put("640x480", CamcorderProfile.QUALITY_VGA);
+        VIDEO_QUALITY_TABLE.put("352x288", CamcorderProfile.QUALITY_CIF);
+        VIDEO_QUALITY_TABLE.put("320x240", CamcorderProfile.QUALITY_QVGA);
+        VIDEO_QUALITY_TABLE.put("176x144", CamcorderProfile.QUALITY_QCIF);
 
         //video encoder bitrate
-        VIDEO_ENCODER_BITRATE.put("1920x1080:60",  32000000);
+        VIDEO_ENCODER_BITRATE.put("1920x1080:60", 32000000);
         VIDEO_ENCODER_BITRATE.put("1920x1080:120", 50000000);
-        VIDEO_ENCODER_BITRATE.put("1280x720:120",  35000000);
-        VIDEO_ENCODER_BITRATE.put("1280x720:240",  72000000);
-        VIDEO_ENCODER_BITRATE.put("720:480:120",   5200000);
+        VIDEO_ENCODER_BITRATE.put("1280x720:120", 35000000);
+        VIDEO_ENCODER_BITRATE.put("1280x720:240", 72000000);
+        VIDEO_ENCODER_BITRATE.put("720:480:120", 5200000);
 
-   }
+    }
 
-   // Following maps help find a corresponding time-lapse or high-speed quality
-   // given a normal quality.
-   // Ideally, one should be able to traverse by offsetting +1000, +2000 respectively,
-   // But the profile values are messed-up in AOSP
-   private static final HashMap<Integer, Integer>
-       VIDEO_QUALITY_TO_TIMELAPSE = new HashMap<Integer, Integer>();
-   static {
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_LOW  , CamcorderProfile.QUALITY_TIME_LAPSE_LOW  );
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_HIGH , CamcorderProfile.QUALITY_TIME_LAPSE_HIGH );
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_QCIF , CamcorderProfile.QUALITY_TIME_LAPSE_QCIF );
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_CIF  , CamcorderProfile.QUALITY_TIME_LAPSE_CIF  );
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_480P , CamcorderProfile.QUALITY_TIME_LAPSE_480P );
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_720P , CamcorderProfile.QUALITY_TIME_LAPSE_720P );
+    static {
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_LOW, CamcorderProfile.QUALITY_TIME_LAPSE_LOW);
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_HIGH, CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_QCIF, CamcorderProfile.QUALITY_TIME_LAPSE_QCIF);
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_CIF, CamcorderProfile.QUALITY_TIME_LAPSE_CIF);
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_480P, CamcorderProfile.QUALITY_TIME_LAPSE_480P);
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_720P, CamcorderProfile.QUALITY_TIME_LAPSE_720P);
         VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_1080P, CamcorderProfile.QUALITY_TIME_LAPSE_1080P);
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_QVGA , CamcorderProfile.QUALITY_TIME_LAPSE_QVGA );
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_QVGA, CamcorderProfile.QUALITY_TIME_LAPSE_QVGA);
         VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_2160P, CamcorderProfile.QUALITY_TIME_LAPSE_2160P);
-        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_VGA  , CamcorderProfile.QUALITY_TIME_LAPSE_VGA  );
+        VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_VGA, CamcorderProfile.QUALITY_TIME_LAPSE_VGA);
         VIDEO_QUALITY_TO_TIMELAPSE.put(CamcorderProfile.QUALITY_4KDCI, CamcorderProfile.QUALITY_TIME_LAPSE_4KDCI);
-   }
+    }
 
-   public static int getTimeLapseQualityFor(int quality) {
-       return VIDEO_QUALITY_TO_TIMELAPSE.get(quality);
-   }
-
-   private static final HashMap<Integer, Integer>
-       VIDEO_QUALITY_TO_HIGHSPEED = new HashMap<Integer, Integer>();
-   static {
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_LOW  , CamcorderProfile.QUALITY_HIGH_SPEED_LOW  );
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_HIGH , CamcorderProfile.QUALITY_HIGH_SPEED_HIGH );
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_QCIF , -1 ); // does not exist
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_CIF  , CamcorderProfile.QUALITY_HIGH_SPEED_CIF  );
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_480P , CamcorderProfile.QUALITY_HIGH_SPEED_480P );
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_720P , CamcorderProfile.QUALITY_HIGH_SPEED_720P );
+    static {
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_LOW, CamcorderProfile.QUALITY_HIGH_SPEED_LOW);
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_HIGH, CamcorderProfile.QUALITY_HIGH_SPEED_HIGH);
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_QCIF, -1); // does not exist
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_CIF, CamcorderProfile.QUALITY_HIGH_SPEED_CIF);
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_480P, CamcorderProfile.QUALITY_HIGH_SPEED_480P);
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_720P, CamcorderProfile.QUALITY_HIGH_SPEED_720P);
         VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_1080P, CamcorderProfile.QUALITY_HIGH_SPEED_1080P);
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_QVGA , -1 ); // does not exist
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_QVGA, -1); // does not exist
         VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_2160P, CamcorderProfile.QUALITY_HIGH_SPEED_2160P);
-        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_VGA  , CamcorderProfile.QUALITY_HIGH_SPEED_VGA  );
+        VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_VGA, CamcorderProfile.QUALITY_HIGH_SPEED_VGA);
         VIDEO_QUALITY_TO_HIGHSPEED.put(CamcorderProfile.QUALITY_4KDCI, CamcorderProfile.QUALITY_HIGH_SPEED_4KDCI);
-   } 
+    }
 
-   public static int getHighSpeedQualityFor(int quality) {
-       return VIDEO_QUALITY_TO_HIGHSPEED.get(quality);
-   }
+    private final Context mContext;
+    private final Parameters mParameters;
+    private final CameraInfo[] mCameraInfo;
+    private final int mCameraId;
 
     public CameraSettings(Activity activity, Parameters parameters,
                           int cameraId, CameraInfo[] cameraInfo) {
@@ -410,12 +369,12 @@ public class CameraSettings {
         }
     }
 
-    public PreferenceGroup getPreferenceGroup(int preferenceRes) {
-        PreferenceInflater inflater = new PreferenceInflater(mContext);
-        PreferenceGroup group =
-                (PreferenceGroup) inflater.inflate(preferenceRes);
-        if (mParameters != null) initPreference(group);
-        return group;
+    public static int getTimeLapseQualityFor(int quality) {
+        return VIDEO_QUALITY_TO_TIMELAPSE.get(quality);
+    }
+
+    public static int getHighSpeedQualityFor(int quality) {
+        return VIDEO_QUALITY_TO_HIGHSPEED.get(quality);
     }
 
     public static List<String> getSupportedIsoValues(Parameters params) {
@@ -444,7 +403,7 @@ public class CameraSettings {
             Context context, int cameraId, Parameters parameters) {
         // When launching the camera app first time, we will set the video quality
         // to the first one (i.e. highest quality) in the supported list
-        List<String> supported = getSupportedVideoQualities(cameraId,parameters);
+        List<String> supported = getSupportedVideoQualities(cameraId, parameters);
         assert (supported != null) : "No supported video quality is found";
         for (String candidate : context.getResources().getStringArray(
                 R.array.pref_video_quality_entryvalues)) {
@@ -459,7 +418,9 @@ public class CameraSettings {
     public static void initialCameraPictureSize(Context context, Parameters parameters) {
         // set the picture size to the largest supported size
         List<Size> supported = parameters.getSupportedPictureSizes();
-        if (supported == null || supported.isEmpty()) { return; }
+        if (supported == null || supported.isEmpty()) {
+            return;
+        }
         Size largest = getLargestSize(supported);
         String candidate = largest.width + "x" + largest.height;
         if (setCameraPictureSize(candidate, supported, parameters)) {
@@ -515,7 +476,7 @@ public class CameraSettings {
         int duration = 0;  // in milliseconds, 0 means unlimited.
         try {
             duration = context.getResources().getInteger(R.integer.max_video_recording_length);
-        } catch (Resources.NotFoundException ex) {
+        } catch (Resources.NotFoundException ignored) {
         }
         return duration;
     }
@@ -608,19 +569,6 @@ public class CameraSettings {
         return split(str);
     }
 
-    public List<String> getSupportedAdvancedFeatures(Parameters params) {
-        String str = params.get(KEY_QC_SUPPORTED_AF_BRACKETING_MODES);
-        str += ',' + params.get(KEY_QC_SUPPORTED_CF_MODES);
-        str += ',' + params.get(KEY_QC_SUPPORTED_OZ_MODES);
-        str += ',' + params.get(KEY_QC_SUPPORTED_FSSR_MODES);
-        str += ',' + params.get(KEY_QC_SUPPORTED_TP_MODES);
-        str += ',' + params.get(KEY_QC_SUPPORTED_MTF_MODES);
-        str += ',' + mContext.getString(R.string.pref_camera_advanced_feature_default);
-        str += ',' + params.get(KEY_QC_SUPPORTED_RE_FOCUS_MODES);
-        str += ',' + params.get(KEY_QC_SUPPORTED_STILL_MORE_MODES);
-        return split(str);
-    }
-
     public static List<String> getSupportedAFBracketingModes(Parameters params) {
         String str = params.get(KEY_QC_SUPPORTED_AF_BRACKETING_MODES);
         if (str == null) {
@@ -655,10 +603,10 @@ public class CameraSettings {
 
     public static List<String> getSupportedFSSRModes(Parameters params) {
         String str = params.get(KEY_QC_SUPPORTED_FSSR_MODES);
-         if (str == null) {
-             return null;
-         }
-         return split(str);
+        if (str == null) {
+            return null;
+        }
+        return split(str);
     }
 
     public static List<String> getSupportedTruePortraitModes(Parameters params) {
@@ -700,33 +648,26 @@ public class CameraSettings {
 
         // Use StringTokenizer because it is faster than split.
         StringTokenizer tokenizer = new StringTokenizer(str, ",");
-        ArrayList<String> substrings = new ArrayList<String>();
+        ArrayList<String> substrings = new ArrayList<>();
         while (tokenizer.hasMoreElements()) {
             substrings.add(tokenizer.nextToken());
         }
         return substrings;
     }
-    private List<String> getSupportedPictureFormatLists() {
-        String str = mParameters.get(KEY_QC_PICTURE_FORMAT);
-        if (str == null) {
-            return null;
-        }
-        return split(str);
-    }
 
-   public static List<String> getSupportedFlipMode(Parameters params){
+    public static List<String> getSupportedFlipMode(Parameters params) {
         String str = params.get(KEY_QC_SUPPORTED_FLIP_MODES);
-        if(str == null)
+        if (str == null)
             return null;
 
         return split(str);
     }
 
     private static List<String> getSupportedVideoEncoders() {
-        ArrayList<String> supported = new ArrayList<String>();
+        ArrayList<String> supported = new ArrayList<>();
         String str = null;
         List<VideoEncoderCap> videoEncoders = EncoderCapabilities.getVideoEncoders();
-        for (VideoEncoderCap videoEncoder: videoEncoders) {
+        for (VideoEncoderCap videoEncoder : videoEncoders) {
             str = VIDEO_ENCODER_TABLE.get(videoEncoder.mCodec);
             if (str != null) {
                 supported.add(str);
@@ -737,10 +678,10 @@ public class CameraSettings {
     }
 
     private static List<String> getSupportedZoomLevel(Parameters params) {
-        ArrayList<String> supported = new ArrayList<String>();
+        ArrayList<String> supported = new ArrayList<>();
         int zoomMaxIdx = params.getMaxZoom();
-        List <Integer>  zoomRatios = params.getZoomRatios();
-        int zoomMax = zoomRatios.get(zoomMaxIdx)/100;
+        List<Integer> zoomRatios = params.getZoomRatios();
+        int zoomMax = zoomRatios.get(zoomMaxIdx) / 100;
 
         for (int zoomLevel = 0; zoomLevel <= zoomMax; zoomLevel++) {
             supported.add(String.valueOf(zoomLevel));
@@ -764,7 +705,586 @@ public class CameraSettings {
         return pref;
     }
 
-    private void qcomInitPreferences(PreferenceGroup group){
+    private static boolean removePreference(PreferenceGroup group, String key) {
+        for (int i = 0, n = group.size(); i < n; i++) {
+            CameraPreference child = group.get(i);
+            if (child instanceof PreferenceGroup) {
+                if (removePreference((PreferenceGroup) child, key)) {
+                    return true;
+                }
+            }
+            if (child instanceof ListPreference &&
+                    ((ListPreference) child).getKey().equals(key)) {
+                group.removePreference(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean filterUnsupportedOptions(PreferenceGroup group,
+                                                    ListPreference pref, List<String> supported) {
+
+        // Remove the preference if the parameter is not supported or there is
+        // only one options for the settings.
+        if (supported == null || supported.size() <= 1) {
+            removePreference(group, pref.getKey());
+            return true;
+        }
+
+        pref.filterUnsupported(supported);
+        if (pref.getEntries().length <= 1) {
+            removePreference(group, pref.getKey());
+            return true;
+        }
+
+        resetIfInvalid(pref);
+        return false;
+    }
+
+    private static boolean filterSimilarPictureSize(PreferenceGroup group,
+                                                    ListPreference pref) {
+        pref.filterDuplicated();
+        if (pref.getEntries().length <= 1) {
+            removePreference(group, pref.getKey());
+            return true;
+        }
+        resetIfInvalid(pref);
+        return false;
+    }
+
+    private static void resetIfInvalid(ListPreference pref) {
+        // Set the value to the first entry if it is invalid.
+        String value = pref.getValue();
+        if (pref.findIndexOfValue(value) == NOT_FOUND) {
+            pref.setValueIndex(0);
+        }
+    }
+
+    private static List<String> sizeListToStringList(List<Size> sizes) {
+        ArrayList<String> list = new ArrayList<>();
+        for (Size size : sizes) {
+            list.add(String.format(Locale.ENGLISH, "%dx%d", size.width, size.height));
+        }
+        return list;
+    }
+
+    public static void upgradeLocalPreferences(SharedPreferences pref) {
+        int version;
+        try {
+            version = pref.getInt(KEY_LOCAL_VERSION, 0);
+        } catch (Exception ex) {
+            version = 0;
+        }
+        if (version == CURRENT_LOCAL_VERSION) return;
+
+        SharedPreferences.Editor editor = pref.edit();
+        if (version == 1) {
+            // We use numbers to represent the quality now. The quality definition is identical to
+            // that of CamcorderProfile.java.
+            editor.remove("pref_video_quality_key");
+        }
+        editor.putInt(KEY_LOCAL_VERSION, CURRENT_LOCAL_VERSION);
+        editor.apply();
+    }
+
+    public static void upgradeGlobalPreferences(SharedPreferences pref, Context context) {
+        upgradeOldVersion(pref, context);
+        upgradeCameraId(pref);
+    }
+
+    private static void upgradeOldVersion(SharedPreferences pref, Context context) {
+        int version;
+        try {
+            version = pref.getInt(KEY_VERSION, 0);
+        } catch (Exception ex) {
+            version = 0;
+        }
+        if (version == CURRENT_VERSION) return;
+
+        SharedPreferences.Editor editor = pref.edit();
+        if (version == 0) {
+            // We won't use the preference which change in version 1.
+            // So, just upgrade to version 1 directly
+            version = 1;
+        }
+        if (version == 1) {
+            // Change jpeg quality {65,75,85} to {normal,fine,superfine}
+            String quality = pref.getString(KEY_JPEG_QUALITY, "85");
+            switch (quality) {
+                case "65":
+                    quality = "normal";
+                    break;
+                case "75":
+                    quality = "fine";
+                    break;
+                default:
+                    quality = context.getString(R.string.pref_camera_jpegquality_default);
+                    break;
+            }
+            editor.putString(KEY_JPEG_QUALITY, quality);
+            version = 2;
+        }
+        if (version == 2) {
+            try {
+                boolean value = pref.getBoolean(KEY_RECORD_LOCATION, false);
+                editor.putString(KEY_RECORD_LOCATION,
+                        value ? RecordLocationPreference.VALUE_ON
+                                : RecordLocationPreference.VALUE_NONE);
+            } catch (ClassCastException e) {
+                Log.e(TAG, "error convert record location", e);
+            }
+            version = 3;
+        }
+        if (version == 3) {
+            // Just use video quality to replace it and
+            // ignore the current settings.
+            editor.remove("pref_camera_videoquality_key");
+            editor.remove("pref_camera_video_duration_key");
+        }
+
+        editor.putInt(KEY_VERSION, CURRENT_VERSION);
+        editor.apply();
+    }
+
+    private static void upgradeCameraId(SharedPreferences pref) {
+        // The id stored in the preference may be out of range if we are running
+        // inside the emulator and a webcam is removed.
+        // Note: This method accesses the global preferences directly, not the
+        // combo preferences.
+        int cameraId = readPreferredCameraId(pref);
+        if (cameraId == 0) return;  // fast path
+
+        int n = CameraHolder.instance().getNumberOfCameras();
+        if (cameraId < 0 || cameraId >= n) {
+            cameraId = 0;
+        }
+        writePreferredCameraId(pref, cameraId);
+    }
+
+    public static int readPreferredCameraId(SharedPreferences pref) {
+        String rearCameraId = Integer.toString(
+                CameraHolder.instance().getBackCameraId());
+        return Integer.parseInt(pref.getString(KEY_CAMERA_ID, rearCameraId));
+    }
+
+    public static void writePreferredCameraId(SharedPreferences pref,
+                                              int cameraId) {
+        Editor editor = pref.edit();
+        editor.putString(KEY_CAMERA_ID, Integer.toString(cameraId));
+        editor.apply();
+    }
+
+    public static int readExposure(ComboPreferences preferences) {
+        String exposure = preferences.getString(
+                CameraSettings.KEY_EXPOSURE,
+                EXPOSURE_DEFAULT_VALUE);
+        try {
+            return Integer.parseInt(exposure);
+        } catch (Exception ex) {
+            Log.e(TAG, "Invalid exposure: " + exposure);
+        }
+        return 0;
+    }
+
+    public static void restorePreferences(Context context,
+                                          ComboPreferences preferences, Parameters parameters) {
+        int currentCameraId = readPreferredCameraId(preferences);
+
+        // Clear the preferences of both cameras.
+        int backCameraId = CameraHolder.instance().getBackCameraId();
+        if (backCameraId != -1) {
+            preferences.setLocalId(context, backCameraId);
+            Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+        }
+        int frontCameraId = CameraHolder.instance().getFrontCameraId();
+        if (frontCameraId != -1) {
+            preferences.setLocalId(context, frontCameraId);
+            Editor editor = preferences.edit();
+            editor.clear();
+            editor.apply();
+        }
+
+        // Switch back to the preferences of the current camera. Otherwise,
+        // we may write the preference to wrong camera later.
+        preferences.setLocalId(context, currentCameraId);
+
+        upgradeGlobalPreferences(preferences.getGlobal(), context);
+        upgradeLocalPreferences(preferences.getLocal());
+
+        // Write back the current camera id because parameters are related to
+        // the camera. Otherwise, we may switch to the front camera but the
+        // initial picture size is that of the back camera.
+        initialCameraPictureSize(context, parameters);
+        writePreferredCameraId(preferences, currentCameraId);
+    }
+
+    public static List<String> getSupportedHighFrameRateModes(Parameters params) {
+        ArrayList<String> supported = new ArrayList<>();
+        List<String> supportedModes = params.getSupportedVideoHighFrameRateModes();
+        String hsr = params.get(KEY_VIDEO_HSR);
+
+        if (supportedModes == null) {
+            return null;
+        }
+
+        for (String highFrameRateMode : supportedModes) {
+            if (highFrameRateMode.equals("off")) {
+                supported.add(highFrameRateMode);
+            } else {
+                supported.add("hfr" + highFrameRateMode);
+                if (hsr != null) {
+                    supported.add("hsr" + highFrameRateMode);
+                }
+            }
+        }
+        return supported;
+    }
+
+    private static boolean checkSupportedVideoQuality(Parameters parameters, int width, int height) {
+        List<Size> supported = parameters.getSupportedVideoSizes();
+        if (supported == null) {
+            // video-size not specified in parameter list. just go along with the profile.
+            return true;
+        }
+        int flag = 0;
+        for (Size size : supported) {
+            //since we are having two profiles with same height, we are checking with height
+            if (size.height == 480) {
+                if (size.height == height && size.width == width) {
+                    flag = 1;
+                    break;
+                }
+            } else {
+                if (size.width == width) {
+                    flag = 1;
+                    break;
+                }
+            }
+        }
+        return flag == 1;
+
+    }
+
+    private static ArrayList<String> getSupportedVideoQuality(int cameraId, Parameters parameters) {
+        ArrayList<String> supported = new ArrayList<>();
+        // Check for supported quality
+        if (ApiHelper.HAS_FINE_RESOLUTION_QUALITY_LEVELS) {
+            getFineResolutionQuality(supported, cameraId, parameters);
+        } else {
+            supported.add(Integer.toString(CamcorderProfile.QUALITY_HIGH));
+            CamcorderProfile high = CamcorderProfile.get(
+                    cameraId, CamcorderProfile.QUALITY_HIGH);
+            CamcorderProfile low = CamcorderProfile.get(
+                    cameraId, CamcorderProfile.QUALITY_LOW);
+            if (high.videoFrameHeight * high.videoFrameWidth >
+                    low.videoFrameHeight * low.videoFrameWidth) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_LOW));
+            }
+        }
+
+        return supported;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    private static void getFineResolutionQuality(ArrayList<String> supported,
+                                                 int cameraId, Parameters parameters) {
+
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_4KDCI)) {
+            if (checkSupportedVideoQuality(parameters, 4096, 2160)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_4KDCI));
+            }
+        }
+
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_2160P)) {
+            if (checkSupportedVideoQuality(parameters, 3840, 2160)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_2160P));
+            }
+        }
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_1080P)) {
+            if (checkSupportedVideoQuality(parameters, 1920, 1080)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_1080P));
+            }
+        }
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_720P)) {
+            if (checkSupportedVideoQuality(parameters, 1280, 720)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_720P));
+            }
+        }
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_480P)) {
+            if (checkSupportedVideoQuality(parameters, 720, 480)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_480P));
+            }
+        }
+
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_VGA)) {
+            if (checkSupportedVideoQuality(parameters, 640, 480)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_VGA));
+            }
+        }
+
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_CIF)) {
+            if (checkSupportedVideoQuality(parameters, 352, 288)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_CIF));
+            }
+        }
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_QVGA)) {
+            if (checkSupportedVideoQuality(parameters, 320, 240)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_QVGA));
+            }
+        }
+        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_QCIF)) {
+            if (checkSupportedVideoQuality(parameters, 176, 144)) {
+                supported.add(Integer.toString(CamcorderProfile.QUALITY_QCIF));
+            }
+        }
+
+    }
+
+    public static ArrayList<String> getSupportedVideoQualities(int cameraId, Parameters parameters) {
+        ArrayList<String> supported = new ArrayList<>();
+        List<String> temp = sizeListToStringList(parameters.getSupportedVideoSizes());
+        for (String videoSize : temp) {
+            if (VIDEO_QUALITY_TABLE.containsKey(videoSize)) {
+                int profile = VIDEO_QUALITY_TABLE.get(videoSize);
+                if (CamcorderProfile.hasProfile(cameraId, profile)) {
+                    supported.add(videoSize);
+                }
+            }
+        }
+        return supported;
+    }
+
+    public static int getVideoDurationInMillis(String quality) {
+        if (VIDEO_QUALITY_MMS.equals(quality)) {
+            return MMS_VIDEO_DURATION * 1000;
+        } else if (VIDEO_QUALITY_YOUTUBE.equals(quality)) {
+            return YOUTUBE_VIDEO_DURATION * 1000;
+        }
+        return DEFAULT_VIDEO_DURATION * 1000;
+    }
+
+    public static boolean isInternalPreviewSupported(Parameters params) {
+        boolean ret = false;
+        if (null != params) {
+            String val = params.get(KEY_INTERNAL_PREVIEW_RESTART);
+            if ((null != val) && (TRUE.equals(val))) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static boolean isLongshotSupported(Parameters params) {
+        boolean ret = false;
+        if (null != params) {
+            String val = params.get(KEY_QC_LONGSHOT_SUPPORTED);
+            if ((null != val) && (TRUE.equals(val))) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static boolean isZSLHDRSupported(Parameters params) {
+        boolean ret = false;
+        if (null != params) {
+            String val = params.get(KEY_QC_ZSL_HDR_SUPPORTED);
+            if ((null != val) && (TRUE.equals(val))) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static List<String> getSupportedManualExposureModes(Parameters params) {
+        String str = params.get(KEY_QC_SUPPORTED_MANUAL_EXPOSURE_MODES);
+        if (str == null) {
+            return null;
+        }
+        return split(str);
+    }
+
+    public static List<String> getSupportedManualFocusModes(Parameters params) {
+        String str = params.get(KEY_QC_SUPPORTED_MANUAL_FOCUS_MODES);
+        if (str == null) {
+            return null;
+        }
+        return split(str);
+    }
+
+    public static List<String> getSupportedManualWBModes(Parameters params) {
+        String str = params.get(KEY_QC_SUPPORTED_MANUAL_WB_MODES);
+        if (str == null) {
+            return null;
+        }
+        return split(str);
+    }
+
+    public static boolean isInstantCaptureSupported(Parameters params) {
+        boolean ret = false;
+        if (null != params) {
+            String val = params.get(KEY_QC_INSTANT_CAPTURE_VALUES);
+            if (null != val) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static boolean isBokehModeSupported(Parameters params) {
+        boolean ret = false;
+        if (null != params) {
+            String val = params.get(KEY_QC_IS_BOKEH_MODE_SUPPORTED);
+            if ("1".equals(val)) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static boolean isBokehMPOSupported(Parameters params) {
+        boolean ret = false;
+        if (null != params) {
+            String val = params.get(KEY_QC_IS_BOKEH_MPO_SUPPORTED);
+            if ("1".equals(val)) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public static List<String> getSupportedDegreesOfBlur(Parameters params) {
+        String str = params.get(KEY_QC_SUPPORTED_DEGREES_OF_BLUR);
+        if (str == null) {
+            return null;
+        }
+        Log.d(TAG, "getSupportedDegreesOfBlur str =" + str);
+        return split(str);
+    }
+
+    private static void formatPictureSizes(Context context,
+                                           ListPreference pictureSize, Parameters parameters) {
+        List<Size> supported = parameters.getSupportedPictureSizes();
+        if (supported == null || supported.isEmpty()) {
+            return;
+        }
+
+        // convert list of sizes to list of "size entries"
+        List<SizeEntry> sizes = new ArrayList<>(supported.size());
+        for (Size candidate : supported) {
+            sizes.add(new SizeEntry(candidate));
+        }
+
+        // sort descending by pixel size
+        Collections.sort(sizes);
+
+        // trim really small sizes but never leave less than six choices
+        int minimum = context.getResources().getInteger(R.integer.minimum_picture_size);
+        while (sizes.size() > 6) {
+            int lastIndex = sizes.size() - 1;
+            SizeEntry last = sizes.get(lastIndex);
+            if (last.pixels < minimum) {
+                sizes.remove(lastIndex);
+            } else {
+                break;
+            }
+        }
+
+        // re-sort into aspect ratio buckets
+        MultiMap<AspectRatio, SizeEntry> buckets = new MultiMap<>();
+        for (SizeEntry size : sizes) {
+            buckets.put(size.ratio, size);
+        }
+
+        // build the final lists - group by aspect ratio, with those
+        // buckets having the largest image sizes positioned first
+        List<String> entries = new ArrayList<>(buckets.size());
+        List<String> entryValues = new ArrayList<>(buckets.size());
+        while (!buckets.isEmpty()) {
+            // find the bucket with the largest first element
+            int maxSize = 0;
+            AspectRatio chosenKey = null;
+            for (AspectRatio ratio : buckets.keySet()) {
+                int size = buckets.get(ratio).get(0).pixels;
+                if (size > maxSize) {
+                    maxSize = size;
+                    chosenKey = ratio;
+                }
+            }
+
+            List<SizeEntry> bucket = buckets.remove(chosenKey);
+
+            // trim chosen bucket of similarly sized entries, but
+            // never leave less that three
+            int index = 0;
+            while (bucket.size() > 3 && bucket.size() > index + 1) {
+                SizeEntry current = bucket.get(index);
+                SizeEntry next = bucket.get(index + 1);
+                // if the two buckets differ in size by less than 30%
+                // remove the smaller one, otherwise advance through the list
+                if ((double) current.pixels / next.pixels < 1.3) {
+                    bucket.remove(index + 1);
+                } else {
+                    index++;
+                }
+            }
+
+            // transfer chosen, trimmed bucket to final list
+            for (SizeEntry size : bucket) {
+                entryValues.add(size.resolution());
+                entries.add(size.formatted(context));
+            }
+        }
+
+        pictureSize.setEntries(entries.toArray(new String[entries.size()]));
+        pictureSize.setEntryValues(entryValues.toArray(new String[entryValues.size()]));
+    }
+
+    public static boolean hasChromaFlashScene(Context context) {
+        String[] sceneModes = context.getResources().getStringArray(
+                R.array.pref_camera_scenemode_entryvalues);
+        for (String mode : sceneModes) {
+            if (mode.equals(context.getResources().getString(R.string
+                    .pref_camera_advanced_feature_value_chromaflash_on))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public PreferenceGroup getPreferenceGroup(int preferenceRes) {
+        PreferenceInflater inflater = new PreferenceInflater(mContext);
+        PreferenceGroup group =
+                (PreferenceGroup) inflater.inflate(preferenceRes);
+        if (mParameters != null) initPreference(group);
+        return group;
+    }
+
+    public List<String> getSupportedAdvancedFeatures(Parameters params) {
+        String str = params.get(KEY_QC_SUPPORTED_AF_BRACKETING_MODES);
+        str += ',' + params.get(KEY_QC_SUPPORTED_CF_MODES);
+        str += ',' + params.get(KEY_QC_SUPPORTED_OZ_MODES);
+        str += ',' + params.get(KEY_QC_SUPPORTED_FSSR_MODES);
+        str += ',' + params.get(KEY_QC_SUPPORTED_TP_MODES);
+        str += ',' + params.get(KEY_QC_SUPPORTED_MTF_MODES);
+        str += ',' + mContext.getString(R.string.pref_camera_advanced_feature_default);
+        str += ',' + params.get(KEY_QC_SUPPORTED_RE_FOCUS_MODES);
+        str += ',' + params.get(KEY_QC_SUPPORTED_STILL_MORE_MODES);
+        return split(str);
+    }
+
+    private List<String> getSupportedPictureFormatLists() {
+        String str = mParameters.get(KEY_QC_PICTURE_FORMAT);
+        if (str == null) {
+            return null;
+        }
+        return split(str);
+    }
+
+    private void qcomInitPreferences(PreferenceGroup group) {
         //Qcom Preference add here
         ListPreference powerMode = group.findPreference(KEY_POWER_MODE);
         ListPreference zsl = group.findPreference(KEY_ZSL);
@@ -926,7 +1446,7 @@ public class CameraSettings {
 
         if (aeBracketing != null) {
             filterUnsupportedOptions(group,
-                     aeBracketing, getSupportedAEBracketingModes(mParameters));
+                    aeBracketing, getSupportedAEBracketingModes(mParameters));
         }
 
         if (antiBanding != null) {
@@ -944,7 +1464,7 @@ public class CameraSettings {
                     autoExposure, mParameters.getSupportedAutoexposure());
         }
 
-        if(videoSnapSize != null) {
+        if (videoSnapSize != null) {
             if (CameraUtil.isVideoSnapshotSupported(mParameters)) {
                 filterUnsupportedOptions(group, videoSnapSize, getSupportedVideoSnapSizes(mParameters));
                 filterSimilarPictureSize(group, videoSnapSize);
@@ -953,21 +1473,21 @@ public class CameraSettings {
             }
         }
 
-        if (histogram!= null) {
+        if (histogram != null) {
             filterUnsupportedOptions(group,
                     histogram, mParameters.getSupportedHistogramModes());
         }
 
-        if (pictureFormat!= null) {
+        if (pictureFormat != null) {
             filterUnsupportedOptions(group,
                     pictureFormat, getSupportedPictureFormatLists());
         }
 
-        if(advancedFeatures != null) {
+        if (advancedFeatures != null) {
             filterUnsupportedOptions(group,
                     advancedFeatures, getSupportedAdvancedFeatures(mParameters));
         }
-        if (longShot!= null && !isLongshotSupported(mParameters)) {
+        if (longShot != null && !isLongshotSupported(mParameters)) {
             removePreference(group, longShot.getKey());
         }
 
@@ -1001,7 +1521,7 @@ public class CameraSettings {
         ListPreference videoQuality = group.findPreference(KEY_VIDEO_QUALITY);
         ListPreference timeLapseInterval = group.findPreference(KEY_VIDEO_TIME_LAPSE_FRAME_INTERVAL);
         ListPreference pictureSize = group.findPreference(KEY_PICTURE_SIZE);
-        ListPreference whiteBalance =  group.findPreference(KEY_WHITE_BALANCE);
+        ListPreference whiteBalance = group.findPreference(KEY_WHITE_BALANCE);
         ListPreference chromaFlash = group.findPreference(KEY_QC_CHROMA_FLASH);
         ListPreference sceneMode = group.findPreference(KEY_SCENE_MODE);
         ListPreference flashMode = group.findPreference(KEY_FLASH_MODE);
@@ -1043,7 +1563,7 @@ public class CameraSettings {
 
         if (videoQuality != null) {
             filterUnsupportedOptions(group, videoQuality, getSupportedVideoQualities(
-                   mCameraId,mParameters));
+                    mCameraId, mParameters));
         }
 
         if (videoEncoder != null) {
@@ -1064,9 +1584,9 @@ public class CameraSettings {
             List<String> supportedAdvancedFeatures =
                     getSupportedAdvancedFeatures(mParameters);
             if (hasChromaFlashScene(mContext) || !CameraUtil.isSupported(
-                        mContext.getString(R.string
+                    mContext.getString(R.string
                             .pref_camera_advanced_feature_value_chromaflash_on),
-                        supportedAdvancedFeatures)) {
+                    supportedAdvancedFeatures)) {
                 removePreference(group, chromaFlash.getKey());
             }
         }
@@ -1076,25 +1596,25 @@ public class CameraSettings {
             List<String> supportedAdvancedFeatures =
                     getSupportedAdvancedFeatures(mParameters);
             if (CameraUtil.isSupported(
-                        mContext.getString(R.string
-                                .pref_camera_advanced_feature_value_refocus_on),
-                        supportedAdvancedFeatures)) {
+                    mContext.getString(R.string
+                            .pref_camera_advanced_feature_value_refocus_on),
+                    supportedAdvancedFeatures)) {
                 supportedSceneModes.add(mContext.getString(R.string
-                            .pref_camera_advanced_feature_value_refocus_on));
+                        .pref_camera_advanced_feature_value_refocus_on));
             }
             if (CameraUtil.isSupported(
-                        mContext.getString(R.string
-                                .pref_camera_advanced_feature_value_optizoom_on),
-                        supportedAdvancedFeatures)) {
+                    mContext.getString(R.string
+                            .pref_camera_advanced_feature_value_optizoom_on),
+                    supportedAdvancedFeatures)) {
                 supportedSceneModes.add(mContext.getString(R.string
-                            .pref_camera_advanced_feature_value_optizoom_on));
+                        .pref_camera_advanced_feature_value_optizoom_on));
             }
             if (hasChromaFlashScene(mContext) && CameraUtil.isSupported(
-                        mContext.getString(R.string
-                                .pref_camera_advanced_feature_value_chromaflash_on),
-                        supportedAdvancedFeatures)) {
+                    mContext.getString(R.string
+                            .pref_camera_advanced_feature_value_chromaflash_on),
+                    supportedAdvancedFeatures)) {
                 supportedSceneModes.add(mContext.getString(R.string
-                            .pref_camera_advanced_feature_value_chromaflash_on));
+                        .pref_camera_advanced_feature_value_chromaflash_on));
             }
             filterUnsupportedOptions(group, sceneMode, supportedSceneModes);
         }
@@ -1159,7 +1679,7 @@ public class CameraSettings {
             }
         }
         if (savePath != null) {
-            Log.d(TAG, "check storage menu " +  SDCard.instance().isWriteable());
+            Log.d(TAG, "check storage menu " + SDCard.instance().isWriteable());
             if (!SDCard.instance().isWriteable()) {
                 removePreference(group, savePath.getKey());
             }
@@ -1221,462 +1741,6 @@ public class CameraSettings {
         preference.setEntryValues(entryValues);
     }
 
-    private static boolean removePreference(PreferenceGroup group, String key) {
-        for (int i = 0, n = group.size(); i < n; i++) {
-            CameraPreference child = group.get(i);
-            if (child instanceof PreferenceGroup) {
-                if (removePreference((PreferenceGroup) child, key)) {
-                    return true;
-                }
-            }
-            if (child instanceof ListPreference &&
-                    ((ListPreference) child).getKey().equals(key)) {
-                group.removePreference(i);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean filterUnsupportedOptions(PreferenceGroup group,
-            ListPreference pref, List<String> supported) {
-
-        // Remove the preference if the parameter is not supported or there is
-        // only one options for the settings.
-        if (supported == null || supported.size() <= 1) {
-            removePreference(group, pref.getKey());
-            return true;
-        }
-
-        pref.filterUnsupported(supported);
-        if (pref.getEntries().length <= 1) {
-            removePreference(group, pref.getKey());
-            return true;
-        }
-
-        resetIfInvalid(pref);
-        return false;
-    }
-
-    private static boolean filterSimilarPictureSize(PreferenceGroup group,
-            ListPreference pref) {
-        pref.filterDuplicated();
-        if (pref.getEntries().length <= 1) {
-            removePreference(group, pref.getKey());
-            return true;
-        }
-        resetIfInvalid(pref);
-        return false;
-    }
-
-    private static void resetIfInvalid(ListPreference pref) {
-        // Set the value to the first entry if it is invalid.
-        String value = pref.getValue();
-        if (pref.findIndexOfValue(value) == NOT_FOUND) {
-            pref.setValueIndex(0);
-        }
-    }
-
-    private static List<String> sizeListToStringList(List<Size> sizes) {
-        ArrayList<String> list = new ArrayList<String>();
-        for (Size size : sizes) {
-            list.add(String.format(Locale.ENGLISH, "%dx%d", size.width, size.height));
-        }
-        return list;
-    }
-
-    public static void upgradeLocalPreferences(SharedPreferences pref) {
-        int version;
-        try {
-            version = pref.getInt(KEY_LOCAL_VERSION, 0);
-        } catch (Exception ex) {
-            version = 0;
-        }
-        if (version == CURRENT_LOCAL_VERSION) return;
-
-        SharedPreferences.Editor editor = pref.edit();
-        if (version == 1) {
-            // We use numbers to represent the quality now. The quality definition is identical to
-            // that of CamcorderProfile.java.
-            editor.remove("pref_video_quality_key");
-        }
-        editor.putInt(KEY_LOCAL_VERSION, CURRENT_LOCAL_VERSION);
-        editor.apply();
-    }
-
-    public static void upgradeGlobalPreferences(SharedPreferences pref, Context context) {
-        upgradeOldVersion(pref, context);
-        upgradeCameraId(pref);
-    }
-
-    private static void upgradeOldVersion(SharedPreferences pref, Context context) {
-        int version;
-        try {
-            version = pref.getInt(KEY_VERSION, 0);
-        } catch (Exception ex) {
-            version = 0;
-        }
-        if (version == CURRENT_VERSION) return;
-
-        SharedPreferences.Editor editor = pref.edit();
-        if (version == 0) {
-            // We won't use the preference which change in version 1.
-            // So, just upgrade to version 1 directly
-            version = 1;
-        }
-        if (version == 1) {
-            // Change jpeg quality {65,75,85} to {normal,fine,superfine}
-            String quality = pref.getString(KEY_JPEG_QUALITY, "85");
-            if (quality.equals("65")) {
-                quality = "normal";
-            } else if (quality.equals("75")) {
-                quality = "fine";
-            } else {
-                quality = context.getString(R.string.pref_camera_jpegquality_default);
-            }
-            editor.putString(KEY_JPEG_QUALITY, quality);
-            version = 2;
-        }
-        if (version == 2) {
-            try {
-                boolean value = pref.getBoolean(KEY_RECORD_LOCATION, false);
-                editor.putString(KEY_RECORD_LOCATION,
-                        value ? RecordLocationPreference.VALUE_ON
-                              : RecordLocationPreference.VALUE_NONE);
-            } catch (ClassCastException e) {
-                Log.e(TAG, "error convert record location", e);
-            }
-            version = 3;
-        }
-        if (version == 3) {
-            // Just use video quality to replace it and
-            // ignore the current settings.
-            editor.remove("pref_camera_videoquality_key");
-            editor.remove("pref_camera_video_duration_key");
-        }
-
-        editor.putInt(KEY_VERSION, CURRENT_VERSION);
-        editor.apply();
-    }
-
-    private static void upgradeCameraId(SharedPreferences pref) {
-        // The id stored in the preference may be out of range if we are running
-        // inside the emulator and a webcam is removed.
-        // Note: This method accesses the global preferences directly, not the
-        // combo preferences.
-        int cameraId = readPreferredCameraId(pref);
-        if (cameraId == 0) return;  // fast path
-
-        int n = CameraHolder.instance().getNumberOfCameras();
-        if (cameraId < 0 || cameraId >= n) {
-            cameraId = 0;
-        }
-        writePreferredCameraId(pref, cameraId);
-    }
-
-    public static int readPreferredCameraId(SharedPreferences pref) {
-        String rearCameraId = Integer.toString(
-                CameraHolder.instance().getBackCameraId());
-        return Integer.parseInt(pref.getString(KEY_CAMERA_ID, rearCameraId));
-    }
-
-    public static void writePreferredCameraId(SharedPreferences pref,
-            int cameraId) {
-        Editor editor = pref.edit();
-        editor.putString(KEY_CAMERA_ID, Integer.toString(cameraId));
-        editor.apply();
-    }
-
-    public static int readExposure(ComboPreferences preferences) {
-        String exposure = preferences.getString(
-                CameraSettings.KEY_EXPOSURE,
-                EXPOSURE_DEFAULT_VALUE);
-        try {
-            return Integer.parseInt(exposure);
-        } catch (Exception ex) {
-            Log.e(TAG, "Invalid exposure: " + exposure);
-        }
-        return 0;
-    }
-
-    public static void restorePreferences(Context context,
-            ComboPreferences preferences, Parameters parameters) {
-        int currentCameraId = readPreferredCameraId(preferences);
-
-        // Clear the preferences of both cameras.
-        int backCameraId = CameraHolder.instance().getBackCameraId();
-        if (backCameraId != -1) {
-            preferences.setLocalId(context, backCameraId);
-            Editor editor = preferences.edit();
-            editor.clear();
-            editor.apply();
-        }
-        int frontCameraId = CameraHolder.instance().getFrontCameraId();
-        if (frontCameraId != -1) {
-            preferences.setLocalId(context, frontCameraId);
-            Editor editor = preferences.edit();
-            editor.clear();
-            editor.apply();
-        }
-
-        // Switch back to the preferences of the current camera. Otherwise,
-        // we may write the preference to wrong camera later.
-        preferences.setLocalId(context, currentCameraId);
-
-        upgradeGlobalPreferences(preferences.getGlobal(), context);
-        upgradeLocalPreferences(preferences.getLocal());
-
-        // Write back the current camera id because parameters are related to
-        // the camera. Otherwise, we may switch to the front camera but the
-        // initial picture size is that of the back camera.
-        initialCameraPictureSize(context, parameters);
-        writePreferredCameraId(preferences, currentCameraId);
-    }
-
-    public static List<String> getSupportedHighFrameRateModes(Parameters params) {
-        ArrayList<String> supported = new ArrayList<String>();
-        List<String> supportedModes = params.getSupportedVideoHighFrameRateModes();
-        String hsr = params.get(KEY_VIDEO_HSR);
-
-        if (supportedModes == null) {
-            return null;
-        }
-
-        for (String highFrameRateMode : supportedModes) {
-            if (highFrameRateMode.equals("off")) {
-                supported.add(highFrameRateMode);
-            } else {
-                supported.add("hfr" + highFrameRateMode);
-                if (hsr != null) {
-                    supported.add("hsr" + highFrameRateMode);
-                }
-            }
-        }
-        return supported;
-    }
-
-    private static boolean checkSupportedVideoQuality(Parameters parameters,int width, int height){
-        List <Size> supported = parameters.getSupportedVideoSizes();
-        if (supported == null) {
-            // video-size not specified in parameter list. just go along with the profile.
-            return true;
-        }
-        int flag = 0;
-        for (Size size : supported){
-            //since we are having two profiles with same height, we are checking with height
-            if (size.height == 480) {
-                if (size.height == height && size.width == width) {
-                    flag = 1;
-                    break;
-                }
-            } else {
-                if (size.width == width) {
-                    flag = 1;
-                    break;
-                }
-            }
-        }
-        if (flag == 1)
-            return true;
-
-        return false;
-    }
-    private static ArrayList<String> getSupportedVideoQuality(int cameraId,Parameters parameters) {
-        ArrayList<String> supported = new ArrayList<String>();
-        // Check for supported quality
-        if (ApiHelper.HAS_FINE_RESOLUTION_QUALITY_LEVELS) {
-            getFineResolutionQuality(supported,cameraId,parameters);
-        } else {
-            supported.add(Integer.toString(CamcorderProfile.QUALITY_HIGH));
-            CamcorderProfile high = CamcorderProfile.get(
-                    cameraId, CamcorderProfile.QUALITY_HIGH);
-            CamcorderProfile low = CamcorderProfile.get(
-                    cameraId, CamcorderProfile.QUALITY_LOW);
-            if (high.videoFrameHeight * high.videoFrameWidth >
-                    low.videoFrameHeight * low.videoFrameWidth) {
-                supported.add(Integer.toString(CamcorderProfile.QUALITY_LOW));
-            }
-        }
-
-        return supported;
-    }
-
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    private static void getFineResolutionQuality(ArrayList<String> supported,
-                                                 int cameraId,Parameters parameters) {
-
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_4KDCI)) {
-           if (checkSupportedVideoQuality(parameters,4096,2160)) {
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_4KDCI));
-           }
-        }
-
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_2160P)) {
-           if (checkSupportedVideoQuality(parameters,3840,2160)) {
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_2160P));
-           }
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_1080P)) {
-           if (checkSupportedVideoQuality(parameters,1920,1080)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_1080P));
-           }
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_720P)) {
-           if (checkSupportedVideoQuality(parameters,1280,720)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_720P));
-           }
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_480P)) {
-           if (checkSupportedVideoQuality(parameters,720,480)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_480P));
-           }
-        }
-
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_VGA)) {
-           if (checkSupportedVideoQuality(parameters,640,480)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_VGA));
-           }
-        }
-
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_CIF)) {
-           if (checkSupportedVideoQuality(parameters,352,288)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_CIF));
-           }
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_QVGA)) {
-           if (checkSupportedVideoQuality(parameters,320,240)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_QVGA));
-           }
-        }
-        if (CamcorderProfile.hasProfile(cameraId, CamcorderProfile.QUALITY_QCIF)) {
-           if (checkSupportedVideoQuality(parameters,176,144)){
-              supported.add(Integer.toString(CamcorderProfile.QUALITY_QCIF));
-           }
-        }
-
-    }
-
-    public static ArrayList<String> getSupportedVideoQualities(int cameraId,Parameters parameters) {
-        ArrayList<String> supported = new ArrayList<String>();
-        List<String> temp = sizeListToStringList(parameters.getSupportedVideoSizes());
-        for (String videoSize : temp) {
-            if (VIDEO_QUALITY_TABLE.containsKey(videoSize)) {
-                int profile = VIDEO_QUALITY_TABLE.get(videoSize);
-                if (CamcorderProfile.hasProfile(cameraId, profile)) {
-                      supported.add(videoSize);
-                }
-            }
-        }
-        return supported;
-    }
-    public static int getVideoDurationInMillis(String quality) {
-        if (VIDEO_QUALITY_MMS.equals(quality)) {
-            return MMS_VIDEO_DURATION * 1000;
-        } else if (VIDEO_QUALITY_YOUTUBE.equals(quality)) {
-            return YOUTUBE_VIDEO_DURATION * 1000;
-        }
-        return DEFAULT_VIDEO_DURATION * 1000;
-    }
-
-    public static boolean isInternalPreviewSupported(Parameters params) {
-        boolean ret = false;
-        if (null != params) {
-            String val = params.get(KEY_INTERNAL_PREVIEW_RESTART);
-            if ((null != val) && (TRUE.equals(val))) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    public static boolean isLongshotSupported(Parameters params) {
-        boolean ret = false;
-        if (null != params) {
-            String val = params.get(KEY_QC_LONGSHOT_SUPPORTED);
-            if ((null != val) && (TRUE.equals(val))) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    public static boolean isZSLHDRSupported(Parameters params) {
-        boolean ret = false;
-        if (null != params) {
-            String val = params.get(KEY_QC_ZSL_HDR_SUPPORTED);
-            if ((null != val) && (TRUE.equals(val))) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    public static List<String> getSupportedManualExposureModes(Parameters params) {
-        String str = params.get(KEY_QC_SUPPORTED_MANUAL_EXPOSURE_MODES);
-        if (str == null) {
-            return null;
-        }
-        return split(str);
-    }
-
-    public static List<String> getSupportedManualFocusModes(Parameters params) {
-        String str = params.get(KEY_QC_SUPPORTED_MANUAL_FOCUS_MODES);
-        if (str == null) {
-            return null;
-        }
-        return split(str);
-    }
-
-    public static List<String> getSupportedManualWBModes(Parameters params) {
-        String str = params.get(KEY_QC_SUPPORTED_MANUAL_WB_MODES);
-        if (str == null) {
-            return null;
-        }
-        return split(str);
-    }
-
-    public static boolean isInstantCaptureSupported(Parameters params) {
-        boolean ret = false;
-        if (null != params) {
-            String val = params.get(KEY_QC_INSTANT_CAPTURE_VALUES);
-            if (null != val) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    public static boolean isBokehModeSupported(Parameters params) {
-        boolean ret = false;
-        if (null != params) {
-            String val = params.get(KEY_QC_IS_BOKEH_MODE_SUPPORTED);
-            if ("1".equals(val)) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    public static boolean isBokehMPOSupported(Parameters params) {
-        boolean ret = false;
-        if (null != params) {
-            String val = params.get(KEY_QC_IS_BOKEH_MPO_SUPPORTED);
-            if ("1".equals(val)) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
-    public static List<String> getSupportedDegreesOfBlur(Parameters params) {
-        String str = params.get(KEY_QC_SUPPORTED_DEGREES_OF_BLUR);
-        if (str == null) {
-            return null;
-        }
-        Log.d(TAG,"getSupportedDegreesOfBlur str =" +str);
-        return split(str);
-    }
-
     // common aspect ratios used for bucketing camera picture sizes
     private enum AspectRatio {
         FourThree(1.27, 1.42, R.string.pref_camera_aspectratio_43),
@@ -1698,10 +1762,6 @@ public class CameraSettings {
             this.resourceId = rid;
         }
 
-        boolean contains(double ratio) {
-            return ratio >= min && ratio < max;
-        }
-
         static AspectRatio of(int width, int height) {
             double ratio = (double) width / height;
             for (AspectRatio aspect : values()) {
@@ -1711,10 +1771,16 @@ public class CameraSettings {
             }
             return null;
         }
+
+        boolean contains(double ratio) {
+            return ratio >= min && ratio < max;
+        }
     }
 
     // track a camera picture size along with some derived info
     private static class SizeEntry implements Comparable<SizeEntry> {
+        private static final String KOREAN = Locale.KOREAN.getLanguage();
+        private static final String CHINESE = Locale.CHINESE.getLanguage();
         AspectRatio ratio;
         Size size;
         int pixels;
@@ -1753,9 +1819,6 @@ public class CameraSettings {
             }
         }
 
-        private static final String KOREAN = Locale.KOREAN.getLanguage();
-        private static final String CHINESE = Locale.CHINESE.getLanguage();
-
         private double adjustForLocale(double megapixels) {
             Locale locale = Locale.getDefault();
             String language = locale != null ? locale.getLanguage() : null;
@@ -1769,95 +1832,5 @@ public class CameraSettings {
             }
             return megapixels;
         }
-    }
-
-    private static void formatPictureSizes(Context context,
-            ListPreference pictureSize, Parameters parameters) {
-        List<Size> supported = parameters.getSupportedPictureSizes();
-        if (supported == null || supported.isEmpty()) {
-            return;
-        }
-
-        // convert list of sizes to list of "size entries"
-        List<SizeEntry> sizes = new ArrayList<SizeEntry>(supported.size());
-        for (Size candidate : supported) {
-            sizes.add(new SizeEntry(candidate));
-        }
-
-        // sort descending by pixel size
-        Collections.sort(sizes);
-
-        // trim really small sizes but never leave less than six choices
-        int minimum = context.getResources().getInteger(R.integer.minimum_picture_size);
-        while (sizes.size() > 6) {
-            int lastIndex = sizes.size() - 1;
-            SizeEntry last = sizes.get(lastIndex);
-            if (last.pixels < minimum) {
-                sizes.remove(lastIndex);
-            } else {
-                break;
-            }
-        }
-
-        // re-sort into aspect ratio buckets
-        MultiMap<AspectRatio,SizeEntry> buckets = new MultiMap<>();
-        for (SizeEntry size : sizes) {
-            buckets.put(size.ratio, size);
-        }
-
-        // build the final lists - group by aspect ratio, with those
-        // buckets having the largest image sizes positioned first
-        List<String> entries = new ArrayList<String>(buckets.size());
-        List<String> entryValues = new ArrayList<String>(buckets.size());
-        while (!buckets.isEmpty()) {
-            // find the bucket with the largest first element
-            int maxSize = 0;
-            AspectRatio chosenKey = null;
-            for (AspectRatio ratio : buckets.keySet()) {
-                int size = buckets.get(ratio).get(0).pixels;
-                if (size > maxSize) {
-                    maxSize = size;
-                    chosenKey = ratio;
-                }
-            }
-
-            List<SizeEntry> bucket = buckets.remove(chosenKey);
-
-            // trim chosen bucket of similarly sized entries, but
-            // never leave less that three
-            int index = 0;
-            while (bucket.size() > 3 && bucket.size() > index + 1) {
-                SizeEntry current = bucket.get(index);
-                SizeEntry next = bucket.get(index + 1);
-                // if the two buckets differ in size by less than 30%
-                // remove the smaller one, otherwise advance through the list
-                if ((double) current.pixels / next.pixels < 1.3) {
-                    bucket.remove(index + 1);
-                } else {
-                    index++;
-                }
-            }
-
-            // transfer chosen, trimmed bucket to final list
-            for (SizeEntry size : bucket) {
-                entryValues.add(size.resolution());
-                entries.add(size.formatted(context));
-            }
-        }
-
-        pictureSize.setEntries(entries.toArray(new String[entries.size()]));
-        pictureSize.setEntryValues(entryValues.toArray(new String[entryValues.size()]));
-    }
-
-    public static boolean hasChromaFlashScene(Context context) {
-        String[] sceneModes = context.getResources().getStringArray(
-                R.array.pref_camera_scenemode_entryvalues);
-        for (String mode : sceneModes) {
-            if (mode.equals(context.getResources().getString(R.string
-                            .pref_camera_advanced_feature_value_chromaflash_on))) {
-                return true;
-            }
-        }
-        return false;
     }
 }

@@ -29,6 +29,7 @@ import android.util.AttributeSet;
 import android.view.ViewGroup.LayoutParams;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+
 import com.android.camera.util.CameraUtil;
 
 /**
@@ -50,7 +51,10 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
     private long mAnimationStartTime = 0;
     private long mAnimationEndTime = 0;
     private boolean mNaturalPortrait = CameraUtil.isDefaultToPortrait(
-                                              (Activity) getContext());
+            (Activity) getContext());
+    private Bitmap mThumb;
+    private Drawable[] mThumbs;
+    private TransitionDrawable mThumbTransition;
 
     public RotateImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -70,11 +74,11 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
         // Assumging the devic's natural orientation is portrait and
         // check if the current orienataion is within the landscape range
         boolean isLandscape = ((mapTo180Degree > 45) &&
-                               (mapTo180Degree < 135));
+                (mapTo180Degree < 135));
         if (mNaturalPortrait)
-          return !isLandscape;
+            return !isLandscape;
         else
-          return isLandscape;
+            return isLandscape;
     }
 
     // Rotate the view counter-clockwise
@@ -121,7 +125,7 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
         if (mCurrentDegree != mTargetDegree) {
             long time = AnimationUtils.currentAnimationTimeMillis();
             if (time < mAnimationEndTime) {
-                int deltaTime = (int)(time - mAnimationStartTime);
+                int deltaTime = (int) (time - mAnimationStartTime);
                 int degree = mStartDegree + ANIMATION_SPEED
                         * (mClockwise ? deltaTime : -deltaTime) / 1000;
                 degree = degree >= 0 ? degree % 360 : degree % 360 + 360;
@@ -160,10 +164,6 @@ public class RotateImageView extends TwoStateImageView implements Rotatable {
         drawable.draw(canvas);
         canvas.restoreToCount(saveCount);
     }
-
-    private Bitmap mThumb;
-    private Drawable[] mThumbs;
-    private TransitionDrawable mThumbTransition;
 
     public void setBitmap(Bitmap bitmap) {
         // Make sure uri and original are consistently both null or both

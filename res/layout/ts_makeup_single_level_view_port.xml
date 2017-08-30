@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
     Copyright (C) 2014,2015 Thundersoft Corporation
     All rights Reserved
 
@@ -17,13 +16,12 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/id_makeup_single_level_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:layout_gravity="bottom"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <SeekBar
         android:id="@+id/seekbar_makeup_level"
@@ -36,7 +34,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/tsmakeup_mode_level_size"
         android:layout_gravity="center"
-        android:gravity="center" >
+        android:gravity="center"
+        android:baselineAligned="false">
 
         <LinearLayout
             android:id="@+id/id_layout_makeup_back"
@@ -44,7 +43,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="2.0"
-            android:gravity="center" >
+            android:gravity="center">
 
             <ImageView
                 android:id="@+id/id_iv_makeup_back"
@@ -59,7 +58,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1.0"
-            android:gravity="center" >
+            android:gravity="center">
 
             <View
                 android:layout_width="1dip"
@@ -74,7 +73,7 @@
             android:layout_gravity="center"
             android:layout_weight="3.5"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/id_layout_makeup_clean"
@@ -83,7 +82,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="2dip" >
+                android:padding="2dip">
 
                 <ImageView
                     android:id="@+id/id_iv_makeup_clean"
@@ -115,7 +114,7 @@
             android:layout_gravity="center"
             android:layout_weight="3.5"
             android:gravity="center"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
                 android:id="@+id/id_layout_makeup_whiten"
@@ -124,7 +123,7 @@
                 android:layout_gravity="center"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <ImageView
                     android:id="@+id/id_iv_makeup_whiten"

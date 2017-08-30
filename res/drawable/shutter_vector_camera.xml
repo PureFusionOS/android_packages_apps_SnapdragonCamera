@@ -1,14 +1,14 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:height="64dp"
     android:width="64dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:height="64dp"
+    android:viewportHeight="24"
+    android:viewportWidth="24">
 
     <group
         android:name="shutterGroup"
         android:pivotX="12"
         android:pivotY="12"
-        android:rotation="0" >
+        android:rotation="0">
         <path
             android:name="shutter"
             android:fillColor="@color/material_accent_icon"

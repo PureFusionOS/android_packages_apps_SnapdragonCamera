@@ -37,7 +37,7 @@ public class BoundedRect {
         inner = new RectF(innerRect);
         innerRotated = CropMath.getCornersFromRect(inner);
         rotateInner();
-        if (!isConstrained())
+        if (isConstrained())
             reconstrain();
     }
 
@@ -47,7 +47,7 @@ public class BoundedRect {
         inner = new RectF(innerRect);
         innerRotated = CropMath.getCornersFromRect(inner);
         rotateInner();
-        if (!isConstrained())
+        if (isConstrained())
             reconstrain();
     }
 
@@ -57,20 +57,7 @@ public class BoundedRect {
         inner.set(innerRect);
         innerRotated = CropMath.getCornersFromRect(inner);
         rotateInner();
-        if (!isConstrained())
-            reconstrain();
-    }
-
-    /**
-     * Sets inner, and re-constrains it to fit within the rotated bounding rect.
-     */
-    public void setInner(RectF newInner) {
-        if (inner.equals(newInner))
-            return;
-        inner = newInner;
-        innerRotated = CropMath.getCornersFromRect(inner);
-        rotateInner();
-        if (!isConstrained())
+        if (isConstrained())
             reconstrain();
     }
 
@@ -83,7 +70,7 @@ public class BoundedRect {
         rot = rotation;
         innerRotated = CropMath.getCornersFromRect(inner);
         rotateInner();
-        if (!isConstrained())
+        if (isConstrained())
             reconstrain();
     }
 
@@ -97,6 +84,19 @@ public class BoundedRect {
 
     public RectF getInner() {
         return new RectF(inner);
+    }
+
+    /**
+     * Sets inner, and re-constrains it to fit within the rotated bounding rect.
+     */
+    public void setInner(RectF newInner) {
+        if (inner.equals(newInner))
+            return;
+        inner = newInner;
+        innerRotated = CropMath.getCornersFromRect(inner);
+        rotateInner();
+        if (isConstrained())
+            reconstrain();
     }
 
     public RectF getOuter() {
@@ -333,9 +333,9 @@ public class BoundedRect {
     private boolean isConstrained() {
         for (int i = 0; i < 8; i += 2) {
             if (!CropMath.inclusiveContains(outer, innerRotated[i], innerRotated[i + 1]))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
     private void reconstrain() {

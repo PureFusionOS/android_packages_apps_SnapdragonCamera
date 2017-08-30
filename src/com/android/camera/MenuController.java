@@ -19,27 +19,23 @@
 
 package com.android.camera;
 
+import android.app.Activity;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
+
+import com.android.camera.CameraPreference.OnPreferenceChangedListener;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import android.app.Activity;
-import android.util.Log;
-import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-
-import com.android.camera.CameraPreference.OnPreferenceChangedListener;
-import com.android.camera.ui.RotateImageView;
-
 public class MenuController {
-
-    private static String TAG = "CAM_menucontrol";
 
     protected static final int MODE_PHOTO = 0;
     protected static final int MODE_VIDEO = 1;
-
+    private static String TAG = "CAM_menucontrol";
     protected Activity mActivity;
     protected PreferenceGroup mPreferenceGroup;
     protected OnPreferenceChangedListener mListener;
@@ -47,15 +43,15 @@ public class MenuController {
     protected Map<IconListPreference, View> mPreferenceMap;
     private Map<IconListPreference, String> mOverrides;
 
-    public void setListener(OnPreferenceChangedListener listener) {
-        mListener = listener;
-    }
-
     public MenuController(Activity activity) {
         mActivity = activity;
-        mPreferences = new ArrayList<IconListPreference>();
-        mPreferenceMap = new HashMap<IconListPreference, View>();
-        mOverrides = new HashMap<IconListPreference, String>();
+        mPreferences = new ArrayList<>();
+        mPreferenceMap = new HashMap<>();
+        mOverrides = new HashMap<>();
+    }
+
+    public void setListener(OnPreferenceChangedListener listener) {
+        mListener = listener;
     }
 
     public void initialize(PreferenceGroup group) {
@@ -104,7 +100,7 @@ public class MenuController {
                 return;
             }
         }
-        index = index % ((IconListPreference) pref).getLargeIconIds().length;
+        index = index % pref.getLargeIconIds().length;
         ((ImageView) switcher).setImageResource(pref.getLargeIconIds()[index]);
 
     }

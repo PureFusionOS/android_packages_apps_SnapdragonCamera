@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,10 +14,12 @@
 -->
 
 <resources>
+
     <style name="Theme.GalleryBase" parent="android:Theme.Holo.NoActionBar.Fullscreen">
         <item name="listPreferredItemHeightSmall">?android:attr/listPreferredItemHeightSmall</item>
         <item name="switchStyle">@android:style/Widget.CompoundButton</item>
     </style>
+
     <style name="ActionBarTwoLineItem">
         <item name="android:background">?android:attr/activatedBackgroundIndicator</item>
     </style>

@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
+
 import org.omnirom.snap.R;
 
 import java.text.NumberFormat;
@@ -39,24 +40,16 @@ import java.util.Locale;
  */
 public class TimeIntervalPopup extends AbstractSettingPopup {
     private static final String TAG = "TimeIntervalPopup";
+    private final String[] mUnits;
+    private final String[] mDurations;
     private NumberPicker mNumberSpinner;
     private NumberPicker mUnitSpinner;
     private Switch mTimeLapseSwitch;
-    private final String[] mUnits;
-    private final String[] mDurations;
     private IconListPreference mPreference;
     private Listener mListener;
     private Button mConfirmButton;
     private TextView mHelpText;
     private View mTimePicker;
-
-    static public interface Listener {
-        public void onListPrefChanged(ListPreference pref);
-    }
-
-    public void setSettingChangedListener(Listener listener) {
-        mListener = listener;
-    }
 
     public TimeIntervalPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -78,6 +71,10 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
             result[i] = format.format(value);
         }
         return result;
+    }
+
+    public void setSettingChangedListener(Listener listener) {
+        mListener = listener;
     }
 
     public void initialize(IconListPreference preference) {
@@ -110,16 +107,8 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
         mNumberSpinner.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
         mUnitSpinner.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        mTimeLapseSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                setTimeSelectionEnabled(isChecked);
-            }
-        });
-        mConfirmButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                updateInputState();
-            }
-        });
+        mTimeLapseSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> setTimeSelectionEnabled(isChecked));
+        mConfirmButton.setOnClickListener(v -> updateInputState());
     }
 
     private void restoreSetting() {
@@ -176,5 +165,9 @@ public class TimeIntervalPopup extends AbstractSettingPopup {
         if (mListener != null) {
             mListener.onListPrefChanged(mPreference);
         }
+    }
+
+    static public interface Listener {
+        public void onListPrefChanged(ListPreference pref);
     }
 }

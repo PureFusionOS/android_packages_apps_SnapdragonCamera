@@ -16,9 +16,6 @@
 
 package com.android.camera;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -32,29 +29,26 @@ import android.provider.MediaStore.Images.ImageColumns;
 import android.provider.MediaStore.MediaColumns;
 import android.util.Log;
 
-import com.android.camera.data.LocalData;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.util.ApiHelper;
 
-public class Storage {
-    private static final String TAG = "CameraStorage";
+import java.io.File;
+import java.io.FileOutputStream;
 
+public class Storage {
     public static final String DCIM =
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).toString();
-
     public static final String DIRECTORY = DCIM + "/Camera";
     public static final String RAW_DIRECTORY = DCIM + "/Camera/raw";
     public static final String JPEG_POSTFIX = ".jpg";
-
     // Match the code in MediaProvider.computeBucketValues().
     public static final String BUCKET_ID =
             String.valueOf(DIRECTORY.toLowerCase().hashCode());
-
     public static final long UNAVAILABLE = -1L;
     public static final long PREPARING = -2L;
     public static final long UNKNOWN_SIZE = -3L;
     public static final long LOW_STORAGE_THRESHOLD_BYTES = 60 * 1024 * 1024;
-
+    private static final String TAG = "CameraStorage";
     private static boolean sSaveSDCard = false;
 
     public static boolean isSaveSDCard() {
@@ -75,9 +69,9 @@ public class Storage {
     }
 
     public static int writeFile(String path, byte[] jpeg, ExifInterface exif,
-            String mimeType) {
+                                String mimeType) {
         if (exif != null && (mimeType == null ||
-            mimeType.equalsIgnoreCase("jpeg"))) {
+                mimeType.equalsIgnoreCase("jpeg"))) {
             try {
                 return exif.writeExif(jpeg, path);
             } catch (Exception e) {
@@ -85,8 +79,8 @@ public class Storage {
             }
         } else if (jpeg != null) {
             if (!(mimeType.equalsIgnoreCase("jpeg") || mimeType == null)) {
-                 File dir = new File(RAW_DIRECTORY);
-                 dir.mkdirs();
+                File dir = new File(RAW_DIRECTORY);
+                dir.mkdirs();
             }
             writeFile(path, jpeg);
             return jpeg.length;
@@ -112,8 +106,8 @@ public class Storage {
 
     // Save the image with a given mimeType and add it the MediaStore.
     public static Uri addImage(ContentResolver resolver, String title, long date,
-            Location location, int orientation, ExifInterface exif, byte[] jpeg, int width,
-            int height, String mimeType) {
+                               Location location, int orientation, ExifInterface exif, byte[] jpeg, int width,
+                               int height, String mimeType) {
 
         String path = generateFilepath(title, mimeType);
         int size = writeFile(path, jpeg, exif, mimeType);
@@ -128,14 +122,14 @@ public class Storage {
 
     // Get a ContentValues object for the given photo data
     public static ContentValues getContentValuesForData(String title,
-            long date, Location location, int orientation, int jpegLength,
-            String path, int width, int height, String mimeType) {
+                                                        long date, Location location, int orientation, int jpegLength,
+                                                        String path, int width, int height, String mimeType) {
         // Insert into MediaStore.
         ContentValues values = new ContentValues(9);
         values.put(ImageColumns.TITLE, title);
         if (mimeType.equalsIgnoreCase("jpeg") ||
-            mimeType.equalsIgnoreCase("image/jpeg") ||
-            mimeType == null) {
+                mimeType.equalsIgnoreCase("image/jpeg") ||
+                mimeType == null) {
             values.put(ImageColumns.DISPLAY_NAME, title + ".jpg");
         } else {
             values.put(ImageColumns.DISPLAY_NAME, title + ".raw");
@@ -158,18 +152,18 @@ public class Storage {
 
     // Add the image to media store.
     public static Uri addImage(ContentResolver resolver, String title,
-            long date, Location location, int orientation, int jpegLength,
-            String path, int width, int height, String mimeType) {
+                               long date, Location location, int orientation, int jpegLength,
+                               String path, int width, int height, String mimeType) {
         // Insert into MediaStore.
         ContentValues values =
                 getContentValuesForData(title, date, location, orientation, jpegLength, path,
                         width, height, mimeType);
 
-         return insertImage(resolver, values);
+        return insertImage(resolver, values);
     }
 
     public static long addRawImage(String title, byte[] data,
-                                  String mimeType) {
+                                   String mimeType) {
         String path = generateFilepath(title, mimeType);
         int size = writeFile(path, data, null, mimeType);
         // Try to get the real image size after add exif.
@@ -183,8 +177,8 @@ public class Storage {
     // Overwrites the file and updates the MediaStore, or inserts the image if
     // one does not already exist.
     public static void updateImage(Uri imageUri, ContentResolver resolver, String title, long date,
-            Location location, int orientation, ExifInterface exif, byte[] jpeg, int width,
-            int height, String mimeType) {
+                                   Location location, int orientation, ExifInterface exif, byte[] jpeg, int width,
+                                   int height, String mimeType) {
         String path = generateFilepath(title, mimeType);
         writeFile(path, jpeg, exif, mimeType);
         updateImage(imageUri, resolver, title, date, location, orientation, jpeg.length, path,
@@ -194,8 +188,8 @@ public class Storage {
     // Updates the image values in MediaStore, or inserts the image if one does
     // not already exist.
     public static void updateImage(Uri imageUri, ContentResolver resolver, String title,
-            long date, Location location, int orientation, int jpegLength,
-            String path, int width, int height, String mimeType) {
+                                   long date, Location location, int orientation, int jpegLength,
+                                   String path, int width, int height, String mimeType) {
 
         ContentValues values =
                 getContentValuesForData(title, date, location, orientation, jpegLength, path,
@@ -241,9 +235,8 @@ public class Storage {
             dir.mkdirs();
             try {
                 StatFs stat = new StatFs(SDCard.instance().getDirectory());
-                long ret = stat.getAvailableBlocks() * (long) stat.getBlockSize();
-                return ret;
-            } catch (Exception e) {
+                return stat.getAvailableBlocks() * (long) stat.getBlockSize();
+            } catch (Exception ignored) {
             }
             return UNKNOWN_SIZE;
         }
@@ -308,7 +301,7 @@ public class Storage {
         Uri uri = null;
         try {
             uri = resolver.insert(Images.Media.EXTERNAL_CONTENT_URI, values);
-        } catch (Throwable th)  {
+        } catch (Throwable th) {
             // This can happen when the external volume is already mounted, but
             // MediaScanner has not notify MediaProvider to add that volume.
             // The picture is still safe and MediaScanner will find it and

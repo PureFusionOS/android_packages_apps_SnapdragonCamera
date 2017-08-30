@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2014, The Linux Foundation. All rights reserved.
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (c) 2014, The Linux Foundation. All rights reserved.
 
      Redistribution and use in source and binary forms, with or without
      modification, are permitted provided that the following conditions are
@@ -30,7 +29,7 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dip" >
+    android:padding="5dip">
 
     <ImageView
         android:id="@+id/list_image"

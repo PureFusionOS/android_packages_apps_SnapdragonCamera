@@ -65,20 +65,20 @@ public class DotsView extends View {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if(mItems == null) {
+        if (mItems == null) {
             return;
         }
 
-        int dx = canvas.getWidth()/(mItems.getTotalItemNums()+1);
-        int dy = canvas.getHeight()/(mItems.getTotalItemNums()+1);
-        int y = canvas.getHeight()/2;
-        float radius = Math.min(dx, dy)/2f;
-        for(int i=0; i < mItems.getTotalItemNums(); i++) {
-            if(i-1 == mPosition && mPositionOffset > 0f) {
+        int dx = canvas.getWidth() / (mItems.getTotalItemNums() + 1);
+        int dy = canvas.getHeight() / (mItems.getTotalItemNums() + 1);
+        int y = canvas.getHeight() / 2;
+        float radius = Math.min(dx, dy) / 2f;
+        for (int i = 0; i < mItems.getTotalItemNums(); i++) {
+            if (i - 1 == mPosition && mPositionOffset > 0f) {
                 drawDot(canvas, (i + 1) * dx, y, radius + radius * mPositionOffset, mItems.isChosen(i));
-            } else if(i+1 == mPosition && mPositionOffset < 0f) {
-                drawDot(canvas, (i + 1) * dx, y, radius - radius*mPositionOffset, mItems.isChosen(i));
-            } else if(i == mPosition) {
+            } else if (i + 1 == mPosition && mPositionOffset < 0f) {
+                drawDot(canvas, (i + 1) * dx, y, radius - radius * mPositionOffset, mItems.isChosen(i));
+            } else if (i == mPosition) {
                 drawDot(canvas, (i + 1) * dx, y, radius + radius * (1 - Math.abs(mPositionOffset)), mItems.isChosen(i));
             } else {
                 drawDot(canvas, (i + 1) * dx, y, radius, mItems.isChosen(i));
@@ -87,7 +87,7 @@ public class DotsView extends View {
     }
 
     private void drawDot(Canvas canvas, float cx, float cy, float radius, boolean isChosen) {
-        if(isChosen) {
+        if (isChosen) {
             mTargetPaint.setStyle(Paint.Style.FILL_AND_STROKE);
             canvas.drawCircle(cx, cy, radius, mTargetPaint);
         } else {

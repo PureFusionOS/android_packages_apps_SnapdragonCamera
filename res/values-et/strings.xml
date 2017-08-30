@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,20 +13,19 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="1928079047368929634">"Galerii"</string>
     <string name="gadget_title" msgid="259405922673466798">"Pildiraam"</string>
     <string name="details_ms" msgid="940634969189855292">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="3215779248094151255">"%1$d:%2$02d:%3$02d"</string>
     <string name="movie_view_label" msgid="3526526872644898229">"Videopleier"</string>
-    <string name="loading_video" msgid="4013492720121891585">"Video laadimine ..."</string>
-    <string name="loading_image" msgid="1200894415793838191">"Kujutise laadimine ..."</string>
-    <string name="loading_account" msgid="928195413034552034">"Kontode laadimine ..."</string>
+    <string name="loading_video" msgid="4013492720121891585">"Video laadimine …"</string>
+    <string name="loading_image" msgid="1200894415793838191">"Kujutise laadimine …"</string>
+    <string name="loading_account" msgid="928195413034552034">"Kontode laadimine …"</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"Jätka videot"</string>
     <string name="resume_playing_message" msgid="5184414518126703481">"Kas jätkata esitust alates %s?"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"Jätka esitust"</string>
-    <string name="loading" msgid="7038208555304563571">"Laadimine ..."</string>
+    <string name="loading" msgid="7038208555304563571">"Laadimine …"</string>
     <string name="fail_to_load" msgid="8394392853646664505">"Laadimine ebaõnnestus"</string>
     <string name="fail_to_load_image" msgid="6155388718549782425">"Kujutist ei õnnestunud laadida"</string>
     <string name="no_thumbnail" msgid="284723185546429750">"Pisipilti pole"</string>
@@ -35,7 +33,7 @@
     <string name="crop_save_text" msgid="152200178986698300">"OK"</string>
     <string name="ok" msgid="5296833083983263293">"OK"</string>
     <string name="multiface_crop_help" msgid="2554690102655855657">"Alustamiseks näo puudutamine."</string>
-    <string name="saving_image" msgid="7270334453636349407">"Pildi salvestamine ..."</string>
+    <string name="saving_image" msgid="7270334453636349407">"Pildi salvestamine …"</string>
     <string name="filtershow_saving_image" msgid="6659463980581993016">"Pildi salvestamine albumisse <xliff:g id="ALBUM_NAME">%1$s</xliff:g> …"</string>
     <string name="save_error" msgid="6857408774183654970">"Kärbitud kujutist ei saanud salvestada."</string>
     <string name="crop_label" msgid="521114301871349328">"Kärbi pilti"</string>
@@ -46,13 +44,13 @@
     <string name="select_group" msgid="6744208543323307114">"Rühma valimine"</string>
     <string name="set_image" msgid="2331476809308010401">"Seadke pilt kui"</string>
     <string name="set_wallpaper" msgid="8491121226190175017">"Taustapildiks määr."</string>
-    <string name="wallpaper" msgid="140165383777262070">"Taustapildi määramine ..."</string>
+    <string name="wallpaper" msgid="140165383777262070">"Taustapildi määramine …"</string>
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Taustapilt"</string>
     <string name="delete" msgid="2839695998251824487">"Kustuta"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="6453379735401083732">"Kas kustutada valitud üksus?"</item>
-    <item quantity="other" msgid="5874316486520635333">"Kas kustutada valitud üksused?"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="6453379735401083732" quantity="one">"Kas kustutada valitud üksus?"</item>
+        <item msgid="5874316486520635333" quantity="other">"Kas kustutada valitud üksused?"</item>
+    </plurals>
     <string name="confirm" msgid="8646870096527848520">"Kinnitamine"</string>
     <string name="cancel" msgid="3637516880917356226">"Tühista"</string>
     <string name="share" msgid="3619042788254195341">"Jaga"</string>
@@ -67,28 +65,28 @@
     <string name="details_title" msgid="2611396603977441273">"Üksusi: %1$d/%2$d"</string>
     <string name="close" msgid="5585646033158453043">"Sule"</string>
     <string name="switch_to_camera" msgid="7280111806675169992">"Üleminek rakendusse Kaamera"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="2142579311530586258">"Valitud %1$d"</item>
-    <item quantity="one" msgid="2478365152745637768">"Valitud %1$d"</item>
-    <item quantity="other" msgid="754722656147810487">"Valitud %1$d"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="749292746814788132">"Valitud %1$d"</item>
-    <item quantity="one" msgid="6184377003099987825">"Valitud %1$d"</item>
-    <item quantity="other" msgid="53105607141906130">"Valitud %1$d"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="3466388370310869238">"Valitud %1$d"</item>
-    <item quantity="one" msgid="5030162638216034260">"Valitud %1$d"</item>
-    <item quantity="other" msgid="3512041363942842738">"Valitud %1$d"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="2142579311530586258" quantity="zero">"Valitud %1$d"</item>
+        <item msgid="2478365152745637768" quantity="one">"Valitud %1$d"</item>
+        <item msgid="754722656147810487" quantity="other">"Valitud %1$d"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="749292746814788132" quantity="zero">"Valitud %1$d"</item>
+        <item msgid="6184377003099987825" quantity="one">"Valitud %1$d"</item>
+        <item msgid="53105607141906130" quantity="other">"Valitud %1$d"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="3466388370310869238" quantity="zero">"Valitud %1$d"</item>
+        <item msgid="5030162638216034260" quantity="one">"Valitud %1$d"</item>
+        <item msgid="3512041363942842738" quantity="other">"Valitud %1$d"</item>
+    </plurals>
     <string name="show_on_map" msgid="6157544221201750980">"Näita kaardil"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Pööra vasakule"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Pööra paremale"</string>
     <string name="no_such_item" msgid="5315144556325243400">"Üksust ei leitud."</string>
     <string name="edit" msgid="1502273844748580847">"Muuda"</string>
     <string name="process_caching_requests" msgid="8722939570307386071">"Vahemällu lisamise taotluste töötlemine"</string>
-    <string name="caching_label" msgid="4521059045896269095">"Vahemällu ..."</string>
+    <string name="caching_label" msgid="4521059045896269095">"Vahemällu …"</string>
     <string name="crop_action" msgid="3427470284074377001">"Kärbi"</string>
     <string name="trim_action" msgid="703098114452883524">"Kärbi"</string>
     <string name="mute_action" msgid="5296241754753306251">"Vaigista"</string>
@@ -153,10 +151,10 @@
     <string name="ffx_x_process" msgid="4779398678661811765">"X-töötlus"</string>
     <string name="ffx_washout" msgid="4594160692176642735">"Latte"</string>
     <string name="ffx_washout_color" msgid="8034075742195795219">"Litorgaafia"</string>
-  <plurals name="make_albums_available_offline">
-    <item quantity="one" msgid="2171596356101611086">"Tegime albumi võrguühenduseta kättesaadavaks."</item>
-    <item quantity="other" msgid="4948604338155959389">"Tegime albumid võrguühenduseta kättesaadavaks."</item>
-  </plurals>
+    <plurals name="make_albums_available_offline">
+        <item msgid="2171596356101611086" quantity="one">"Tegime albumi võrguühenduseta kättesaadavaks."</item>
+        <item msgid="4948604338155959389" quantity="other">"Tegime albumid võrguühenduseta kättesaadavaks."</item>
+    </plurals>
     <string name="try_to_set_local_album_available_offline" msgid="2184754031896160755">"See üksus on kohalikult salvestatud ja offlainis kättesaadav."</string>
     <string name="set_label_all_albums" msgid="4581863582996336783">"Kõik albumid"</string>
     <string name="set_label_local_albums" msgid="6698133661656266702">"Kohalikud albumid"</string>
@@ -203,15 +201,15 @@
     <string name="trim_too_short" msgid="751593965620665326">"Ei saa kärpida: lõppvideo on liiga lühike"</string>
     <string name="pano_progress_text" msgid="1586851614586678464">"Panoraami renderdamine"</string>
     <string name="save" msgid="613976532235060516">"Salvesta"</string>
-    <string name="ingest_scanning" msgid="1062957108473988971">"Sisu skannimine ..."</string>
-  <plurals name="ingest_number_of_items_scanned">
-    <item quantity="zero" msgid="2623289390474007396">"%1$d üksust on skannitud"</item>
-    <item quantity="one" msgid="4340019444460561648">"%1$d üksus on skannitud"</item>
-    <item quantity="other" msgid="3138021473860555499">"%1$d üksust on skannitud"</item>
-  </plurals>
-    <string name="ingest_sorting" msgid="1028652103472581918">"Sortimine ..."</string>
+    <string name="ingest_scanning" msgid="1062957108473988971">"Sisu skannimine …"</string>
+    <plurals name="ingest_number_of_items_scanned">
+        <item msgid="2623289390474007396" quantity="zero">"%1$d üksust on skannitud"</item>
+        <item msgid="4340019444460561648" quantity="one">"%1$d üksus on skannitud"</item>
+        <item msgid="3138021473860555499" quantity="other">"%1$d üksust on skannitud"</item>
+    </plurals>
+    <string name="ingest_sorting" msgid="1028652103472581918">"Sortimine …"</string>
     <string name="ingest_scanning_done" msgid="8911916277034483430">"Skannimine on lõppenud"</string>
-    <string name="ingest_importing" msgid="7456633398378527611">"Importimine ..."</string>
+    <string name="ingest_importing" msgid="7456633398378527611">"Importimine …"</string>
     <string name="ingest_empty_device" msgid="2010470482779872622">"Seadmes pole importimiseks saadaval mingit sisu."</string>
     <string name="ingest_no_device" msgid="3054128223131382122">"Ühtegi MTP-seadet pole ühendatud"</string>
     <string name="camera_error_title" msgid="6484667504938477337">"Kaamera viga"</string>
@@ -219,13 +217,13 @@
     <string name="camera_disabled" msgid="8923911090533439312">"Kaamera on keelatud turvaeeskirjade tõttu."</string>
     <string name="camera_label" msgid="6346560772074764302">"Kaamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Videokaamera"</string>
-    <string name="wait" msgid="8600187532323801552">"Oodake ..."</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Paigaldage USB-mäluseade enne kaamera kasutamist."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"Enne kaamera kasutamist sisestage SD-kaart."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"USB-seadme ettevalmistamine…"</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"SD-kaardi ettevalmistamine ..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Juurdepääs USB-mäluseadmele ebaõnnestus."</string>
-    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Juurdepääs SD-kaardile ebaõnnestus."</string>
+    <string name="wait" msgid="8600187532323801552">"Oodake …"</string>
+    <string name="no_storage" msgid="7335975356349008814" product="nosdcard">"Paigaldage USB-mäluseade enne kaamera kasutamist."</string>
+    <string name="no_storage" msgid="5137703033746873624" product="default">"Enne kaamera kasutamist sisestage SD-kaart."</string>
+    <string name="preparing_sd" msgid="6104019983528341353" product="nosdcard">"USB-seadme ettevalmistamine…"</string>
+    <string name="preparing_sd" msgid="2914969119574812666" product="default">"SD-kaardi ettevalmistamine …"</string>
+    <string name="access_sd_fail" msgid="8147993984037859354" product="nosdcard">"Juurdepääs USB-mäluseadmele ebaõnnestus."</string>
+    <string name="access_sd_fail" msgid="1584968646870054352" product="default">"Juurdepääs SD-kaardile ebaõnnestus."</string>
     <string name="review_cancel" msgid="8188009385853399254">"TÜHISTA"</string>
     <string name="review_ok" msgid="1156261588693116433">"VALMIS"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Aeglase filmimise salvestamine"</string>
@@ -234,10 +232,10 @@
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Eestvaade"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Talletuse asukoht"</string>
     <string name="pref_camera_timer_title" msgid="3105232208281893389">"Iseavaja taimer"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="1654523400981245448">"1 sekund"</item>
-    <item quantity="other" msgid="6455381617076792481">"%d sekundit"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="1654523400981245448" quantity="one">"1 sekund"</item>
+        <item msgid="6455381617076792481" quantity="other">"%d sekundit"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Iseavaja heli"</string>
@@ -284,8 +282,8 @@
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Teie USB-mäluseadme ruum on otsa saamas. Muutke kvaliteediseadeid või kustutage kujutisi või teisi faile."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Teie SD-kaardi ruum on otsa saamas. Muutke kvaliteedi seadeid või kustutage kujutisi või teisi faile."</string>
+    <string name="spaceIsLow_content" msgid="4401325203349203177" product="nosdcard">"Teie USB-mäluseadme ruum on otsa saamas. Muutke kvaliteediseadeid või kustutage kujutisi või teisi faile."</string>
+    <string name="spaceIsLow_content" msgid="1732882643101247179" product="default">"Teie SD-kaardi ruum on otsa saamas. Muutke kvaliteedi seadeid või kustutage kujutisi või teisi faile."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Suuruspiirang on saavutatud."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Liiga kiire"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Panoraami ettevalmistus"</string>
@@ -293,7 +291,7 @@
     <string name="pano_dialog_title" msgid="5755531234434437697">"Panoraam"</string>
     <string name="pano_capture_indication" msgid="8248825828264374507">"Panoraami jäädvustamine"</string>
     <string name="pano_dialog_waiting_previous" msgid="7800325815031423516">"Eelmise panoraami ootel"</string>
-    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Salvestus ..."</string>
+    <string name="pano_review_saving_indication_str" msgid="2054886016665130188">"Salvestus …"</string>
     <string name="pano_review_rendering" msgid="2887552964129301902">"Panoraami renderdamine"</string>
     <string name="tap_to_focus" msgid="8863427645591903760">"Puudutage fokuseerimiseks."</string>
     <string name="pref_video_effect_title" msgid="8243182968457289488">"Efektid"</string>
@@ -392,8 +390,8 @@
     <string name="menu_search" msgid="7580008232297437190">"Otsing"</string>
     <string name="tab_photos" msgid="9110813680630313419">"Fotod"</string>
     <string name="tab_albums" msgid="8079449907770685691">"Albumid"</string>
-  <plurals name="number_of_photos">
-    <item quantity="one" msgid="6949174783125614798">"%1$d foto"</item>
-    <item quantity="other" msgid="3813306834113858135">"%1$d fotot"</item>
-  </plurals>
+    <plurals name="number_of_photos">
+        <item msgid="6949174783125614798" quantity="one">"%1$d foto"</item>
+        <item msgid="3813306834113858135" quantity="other">"%1$d fotot"</item>
+    </plurals>
 </resources>

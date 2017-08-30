@@ -16,9 +16,6 @@
 
 package com.android.camera;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
@@ -28,7 +25,11 @@ import android.util.TypedValue;
 
 import com.android.camera.util.CameraUtil;
 import com.android.camera.util.UsageStatistics;
+
 import org.omnirom.snap.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A type of <code>CameraPreference</code> whose number of possible values
@@ -37,9 +38,8 @@ import org.omnirom.snap.R;
 public class ListPreference extends CameraPreference {
     private static final String TAG = "ListPreference";
     private final String mKey;
-    private String mValue;
     private final CharSequence[] mDefaultValues;
-
+    private String mValue;
     private CharSequence[] mEntries;
     private CharSequence[] mEntryValues;
     private CharSequence[] mInitialEntries;
@@ -92,28 +92,28 @@ public class ListPreference extends CameraPreference {
         return mEntries;
     }
 
-    public CharSequence[] getEntryValues() {
-        return mEntryValues;
-    }
-
-    public CharSequence[] getLabels() {
-        return mLabels;
-    }
-
-    public CharSequence[] getDependencyList() {
-        return mDependencyList;
-    }
-
     public void setEntries(CharSequence entries[]) {
         mEntries = entries == null ? new CharSequence[0] : entries;
+    }
+
+    public CharSequence[] getEntryValues() {
+        return mEntryValues;
     }
 
     public void setEntryValues(CharSequence values[]) {
         mEntryValues = values == null ? new CharSequence[0] : values;
     }
 
+    public CharSequence[] getLabels() {
+        return mLabels;
+    }
+
     public void setLabels(CharSequence labels[]) {
         mLabels = labels == null ? new CharSequence[0] : labels;
+    }
+
+    public CharSequence[] getDependencyList() {
+        return mDependencyList;
     }
 
     public void setDependencyList(CharSequence dependencyList[]) {
@@ -129,30 +129,30 @@ public class ListPreference extends CameraPreference {
         return mValue;
     }
 
-    public String getOffValue() {
-        return mEntryValues[0].toString();
-    }
-
-    // Find the first value in mDefaultValues which is supported.
-    private String findSupportedDefaultValue() {
-        for (int i = 0; i < mDefaultValues.length; i++) {
-            for (int j = 0; j < mEntryValues.length; j++) {
-                // Note that mDefaultValues[i] may be null (if unspecified
-                // in the xml file).
-                if (mEntryValues[j].equals(mDefaultValues[i])) {
-                    return mDefaultValues[i].toString();
-                }
-            }
-        }
-        return null;
-    }
-
     public void setValue(String value) {
         if (findIndexOfValue(value) < 0) {
             value = findSupportedDefaultValue();
         }
         mValue = value;
         persistStringValue(value);
+    }
+
+    public String getOffValue() {
+        return mEntryValues[0].toString();
+    }
+
+    // Find the first value in mDefaultValues which is supported.
+    private String findSupportedDefaultValue() {
+        for (CharSequence mDefaultValue : mDefaultValues) {
+            for (CharSequence mEntryValue : mEntryValues) {
+                // Note that mDefaultValues[i] may be null (if unspecified
+                // in the xml file).
+                if (mEntryValue.equals(mDefaultValue)) {
+                    return mDefaultValue.toString();
+                }
+            }
+        }
+        return null;
     }
 
     public void setMakeupSeekBarValue(String value) {
@@ -176,8 +176,8 @@ public class ListPreference extends CameraPreference {
     }
 
     public String getEntry() {
-        int index  = findIndexOfValue(getValue());
-        if(index < 0) {
+        int index = findIndexOfValue(getValue());
+        if (index < 0) {
             return findSupportedDefaultValue();
         }
         return mEntries[index].toString();
@@ -200,8 +200,8 @@ public class ListPreference extends CameraPreference {
     }
 
     public void filterUnsupported(List<String> supported) {
-        ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
-        ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
+        ArrayList<CharSequence> entries = new ArrayList<>();
+        ArrayList<CharSequence> entryValues = new ArrayList<>();
         for (int i = 0, len = mEntryValues.length; i < len; i++) {
             if (supported.indexOf(mEntryValues[i].toString()) >= 0) {
                 entries.add(mEntries[i]);
@@ -214,8 +214,8 @@ public class ListPreference extends CameraPreference {
     }
 
     public void filterDuplicated() {
-        ArrayList<CharSequence> entries = new ArrayList<CharSequence>();
-        ArrayList<CharSequence> entryValues = new ArrayList<CharSequence>();
+        ArrayList<CharSequence> entries = new ArrayList<>();
+        ArrayList<CharSequence> entryValues = new ArrayList<>();
         for (int i = 0, len = mEntryValues.length; i < len; i++) {
             if (!entries.contains(mEntries[i])) {
                 entries.add(mEntries[i]);
@@ -231,6 +231,7 @@ public class ListPreference extends CameraPreference {
         mEntries = mInitialEntries;
         mEntryValues = mInitialEntryValues;
     }
+
     public void print() {
         Log.v(TAG, "Preference key=" + getKey() + ". value=" + getValue());
         for (int i = 0; i < mEntryValues.length; i++) {

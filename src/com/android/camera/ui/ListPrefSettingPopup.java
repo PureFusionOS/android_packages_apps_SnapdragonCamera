@@ -16,11 +16,6 @@
 
 package com.android.camera.ui;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -32,7 +27,13 @@ import android.widget.SimpleAdapter;
 
 import com.android.camera.IconListPreference;
 import com.android.camera.ListPreference;
+
 import org.omnirom.snap.R;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 // A popup window that shows one camera setting. The title is the name of the
 // setting (ex: white-balance). The entries are the supported values (ex:
@@ -45,29 +46,8 @@ public class ListPrefSettingPopup extends AbstractSettingPopup implements
     private ListPreference mPreference;
     private Listener mListener;
 
-    static public interface Listener {
-        public void onListPrefChanged(ListPreference pref);
-    }
-
     public ListPrefSettingPopup(Context context, AttributeSet attrs) {
         super(context, attrs);
-    }
-
-    private class ListPrefSettingAdapter extends SimpleAdapter {
-        ListPrefSettingAdapter(Context context, List<? extends Map<String, ?>> data,
-                int resource, String[] from, int[] to) {
-            super(context, data, resource, from, to);
-        }
-
-        @Override
-        public void setViewImage(ImageView v, String value) {
-            if ("".equals(value)) {
-                // Some settings have no icons. Ex: exposure compensation.
-                v.setVisibility(View.GONE);
-            } else {
-                super.setViewImage(v, value);
-            }
-        }
     }
 
     public void initialize(ListPreference preference) {
@@ -86,17 +66,17 @@ public class ListPrefSettingPopup extends AbstractSettingPopup implements
 
         // Prepare the ListView.
         ArrayList<HashMap<String, Object>> listItem =
-                new ArrayList<HashMap<String, Object>>();
-        for(int i = 0; i < entries.length; ++i) {
-            HashMap<String, Object> map = new HashMap<String, Object>();
+                new ArrayList<>();
+        for (int i = 0; i < entries.length; ++i) {
+            HashMap<String, Object> map = new HashMap<>();
             map.put("text", entries[i].toString());
             if (iconIds != null) map.put("image", iconIds[i]);
             listItem.add(map);
         }
         SimpleAdapter listItemAdapter = new ListPrefSettingAdapter(context, listItem,
                 R.layout.setting_item,
-                new String[] {"text", "image"},
-                new int[] {R.id.text, R.id.image});
+                new String[]{"text", "image"},
+                new int[]{R.id.text, R.id.image});
         ((ListView) mSettingList).setAdapter(listItemAdapter);
         ((ListView) mSettingList).setOnItemClickListener(this);
         reloadPreference();
@@ -120,8 +100,29 @@ public class ListPrefSettingPopup extends AbstractSettingPopup implements
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view,
-            int index, long id) {
+                            int index, long id) {
         mPreference.setValueIndex(index);
         if (mListener != null) mListener.onListPrefChanged(mPreference);
+    }
+
+    static public interface Listener {
+        public void onListPrefChanged(ListPreference pref);
+    }
+
+    private class ListPrefSettingAdapter extends SimpleAdapter {
+        ListPrefSettingAdapter(Context context, List<? extends Map<String, ?>> data,
+                               int resource, String[] from, int[] to) {
+            super(context, data, resource, from, to);
+        }
+
+        @Override
+        public void setViewImage(ImageView v, String value) {
+            if ("".equals(value)) {
+                // Some settings have no icons. Ex: exposure compensation.
+                v.setVisibility(View.GONE);
+            } else {
+                super.setViewImage(v, value);
+            }
+        }
     }
 }

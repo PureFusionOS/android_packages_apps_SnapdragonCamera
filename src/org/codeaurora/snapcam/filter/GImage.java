@@ -29,13 +29,12 @@
 
 package org.codeaurora.snapcam.filter;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPMeta;
-import com.adobe.xmp.XMPMetaFactory;
-
 import android.util.Base64;
 
-public class GImage{
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.XMPMetaFactory;
+
+public class GImage {
     public final static String NAMESPACE_URL = "http://ns.google.com/photos/1.0/image/";
     public final static String PREFIX = "GImage";
     public final static String PROPERTY_MIME = "Mime";
@@ -50,19 +49,19 @@ public class GImage{
         }
     }
 
-    private  String mMime = "image/jpeg";
+    private String mMime = "image/jpeg";
     private String mData;
 
-    public GImage(byte[] data, String mime){
+    public GImage(byte[] data, String mime) {
         mData = Base64.encodeToString(data, Base64.DEFAULT);
         mMime = mime;
     }
 
-    public String getMime(){
+    public String getMime() {
         return mMime;
     }
 
-    public String getData(){
+    public String getData() {
         return mData;
     }
 }

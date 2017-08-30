@@ -26,6 +26,7 @@ import android.util.Log;
 import com.android.camera.data.LocalMediaData.PhotoData;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.exif.ExifTag;
+
 import org.omnirom.snap.R;
 
 import java.io.File;
@@ -45,7 +46,7 @@ public class RotationTask extends AsyncTask<LocalData, Void, LocalData> {
     private ProgressDialog mProgress;
 
     public RotationTask(Context context, LocalDataAdapter adapter,
-            int currentDataId, boolean clockwise) {
+                        int currentDataId, boolean clockwise) {
         mContext = context;
         mAdapter = adapter;
         mCurrentDataId = currentDataId;

@@ -19,20 +19,17 @@
 
 package com.android.camera.mpo;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import android.util.Log;
 
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.util.CameraUtil;
 
-public class MpoInterface {
-    private static final String TAG = "MpoInterface";
-    private static final String NULL_ARGUMENT_STRING = "Argument is null";
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
+public class MpoInterface {
     // Index IFD
     public static final int TAG_MP_FORMAT_VERSION = ExifInterface.defineTag(
             MpoIfdData.TYPE_MP_INDEX_IFD + MpoIfdData.TYPE_MP_ATTRIB_IFD, (short) 0xB000);
@@ -44,7 +41,6 @@ public class MpoInterface {
             MpoIfdData.TYPE_MP_INDEX_IFD, (short) 0xB003);
     public static final int TAG_NUM_CAPTURED_FRAMES = ExifInterface.defineTag(
             MpoIfdData.TYPE_MP_INDEX_IFD, (short) 0xB004);
-
     // Attrib IFD
     public static final int TAG_IMAGE_NUMBER = ExifInterface.defineTag(
             MpoIfdData.TYPE_MP_ATTRIB_IFD, (short) 0xB101);
@@ -74,6 +70,8 @@ public class MpoInterface {
             MpoIfdData.TYPE_MP_ATTRIB_IFD, (short) 0xB20C);
     public static final int TAG_ROLL_ANGLE = ExifInterface.defineTag(MpoIfdData.TYPE_MP_ATTRIB_IFD,
             (short) 0xB20D);
+    private static final String TAG = "MpoInterface";
+    private static final String NULL_ARGUMENT_STRING = "Argument is null";
 
     public static int writeMpo(MpoData mpo, OutputStream out) {
         if (mpo == null || out == null)
@@ -106,24 +104,21 @@ public class MpoInterface {
     /**
      * Wraps an OutputStream object with an MpoOutputStream.
      *
-     * @param outStream
-     *            an OutputStream to wrap.
+     * @param outStream an OutputStream to wrap.
      * @return an MpoOutputStream that wraps the outStream parameter, and adds
-     *         mpo metadata. A jpeg image should be written to this stream.
+     * mpo metadata. A jpeg image should be written to this stream.
      */
     private static MpoOutputStream getMpoWriterStream(OutputStream outStream) {
         if (outStream == null) {
             throw new IllegalArgumentException(NULL_ARGUMENT_STRING);
         }
-        MpoOutputStream mos = new MpoOutputStream(outStream);
-        return mos;
+        return new MpoOutputStream(outStream);
     }
 
     /**
      * Returns an FileOutputStream object that writes to a file.
      *
-     * @param outFileName
-     *            an String containing a filepath for a file.
+     * @param outFileName an String containing a filepath for a file.
      * @return an FileOutputStream that writes to the outFileName file.
      * @throws FileNotFoundException
      */

@@ -23,8 +23,9 @@ import org.omnirom.snap.R;
 
 public class CountDownTimerPreference extends IconListPreference {
     private static final int[] DURATIONS = {
-        0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 60
+            0, 1, 2, 3, 4, 5, 10, 15, 20, 30, 60
     };
+
     public CountDownTimerPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         initCountDownDurationChoices(context);
@@ -40,7 +41,7 @@ public class CountDownTimerPreference extends IconListPreference {
             } else {
                 entries[i] = context.getResources()
                         .getQuantityString(R.plurals.pref_camera_timer_entry, i,
-                        DURATIONS[i]);
+                                DURATIONS[i]);
             }
         }
         setEntries(entries);

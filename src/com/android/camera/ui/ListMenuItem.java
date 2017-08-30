@@ -22,12 +22,13 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ImageView;
 
-import com.android.camera.ListPreference;
 import com.android.camera.IconListPreference;
+import com.android.camera.ListPreference;
+
 import org.omnirom.snap.R;
 
 /**
@@ -42,18 +43,14 @@ import org.omnirom.snap.R;
  */
 public class ListMenuItem extends RelativeLayout {
     private static final String TAG = "ListMenuItem";
-    private Listener mListener;
     protected ListPreference mPreference;
     protected int mIndex;
     // Scene mode can override the original preference value.
     protected String mOverrideValue;
     protected TextView mTitle;
+    private Listener mListener;
     private TextView mEntry;
     private ImageView mIcon;
-
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
-    }
 
     public ListMenuItem(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -180,5 +177,9 @@ public class ListMenuItem extends RelativeLayout {
             else
                 setAlpha(0.3f);
         }
+    }
+
+    static public interface Listener {
+        public void onSettingChanged(ListPreference pref);
     }
 }

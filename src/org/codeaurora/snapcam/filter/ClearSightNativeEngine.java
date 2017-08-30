@@ -29,11 +29,6 @@
 
 package org.codeaurora.snapcam.filter;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.graphics.Rect;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
@@ -43,11 +38,22 @@ import android.util.Log;
 
 import com.android.camera.util.PersistUtil;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClearSightNativeEngine {
     private static final boolean DEBUG =
             (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_LOG) ||
-            (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
+                    (PersistUtil.getCamera2Debug() == PersistUtil.CAMERA2_DEBUG_DUMP_ALL);
     private static final String TAG = "ClearSightNativeEngine";
+    private static final int METADATA_SIZE = 6;
+    private static final int Y_PLANE = 0;
+    private static final int VU_PLANE = 2;
+    private static boolean mLibLoaded;
+    private static ClearSightNativeEngine mInstance;
+
     static {
         try {
             System.loadLibrary("jni_clearsight");
@@ -60,13 +66,9 @@ public class ClearSightNativeEngine {
         }
     }
 
-    private static final int METADATA_SIZE = 6;
-    private static final int Y_PLANE = 0;
-    private static final int VU_PLANE = 2;
-
-    private static boolean mLibLoaded;
-    private static ClearSightNativeEngine mInstance;
-
+    private final float mBrIntensity;
+    private final float mSmoothingIntensity;
+    private final boolean mIsVerticallyAlignedSensor;
     private byte[] mOtpCalibData;
     private int mImageWidth;
     private int mImageHeight;
@@ -76,12 +78,9 @@ public class ClearSightNativeEngine {
     private Image mRefMonoImage;
     private TotalCaptureResult mRefColorResult;
     private TotalCaptureResult mRefMonoResult;
-    private ArrayList<SourceImage> mCache = new ArrayList<SourceImage>();
-    private ArrayList<SourceImage> mSrcColor = new ArrayList<SourceImage>();
-    private ArrayList<SourceImage> mSrcMono = new ArrayList<SourceImage>();
-    private final float mBrIntensity;
-    private final float mSmoothingIntensity;
-    private final boolean mIsVerticallyAlignedSensor;
+    private ArrayList<SourceImage> mCache = new ArrayList<>();
+    private ArrayList<SourceImage> mSrcColor = new ArrayList<>();
+    private ArrayList<SourceImage> mSrcMono = new ArrayList<>();
 
     private ClearSightNativeEngine() {
         mBrIntensity = PersistUtil.getDualCameraBrIntensity();
@@ -108,9 +107,9 @@ public class ClearSightNativeEngine {
         mImageHeight = height;
         mYStride = width;
         mVUStride = width;
-        while(frameCount > 0) {
-            cacheSourceImage(new SourceImage(width*height, width*height/2));
-            frameCount --;
+        while (frameCount > 0) {
+            cacheSourceImage(new SourceImage(width * height, width * height / 2));
+            frameCount--;
         }
     }
 
@@ -128,10 +127,10 @@ public class ClearSightNativeEngine {
     }
 
     public void reset() {
-        while(!mSrcColor.isEmpty()) {
+        while (!mSrcColor.isEmpty()) {
             cacheSourceImage(mSrcColor.remove(0));
         }
-        while(!mSrcMono.isEmpty()) {
+        while (!mSrcMono.isEmpty()) {
             cacheSourceImage(mSrcMono.remove(0));
         }
         setReferenceColorImage(null);
@@ -233,7 +232,7 @@ public class ClearSightNativeEngine {
     }
 
     public boolean registerImage(boolean color, Image image) {
-        List<SourceImage> sourceImages = color?mSrcColor:mSrcMono;
+        List<SourceImage> sourceImages = color ? mSrcColor : mSrcMono;
         if (sourceImages.isEmpty()) {
             Log.w(TAG, "reference image not yet set");
             return false;
@@ -250,7 +249,7 @@ public class ClearSightNativeEngine {
         ByteBuffer vuBuf = null;
         ByteBuffer regVU = null;
         int vuRowStride = 0;
-        if(color) {
+        if (color) {
             vuBuf = planes[VU_PLANE].getBuffer();
             regVU = newSrc.mVU;
             vuRowStride = planes[VU_PLANE].getRowStride();
@@ -307,14 +306,14 @@ public class ClearSightNativeEngine {
 
         Log.d(TAG, "processImage - iso: " + iso + " exposure ms: " + exposure);
         if (DEBUG) {
-            Log.d(TAG,"processImage - mBrIntensity :" + mBrIntensity +
+            Log.d(TAG, "processImage - mBrIntensity :" + mBrIntensity +
                     ", mSmoothingIntensity :" + mSmoothingIntensity +
                     ", mIsVerticallyAlignedSensor :" + mIsVerticallyAlignedSensor);
         }
         return nativeClearSightProcessInit2(numImages,
                 srcColorY, srcColorVU, metadataColor, mImageWidth, mImageHeight,
                 mYStride, mVUStride, srcMonoY, metadataMono, mImageWidth, mImageHeight,
-                mYStride, mOtpCalibData, (int)exposure, iso,
+                mYStride, mOtpCalibData, (int) exposure, iso,
                 mBrIntensity, mSmoothingIntensity, mIsVerticallyAlignedSensor);
     }
 
@@ -338,32 +337,20 @@ public class ClearSightNativeEngine {
     }
 
     private native final boolean nativeClearSightRegisterImage(ByteBuffer refY,
-            ByteBuffer srcY, ByteBuffer srcVU, int width, int height,
-            int strideY, int strideVU, ByteBuffer dstY, ByteBuffer dstVU,
-            float[] metadata);
+                                                               ByteBuffer srcY, ByteBuffer srcVU, int width, int height,
+                                                               int strideY, int strideVU, ByteBuffer dstY, ByteBuffer dstVU,
+                                                               float[] metadata);
 
     private native final boolean nativeClearSightProcessInit2(int numImagePairs,
-            ByteBuffer[] srcColorY, ByteBuffer[] srcColorVU,
-            float[][] metadataColor, int srcColorWidth, int srcColorHeight,
-            int srcColorStrideY, int srcColorStrideVU, ByteBuffer[] srcMonoY,
-            float[][] metadataMono, int srcMonoWidth, int srcMonoHeight,
-            int srcMonoStrideY, byte[] otp, int exposureMs, int iso,
-            float brIntensity, float smoothingIntensity, boolean isVerticallyAlignedSensor);
+                                                              ByteBuffer[] srcColorY, ByteBuffer[] srcColorVU,
+                                                              float[][] metadataColor, int srcColorWidth, int srcColorHeight,
+                                                              int srcColorStrideY, int srcColorStrideVU, ByteBuffer[] srcMonoY,
+                                                              float[][] metadataMono, int srcMonoWidth, int srcMonoHeight,
+                                                              int srcMonoStrideY, byte[] otp, int exposureMs, int iso,
+                                                              float brIntensity, float smoothingIntensity, boolean isVerticallyAlignedSensor);
 
     private native final boolean nativeClearSightProcess(ByteBuffer dstY,
-            ByteBuffer dstVU, int dstStrideY, int dstStrideVU, int[] roiRect);
-
-    private class SourceImage {
-        ByteBuffer mY;
-        ByteBuffer mVU;
-        float[] mMetadata;
-
-        SourceImage(int ySize, int vuSize) {
-            mY = ByteBuffer.allocateDirect(ySize);
-            mVU = ByteBuffer.allocateDirect(vuSize);
-            mMetadata = new float[METADATA_SIZE];
-        }
-    }
+                                                         ByteBuffer dstVU, int dstStrideY, int dstStrideVU, int[] roiRect);
 
     public static class ClearsightImage {
         private Image mImage;
@@ -381,14 +368,14 @@ public class ClearSightNativeEngine {
             return mImage.getPlanes()[VU_PLANE].getBuffer();
         }
 
+        public Rect getRoiRect() {
+            return mRoiRect;
+        }
+
         public void setRoiRect(int[] rect) {
             mRoiRect = new Rect(rect[0], rect[1], rect[0] + rect[2], rect[1]
                     + rect[3]);
             mImage.setCropRect(mRoiRect);
-        }
-
-        public Rect getRoiRect() {
-            return mRoiRect;
         }
     }
 
@@ -406,7 +393,8 @@ public class ClearSightNativeEngine {
         /* Focal length ratio @ Calibration */
         float focal_length_ratio;
 
-        private CamSensorCalibrationData() {}
+        private CamSensorCalibrationData() {
+        }
 
         public static CamSensorCalibrationData createFromBytes(byte[] bytes) {
             final ByteBuffer buf = ByteBuffer.wrap(bytes);
@@ -429,38 +417,38 @@ public class ClearSightNativeEngine {
 
     public static class CamSystemCalibrationData {
         private static final String[] CALIB_FMT_STRINGS = {
-            "Calibration OTP format version = %d\n",
-            "Main Native Sensor Resolution width = %dpx\n",
-            "Main Native Sensor Resolution height = %dpx\n",
-            "Main Calibration Resolution width = %dpx\n",
-            "Main Calibration Resolution height = %dpx\n",
-            "Main Focal length ratio = %f\n",
-            "Aux Native Sensor Resolution width = %dpx\n",
-            "Aux Native Sensor Resolution height = %dpx\n",
-            "Aux Calibration Resolution width = %dpx\n",
-            "Aux Calibration Resolution height = %dpx\n",
-            "Aux Focal length ratio = %f\n",
-            "Relative Rotation matrix [0] through [8] = %s\n",
-            "Relative Geometric surface parameters [0] through [31] = %s\n",
-            "Relative Principal point X axis offset (ox) = %fpx\n",
-            "Relative Principal point Y axis offset (oy) = %fpx\n",
-            "Relative position flag = %d\n",
-            "Baseline distance = %fmm\n",
-            "Main sensor mirror and flip setting = %d\n",
-            "Aux sensor mirror and flip setting = %d\n",
-            "Module orientation during calibration = %d\n",
-            "Rotation flag = %d\n",
-            "Main Normalized Focal length = %fpx\n",
-            "Aux Normalized Focal length = %fpx"
+                "Calibration OTP format version = %d\n",
+                "Main Native Sensor Resolution width = %dpx\n",
+                "Main Native Sensor Resolution height = %dpx\n",
+                "Main Calibration Resolution width = %dpx\n",
+                "Main Calibration Resolution height = %dpx\n",
+                "Main Focal length ratio = %f\n",
+                "Aux Native Sensor Resolution width = %dpx\n",
+                "Aux Native Sensor Resolution height = %dpx\n",
+                "Aux Calibration Resolution width = %dpx\n",
+                "Aux Calibration Resolution height = %dpx\n",
+                "Aux Focal length ratio = %f\n",
+                "Relative Rotation matrix [0] through [8] = %s\n",
+                "Relative Geometric surface parameters [0] through [31] = %s\n",
+                "Relative Principal point X axis offset (ox) = %fpx\n",
+                "Relative Principal point Y axis offset (oy) = %fpx\n",
+                "Relative position flag = %d\n",
+                "Baseline distance = %fmm\n",
+                "Main sensor mirror and flip setting = %d\n",
+                "Aux sensor mirror and flip setting = %d\n",
+                "Module orientation during calibration = %d\n",
+                "Rotation flag = %d\n",
+                "Main Normalized Focal length = %fpx\n",
+                "Aux Normalized Focal length = %fpx"
         };
 
         /* Version information */
         int calibration_format_version;
 
         /* Main Camera Sensor specific calibration */
-        CamSensorCalibrationData  main_cam_specific_calibration;
+        CamSensorCalibrationData main_cam_specific_calibration;
         /* Aux Camera Sensor specific calibration */
-        CamSensorCalibrationData  aux_cam_specific_calibration;
+        CamSensorCalibrationData aux_cam_specific_calibration;
 
         /* Relative viewpoint matching matrix w.r.t Main */
         float[] relative_rotation_matrix = new float[9];
@@ -483,21 +471,22 @@ public class ClearSightNativeEngine {
         short module_orientation_during_calibration;
         short rotation_flag;
 
-        private CamSystemCalibrationData() {}
+        private CamSystemCalibrationData() {
+        }
 
         public static CamSystemCalibrationData createFromBytes(byte[] bytes) {
-            if(bytes == null)
+            if (bytes == null)
                 return null;
 
             final ByteBuffer buf = ByteBuffer.wrap(bytes);
             buf.order(ByteOrder.LITTLE_ENDIAN);
             CamSystemCalibrationData data = createFromByteBuff(buf);
 
-            if(DEBUG) {
+            if (DEBUG) {
                 StringBuilder sb = new StringBuilder();
                 sb.append("OTP Calib Data:");
-                for(int i=0; i<bytes.length; i++) {
-                    if(i%16 == 0)
+                for (int i = 0; i < bytes.length; i++) {
+                    if (i % 16 == 0)
                         sb.append("\n");
                     sb.append(String.format("%02X ", bytes[i]));
                 }
@@ -515,10 +504,10 @@ public class ClearSightNativeEngine {
             data.main_cam_specific_calibration = CamSensorCalibrationData.createFromByteBuff(buf);
             data.aux_cam_specific_calibration = CamSensorCalibrationData.createFromByteBuff(buf);
 
-            for(int i=0; i<9; i++)
+            for (int i = 0; i < 9; i++)
                 data.relative_rotation_matrix[i] = buf.getFloat();
 
-            for(int i=0; i<32; i++)
+            for (int i = 0; i < 32; i++)
                 data.relative_geometric_surface_parameters[i] = buf.getFloat();
 
             data.relative_principle_point_x_offset = buf.getFloat();
@@ -536,45 +525,51 @@ public class ClearSightNativeEngine {
 
         @Override
         public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(String.format(CALIB_FMT_STRINGS[0], this.calibration_format_version));
 
-            sb.append(String.format(CALIB_FMT_STRINGS[1], this.main_cam_specific_calibration.native_sensor_resolution_width));
-            sb.append(String.format(CALIB_FMT_STRINGS[2], this.main_cam_specific_calibration.native_sensor_resolution_height));
-            sb.append(String.format(CALIB_FMT_STRINGS[3], this.main_cam_specific_calibration.calibration_sensor_resolution_width));
-            sb.append(String.format(CALIB_FMT_STRINGS[4], this.main_cam_specific_calibration.calibration_sensor_resolution_height));
-            sb.append(String.format(CALIB_FMT_STRINGS[5], this.main_cam_specific_calibration.focal_length_ratio));
-
-            sb.append(String.format(CALIB_FMT_STRINGS[6], this.aux_cam_specific_calibration.native_sensor_resolution_width));
-            sb.append(String.format(CALIB_FMT_STRINGS[7], this.aux_cam_specific_calibration.native_sensor_resolution_height));
-            sb.append(String.format(CALIB_FMT_STRINGS[8], this.aux_cam_specific_calibration.calibration_sensor_resolution_width));
-            sb.append(String.format(CALIB_FMT_STRINGS[9], this.aux_cam_specific_calibration.calibration_sensor_resolution_height));
-            sb.append(String.format(CALIB_FMT_STRINGS[10], this.aux_cam_specific_calibration.focal_length_ratio));
-
-            sb.append(String.format(CALIB_FMT_STRINGS[11], buildCommaSeparatedString(this.relative_rotation_matrix)));
-            sb.append(String.format(CALIB_FMT_STRINGS[12], buildCommaSeparatedString(this.relative_geometric_surface_parameters)));
-
-            sb.append(String.format(CALIB_FMT_STRINGS[13], this.relative_principle_point_x_offset));
-            sb.append(String.format(CALIB_FMT_STRINGS[14], this.relative_principle_point_y_offset));
-            sb.append(String.format(CALIB_FMT_STRINGS[15], this.relative_position_flag));
-            sb.append(String.format(CALIB_FMT_STRINGS[16], this.relative_baseline_distance));
-            sb.append(String.format(CALIB_FMT_STRINGS[17], this.main_sensor_mirror_and_flip_setting));
-            sb.append(String.format(CALIB_FMT_STRINGS[18], this.aux_sensor_mirror_and_flip_setting));
-            sb.append(String.format(CALIB_FMT_STRINGS[19], this.module_orientation_during_calibration));
-            sb.append(String.format(CALIB_FMT_STRINGS[20], this.rotation_flag));
-            sb.append(String.format(CALIB_FMT_STRINGS[21], this.main_cam_specific_calibration.normalized_focal_length));
-            sb.append(String.format(CALIB_FMT_STRINGS[22], this.aux_cam_specific_calibration.normalized_focal_length));
-
-            return sb.toString();
+            return String.format(CALIB_FMT_STRINGS[0], this.calibration_format_version) +
+                    String.format(CALIB_FMT_STRINGS[1], this.main_cam_specific_calibration.native_sensor_resolution_width) +
+                    String.format(CALIB_FMT_STRINGS[2], this.main_cam_specific_calibration.native_sensor_resolution_height) +
+                    String.format(CALIB_FMT_STRINGS[3], this.main_cam_specific_calibration.calibration_sensor_resolution_width) +
+                    String.format(CALIB_FMT_STRINGS[4], this.main_cam_specific_calibration.calibration_sensor_resolution_height) +
+                    String.format(CALIB_FMT_STRINGS[5], this.main_cam_specific_calibration.focal_length_ratio) +
+                    String.format(CALIB_FMT_STRINGS[6], this.aux_cam_specific_calibration.native_sensor_resolution_width) +
+                    String.format(CALIB_FMT_STRINGS[7], this.aux_cam_specific_calibration.native_sensor_resolution_height) +
+                    String.format(CALIB_FMT_STRINGS[8], this.aux_cam_specific_calibration.calibration_sensor_resolution_width) +
+                    String.format(CALIB_FMT_STRINGS[9], this.aux_cam_specific_calibration.calibration_sensor_resolution_height) +
+                    String.format(CALIB_FMT_STRINGS[10], this.aux_cam_specific_calibration.focal_length_ratio) +
+                    String.format(CALIB_FMT_STRINGS[11], buildCommaSeparatedString(this.relative_rotation_matrix)) +
+                    String.format(CALIB_FMT_STRINGS[12], buildCommaSeparatedString(this.relative_geometric_surface_parameters)) +
+                    String.format(CALIB_FMT_STRINGS[13], this.relative_principle_point_x_offset) +
+                    String.format(CALIB_FMT_STRINGS[14], this.relative_principle_point_y_offset) +
+                    String.format(CALIB_FMT_STRINGS[15], this.relative_position_flag) +
+                    String.format(CALIB_FMT_STRINGS[16], this.relative_baseline_distance) +
+                    String.format(CALIB_FMT_STRINGS[17], this.main_sensor_mirror_and_flip_setting) +
+                    String.format(CALIB_FMT_STRINGS[18], this.aux_sensor_mirror_and_flip_setting) +
+                    String.format(CALIB_FMT_STRINGS[19], this.module_orientation_during_calibration) +
+                    String.format(CALIB_FMT_STRINGS[20], this.rotation_flag) +
+                    String.format(CALIB_FMT_STRINGS[21], this.main_cam_specific_calibration.normalized_focal_length) +
+                    String.format(CALIB_FMT_STRINGS[22], this.aux_cam_specific_calibration.normalized_focal_length);
         }
 
         private String buildCommaSeparatedString(float[] array) {
             StringBuilder sb = new StringBuilder();
             sb.append(String.format("%f", array[0]));
-            for(int i=1; i<array.length; i++) {
+            for (int i = 1; i < array.length; i++) {
                 sb.append(String.format(",%f", array[i]));
             }
             return sb.toString();
+        }
+    }
+
+    private class SourceImage {
+        ByteBuffer mY;
+        ByteBuffer mVU;
+        float[] mMetadata;
+
+        SourceImage(int ySize, int vuSize) {
+            mY = ByteBuffer.allocateDirect(ySize);
+            mVU = ByteBuffer.allocateDirect(vuSize);
+            mMetadata = new float[METADATA_SIZE];
         }
     }
 }

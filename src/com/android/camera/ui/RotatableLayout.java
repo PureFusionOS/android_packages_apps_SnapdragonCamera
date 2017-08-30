@@ -59,6 +59,111 @@ public class RotatableLayout extends FrameLayout {
         init();
     }
 
+    public static boolean isClockWiseRotation(int prevRotation, int currentRotation) {
+        return prevRotation == (currentRotation + 90) % 360;
+    }
+
+    public static void rotate(View view, boolean isClockwise) {
+        if (isClockwise) {
+            rotateClockwise(view);
+        } else {
+            rotateCounterClockwise(view);
+        }
+    }
+
+    private static boolean contains(int value, int mask) {
+        return (value & mask) == mask;
+    }
+
+    public static void rotateClockwise(View view) {
+        if (view == null) return;
+        LayoutParams lp = (LayoutParams) view.getLayoutParams();
+        int gravity = lp.gravity;
+        int ngravity = 0;
+        // rotate gravity
+        if (contains(gravity, Gravity.LEFT)) {
+            ngravity |= Gravity.TOP;
+        }
+        if (contains(gravity, Gravity.RIGHT)) {
+            ngravity |= Gravity.BOTTOM;
+        }
+        if (contains(gravity, Gravity.TOP)) {
+            ngravity |= Gravity.RIGHT;
+        }
+        if (contains(gravity, Gravity.BOTTOM)) {
+            ngravity |= Gravity.LEFT;
+        }
+        if (contains(gravity, Gravity.CENTER)) {
+            ngravity |= Gravity.CENTER;
+        }
+        if (contains(gravity, Gravity.CENTER_HORIZONTAL)) {
+            ngravity |= Gravity.CENTER_VERTICAL;
+        }
+        if (contains(gravity, Gravity.CENTER_VERTICAL)) {
+            ngravity |= Gravity.CENTER_HORIZONTAL;
+        }
+        lp.gravity = ngravity;
+        int ml = lp.leftMargin;
+        int mr = lp.rightMargin;
+        int mt = lp.topMargin;
+        lp.leftMargin = lp.bottomMargin;
+        lp.rightMargin = mt;
+        lp.topMargin = ml;
+        lp.bottomMargin = mr;
+        int width = lp.width;
+        lp.width = lp.height;
+        lp.height = width;
+        view.setLayoutParams(lp);
+    }
+
+    public static void rotateCounterClockwise(View view) {
+        if (view == null) return;
+        LayoutParams lp = (LayoutParams) view.getLayoutParams();
+        int gravity = lp.gravity;
+        int ngravity = 0;
+        // change gravity
+        if (contains(gravity, Gravity.RIGHT)) {
+            ngravity |= Gravity.TOP;
+        }
+        if (contains(gravity, Gravity.LEFT)) {
+            ngravity |= Gravity.BOTTOM;
+        }
+        if (contains(gravity, Gravity.TOP)) {
+            ngravity |= Gravity.LEFT;
+        }
+        if (contains(gravity, Gravity.BOTTOM)) {
+            ngravity |= Gravity.RIGHT;
+        }
+        if (contains(gravity, Gravity.CENTER)) {
+            ngravity |= Gravity.CENTER;
+        }
+        if (contains(gravity, Gravity.CENTER_HORIZONTAL)) {
+            ngravity |= Gravity.CENTER_VERTICAL;
+        }
+        if (contains(gravity, Gravity.CENTER_VERTICAL)) {
+            ngravity |= Gravity.CENTER_HORIZONTAL;
+        }
+        lp.gravity = ngravity;
+        int ml = lp.leftMargin;
+        int mr = lp.rightMargin;
+        int mt = lp.topMargin;
+        int mb = lp.bottomMargin;
+        lp.leftMargin = mt;
+        lp.rightMargin = mb;
+        lp.topMargin = mr;
+        lp.bottomMargin = ml;
+        int width = lp.width;
+        lp.width = lp.height;
+        lp.height = width;
+        view.setLayoutParams(lp);
+    }
+
+    // Rotate a given view 180 degrees
+    public static void flip(View view) {
+        rotateClockwise(view);
+        rotateClockwise(view);
+    }
+
     private void init() {
         mInitialOrientation = getResources().getConfiguration().orientation;
     }
@@ -69,16 +174,17 @@ public class RotatableLayout extends FrameLayout {
         // will not trigger onConfigurationChanged callback. So in the first run
         // we need to rotate the view if necessary. After that, onConfigurationChanged
         // call will track all the subsequent device rotation.
+        super.onAttachedToWindow();
         if (mPrevRotation == UNKOWN_ORIENTATION) {
             mIsDefaultToPortrait = CameraUtil.isDefaultToPortrait((Activity) getContext());
             if (mIsDefaultToPortrait) {
                 // Natural orientation for tablet is landscape
-                mPrevRotation =  mInitialOrientation == Configuration.ORIENTATION_PORTRAIT ?
+                mPrevRotation = mInitialOrientation == Configuration.ORIENTATION_PORTRAIT ?
                         0 : 90;
             } else {
                 // When tablet orientation is 0 or 270 (i.e. getUnifiedOrientation
                 // = 0 or 90), we load the layout resource without any rotation.
-                mPrevRotation =  mInitialOrientation == Configuration.ORIENTATION_LANDSCAPE ?
+                mPrevRotation = mInitialOrientation == Configuration.ORIENTATION_LANDSCAPE ?
                         0 : 270;
             }
 
@@ -93,7 +199,7 @@ public class RotatableLayout extends FrameLayout {
         }
         int rotation = CameraUtil.getDisplayRotation((Activity) getContext());
         int diff = (rotation - mPrevRotation + 360) % 360;
-        if ( diff == 0) {
+        if (diff == 0) {
             // No rotation
             return;
         } else if (diff == 180) {
@@ -168,116 +274,5 @@ public class RotatableLayout extends FrameLayout {
             View child = getChildAt(i);
             flip(child);
         }
-    }
-
-    public static boolean isClockWiseRotation(int prevRotation, int currentRotation) {
-        if (prevRotation == (currentRotation + 90) % 360) {
-            return true;
-        }
-        return false;
-    }
-
-    public static void rotate(View view, boolean isClockwise) {
-        if (isClockwise) {
-            rotateClockwise(view);
-        } else {
-            rotateCounterClockwise(view);
-        }
-    }
-
-    private static boolean contains(int value, int mask) {
-        return (value & mask) == mask;
-    }
-
-    public static void rotateClockwise(View view) {
-        if (view == null) return;
-        LayoutParams lp = (LayoutParams) view.getLayoutParams();
-        int gravity = lp.gravity;
-        int ngravity = 0;
-        // rotate gravity
-        if (contains(gravity, Gravity.LEFT)) {
-            ngravity |= Gravity.TOP;
-        }
-        if (contains(gravity, Gravity.RIGHT)) {
-            ngravity |= Gravity.BOTTOM;
-        }
-        if (contains(gravity, Gravity.TOP)) {
-            ngravity |= Gravity.RIGHT;
-        }
-        if (contains(gravity, Gravity.BOTTOM)) {
-            ngravity |= Gravity.LEFT;
-        }
-        if (contains(gravity, Gravity.CENTER)) {
-            ngravity |= Gravity.CENTER;
-        }
-        if (contains(gravity, Gravity.CENTER_HORIZONTAL)) {
-            ngravity |= Gravity.CENTER_VERTICAL;
-        }
-        if (contains(gravity, Gravity.CENTER_VERTICAL)) {
-            ngravity |= Gravity.CENTER_HORIZONTAL;
-        }
-        lp.gravity = ngravity;
-        int ml = lp.leftMargin;
-        int mr = lp.rightMargin;
-        int mt = lp.topMargin;
-        int mb = lp.bottomMargin;
-        lp.leftMargin = mb;
-        lp.rightMargin = mt;
-        lp.topMargin = ml;
-        lp.bottomMargin = mr;
-        int width = lp.width;
-        int height = lp.height;
-        lp.width = height;
-        lp.height = width;
-        view.setLayoutParams(lp);
-    }
-
-    public static void rotateCounterClockwise(View view) {
-        if (view == null) return;
-        LayoutParams lp = (LayoutParams) view.getLayoutParams();
-        int gravity = lp.gravity;
-        int ngravity = 0;
-        // change gravity
-        if (contains(gravity, Gravity.RIGHT)) {
-            ngravity |= Gravity.TOP;
-        }
-        if (contains(gravity, Gravity.LEFT)) {
-            ngravity |= Gravity.BOTTOM;
-        }
-        if (contains(gravity, Gravity.TOP)) {
-            ngravity |= Gravity.LEFT;
-        }
-        if (contains(gravity, Gravity.BOTTOM)) {
-            ngravity |= Gravity.RIGHT;
-        }
-        if (contains(gravity, Gravity.CENTER)) {
-            ngravity |= Gravity.CENTER;
-        }
-        if (contains(gravity, Gravity.CENTER_HORIZONTAL)) {
-            ngravity |= Gravity.CENTER_VERTICAL;
-        }
-        if (contains(gravity, Gravity.CENTER_VERTICAL)) {
-            ngravity |= Gravity.CENTER_HORIZONTAL;
-        }
-        lp.gravity = ngravity;
-        int ml = lp.leftMargin;
-        int mr = lp.rightMargin;
-        int mt = lp.topMargin;
-        int mb = lp.bottomMargin;
-        lp.leftMargin = mt;
-        lp.rightMargin = mb;
-        lp.topMargin = mr;
-        lp.bottomMargin = ml;
-        int width = lp.width;
-        int height = lp.height;
-        lp.width = height;
-        lp.height = width;
-        view.setLayoutParams(lp);
-    }
-
-    // Rotate a given view 180 degrees
-    public static void flip(View view) {
-        rotateClockwise(view);
-        rotateClockwise(view);
     }
 }

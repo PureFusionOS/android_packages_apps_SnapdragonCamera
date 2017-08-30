@@ -37,9 +37,9 @@ public class PreferenceInflater {
             PreferenceInflater.class.getPackage().getName();
 
     private static final Class<?>[] CTOR_SIGNATURE =
-            new Class[] {Context.class, AttributeSet.class};
+            new Class[]{Context.class, AttributeSet.class};
     private static final HashMap<String, Constructor<?>> sConstructorMap =
-            new HashMap<String, Constructor<?>>();
+            new HashMap<>();
 
     private Context mContext;
 
@@ -75,12 +75,12 @@ public class PreferenceInflater {
     private CameraPreference inflate(XmlPullParser parser) {
 
         AttributeSet attrs = Xml.asAttributeSet(parser);
-        ArrayList<CameraPreference> list = new ArrayList<CameraPreference>();
+        ArrayList<CameraPreference> list = new ArrayList<>();
         Object args[] = new Object[]{mContext, attrs};
 
         try {
             for (int type = parser.next();
-                    type != XmlPullParser.END_DOCUMENT; type = parser.next()) {
+                 type != XmlPullParser.END_DOCUMENT; type = parser.next()) {
                 if (type != XmlPullParser.START_TAG) continue;
                 CameraPreference pref = newPreference(parser.getName(), args);
 

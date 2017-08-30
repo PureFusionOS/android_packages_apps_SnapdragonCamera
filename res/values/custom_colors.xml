@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The OmniRom Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2012 The OmniRom Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -20,10 +19,13 @@
     <color name="popup_title_color">@color/material_accent_icon</color>
 
     <!-- Settings/Menu  -->
-    <color name="popup_background">@color/material_bg_opaque_settings</color> <!-- Settings background -->
-    <color name="camera_switcher_background">@color/material_bg_opaque_settings</color> <!-- camera switcher background -->
+    <color name="popup_background">@color/material_bg_opaque_settings
+    </color> <!-- Settings background -->
+    <color name="camera_switcher_background">@color/material_bg_opaque_settings
+    </color> <!-- camera switcher background -->
     <color name="setting_color">@color/material_dark</color> <!-- 1st level selected item -->
-    <color name="setting_color_light">@color/material_primary</color> <!-- 2nd level selected item -->
+    <color name="setting_color_light">@color/material_primary
+    </color> <!-- 2nd level selected item -->
 
     <!-- Top and bottom camera controls. opaque is for 4:3 and transparent is for 16:9 previews -->
     <color name="camera_control_bg_opaque">@color/material_bg</color>
@@ -36,7 +38,8 @@
     <color name="material_accent_icon_disabled">#74ffffff</color> <!-- disabled icon -->
     <color name="material_dark">#ff00796b</color>
     <color name="material_primary">#ff009688</color>
-    <color name="material_light">#ffb2dfdb</color> <!-- not used, but part of pallete just in case-->
+    <color name="material_light">#ffb2dfdb
+    </color> <!-- not used, but part of pallete just in case-->
     <color name="material_bg">#ff00302a</color>
     <color name="material_bg_opaque">#2400302a</color>
     <color name="material_bg_opaque_settings">#6000302a</color>

@@ -29,18 +29,18 @@
 
 package com.android.camera.mpo;
 
+import android.util.Log;
+
+import com.android.camera.exif.ExifTag;
+
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.util.Log;
-
-import com.android.camera.exif.ExifTag;
-
 public class MpoTag extends ExifTag {
-    private static final String TAG = "MpoTag";
     static final int TAG_SIZE = 12;
+    private static final String TAG = "MpoTag";
 
     MpoTag(short tagId, short type, int componentCount, int ifd, boolean hasDefinedComponentCount) {
         super(tagId, type, componentCount, ifd, hasDefinedComponentCount);
@@ -65,7 +65,7 @@ public class MpoTag extends ExifTag {
         }
 
         byte[] bytes = getValueAsBytes();
-        List<MpEntry> entries = new ArrayList<MpEntry>(bytes.length / MpEntry.SIZE);
+        List<MpEntry> entries = new ArrayList<>(bytes.length / MpEntry.SIZE);
         for (int i = 0; i < bytes.length; i += MpEntry.SIZE) {
             entries.add(new MpEntry(ByteBuffer.wrap(bytes, i, MpEntry.SIZE)));
         }
@@ -89,7 +89,7 @@ public class MpoTag extends ExifTag {
         }
 
         public MpEntry(int imageAttrib, int imageSize, int imageOffset, short dependantImage1,
-                short dependantImage2) {
+                       short dependantImage2) {
             mImageAttrib = imageAttrib;
             mImageSize = imageSize;
             mImageOffset = imageOffset;
@@ -109,36 +109,36 @@ public class MpoTag extends ExifTag {
             return mImageAttrib;
         }
 
-        public int getImageSize() {
-            return mImageSize;
-        }
-
-        public int getImageOffset() {
-            return mImageOffset;
-        }
-
-        public short getDependantImage1() {
-            return mDependantImage1;
-        }
-
-        public short getDependantImage2() {
-            return mDependantImage2;
-        }
-
         public void setImageAttrib(int imageAttrib) {
             mImageAttrib = imageAttrib;
+        }
+
+        public int getImageSize() {
+            return mImageSize;
         }
 
         public void setImageSize(int imageSize) {
             mImageSize = imageSize;
         }
 
+        public int getImageOffset() {
+            return mImageOffset;
+        }
+
         public void setImageOffset(int imageOffset) {
             mImageOffset = imageOffset;
         }
 
+        public short getDependantImage1() {
+            return mDependantImage1;
+        }
+
         public void setDependantImage1(short depImage1) {
             mDependantImage1 = depImage1;
+        }
+
+        public short getDependantImage2() {
+            return mDependantImage2;
         }
 
         public void setDependantImage2(short depImage2) {

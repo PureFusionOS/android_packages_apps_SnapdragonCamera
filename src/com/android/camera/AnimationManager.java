@@ -40,6 +40,7 @@ public class AnimationManager {
 
     /**
      * Starts capture animation.
+     *
      * @param view a thumbnail view that shows a picture captured and gets animated
      */
     public void startCaptureAnimation(final View view) {
@@ -127,10 +128,11 @@ public class AnimationManager {
         mCaptureAnimator.start();
     }
 
-   /**
-    * Starts flash animation.
-    * @params flashOverlay the overlay that will animate on alpha to make the flash impression
-    */
+    /**
+     * Starts flash animation.
+     *
+     * @params flashOverlay the overlay that will animate on alpha to make the flash impression
+     */
     public void startFlashAnimation(final View flashOverlay) {
         // End the previous animation if the previous one is still running
         if (mFlashAnim != null && mFlashAnim.isRunning()) {

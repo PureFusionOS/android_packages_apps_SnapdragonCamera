@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,18 +13,17 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="1175086483881127797">"相机"</string>
     <string name="video_camera_label" msgid="1723708322021743770">"摄像机"</string>
     <string name="details_ms" msgid="6618163484662724641">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="4842276230698703554">"%1$d:%2$02d:%3$02d"</string>
     <string name="set_image" msgid="3969690281401045698">"将照片设置为"</string>
     <string name="delete" msgid="2714492172818940424">"删除"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="8811352590292754044">"要删除所选内容吗？"</item>
-    <item quantity="other" msgid="5075283252850066610">"要删除所选内容吗？"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="8811352590292754044" quantity="one">"要删除所选内容吗？"</item>
+        <item msgid="5075283252850066610" quantity="other">"要删除所选内容吗？"</item>
+    </plurals>
     <string name="share" msgid="8581089487762243115">"分享"</string>
     <string name="share_panorama" msgid="3558466186935359444">"分享全景图"</string>
     <string name="share_as_photo" msgid="4831213580709167218">"以照片形式分享"</string>
@@ -33,21 +31,21 @@
     <string name="undo" msgid="5110048345890050107">"撤消"</string>
     <string name="details" msgid="4404020741542549488">"详细信息"</string>
     <string name="close" msgid="4826166926297479820">"关闭"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9217673864242686656">"已选择%1$d项"</item>
-    <item quantity="one" msgid="5806616411905812727">"已选择%1$d项"</item>
-    <item quantity="other" msgid="3767743589502328221">"已选择%1$d项"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="8095100906728830821">"已选择%1$d项"</item>
-    <item quantity="one" msgid="9063509704521984072">"已选择%1$d项"</item>
-    <item quantity="other" msgid="135044054552480485">"已选择%1$d项"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="1942343672734097509">"已选择%1$d项"</item>
-    <item quantity="one" msgid="1456436514367094505">"已选择%1$d项"</item>
-    <item quantity="other" msgid="1511467088339194694">"已选择%1$d项"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="9217673864242686656" quantity="zero">"已选择%1$d项"</item>
+        <item msgid="5806616411905812727" quantity="one">"已选择%1$d项"</item>
+        <item msgid="3767743589502328221" quantity="other">"已选择%1$d项"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="8095100906728830821" quantity="zero">"已选择%1$d项"</item>
+        <item msgid="9063509704521984072" quantity="one">"已选择%1$d项"</item>
+        <item msgid="135044054552480485" quantity="other">"已选择%1$d项"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="1942343672734097509" quantity="zero">"已选择%1$d项"</item>
+        <item msgid="1456436514367094505" quantity="one">"已选择%1$d项"</item>
+        <item msgid="1511467088339194694" quantity="other">"已选择%1$d项"</item>
+    </plurals>
     <string name="show_on_map" msgid="8542853913632649160">"在地图上显示"</string>
     <string name="rotate_left" msgid="2618440058490662604">"向左旋转"</string>
     <string name="rotate_right" msgid="4896096424267838355">"向右旋转"</string>
@@ -89,9 +87,9 @@
     <string name="cannot_connect_camera" msgid="4311259792784598381">"无法连接到相机。"</string>
     <string name="camera_disabled" msgid="6963443549010040595">"由于安全政策的限制，相机已被禁用。"</string>
     <string name="wait" msgid="765601745709933047">"请稍候…"</string>
-    <string name="no_storage" product="default" msgid="5922012950780548098">"使用相机前请先插入 SD 卡。"</string>
-    <string name="preparing_sd" product="default" msgid="7435693655017362767">"正在准备 SD 卡…"</string>
-    <string name="access_sd_fail" product="default" msgid="2634861611082499811">"无法使用 SD 卡。"</string>
+    <string name="no_storage" msgid="5922012950780548098" product="default">"使用相机前请先插入 SD 卡。"</string>
+    <string name="preparing_sd" msgid="7435693655017362767" product="default">"正在准备 SD 卡…"</string>
+    <string name="access_sd_fail" msgid="2634861611082499811" product="default">"无法使用 SD 卡。"</string>
     <string name="time_lapse_title" msgid="3267978566401228497">"延时录影"</string>
     <string name="capturing" msgid="5255164204641920893">"正在拍摄"</string>
     <string name="pref_camera_id_title" msgid="4680648115225411185">"选择摄像头"</string>
@@ -100,10 +98,10 @@
     <string name="pref_camera_recordlocation_title" msgid="3354956161456185749">"保存地理位置"</string>
     <string name="pref_camera_location_label" msgid="8695441802378057719">"位置信息"</string>
     <string name="pref_camera_timer_title" msgid="4728838281741571323">"倒计时器"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="8919878087230098328">"1秒"</item>
-    <item quantity="other" msgid="5782794798884172289">"%d秒"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="8919878087230098328" quantity="one">"1秒"</item>
+        <item msgid="5782794798884172289" quantity="other">"%d秒"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (6225207881203007747) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="9036987234878551217">"倒计时过程中发出提示音"</string>
@@ -189,7 +187,7 @@
     <string name="pref_camera_id_label_back" msgid="1645608049757733858">"前置摄像头"</string>
     <string name="pref_camera_id_label_front" msgid="349308803062874842">"后置摄像头"</string>
     <string name="dialog_ok" msgid="774141340500181131">"确定"</string>
-    <string name="spaceIsLow_content" product="default" msgid="4522771065344332702">"SD 卡空间不足。请更改画质设置，或删除部分图片或其他文件。"</string>
+    <string name="spaceIsLow_content" msgid="4522771065344332702" product="default">"SD 卡空间不足。请更改画质设置，或删除部分图片或其他文件。"</string>
     <string name="video_reach_size_limit" msgid="9196836111505731836">"已达文件大小上限。"</string>
     <string name="pano_too_fast_prompt" msgid="2503148095578052177">"速度太快"</string>
     <string name="pano_dialog_prepare_preview" msgid="4445235163599534263">"正在生成全景图"</string>
@@ -311,30 +309,30 @@
     <string name="pref_camera_scenemode_entry_backlight">"背光"</string>
     <string name="pref_camera_scenemode_entry_flowers">"花卉"</string>
 
-   <!-- Settings screen, Select Histogram title -->
+    <!-- Settings screen, Select Histogram title -->
     <string name="pref_camera_histogram_title">"直方图"</string>
-   <!-- Settings screen, Histogram radio button choices -->
+    <!-- Settings screen, Histogram radio button choices -->
     <string name="pref_camera_histogram_entry_enable">"开"</string>
     <string name="pref_camera_histogram_entry_disable">"关"</string>
 
-   <!-- Settings screen, Select Picture format title -->
+    <!-- Settings screen, Select Picture format title -->
     <string name="pref_camera_picture_format_title">"选择图片格式"</string>
 
-   <!-- Settings screen, Picture quality title -->
+    <!-- Settings screen, Picture quality title -->
     <string name="pref_camera_jpegquality_title">"图像质量"</string>
-   <!-- Settings screen, Picture quality dialog radio button choices -->
+    <!-- Settings screen, Picture quality dialog radio button choices -->
     <string name="pref_camera_jpegquality_entry_superfine">"超精细"</string>
     <string name="pref_camera_jpegquality_entry_fine">"高"</string>
     <string name="pref_camera_jpegquality_entry_normal">"一般"</string>
 
-   <!-- Entry of camera save path -->
+    <!-- Entry of camera save path -->
     <string name="pref_camera_savepath_title">"存储位置"</string>
     <string name="pref_camera_savepath_entry_0">"话机"</string>
     <string name="pref_camera_savepath_entry_1">"SD卡"</string>
 
-   <!-- Settings screen, Select Color effect title -->
+    <!-- Settings screen, Select Color effect title -->
     <string name="pref_camera_coloreffect_title">"色彩效果"</string>
-   <!-- Settings screen, Color effect dialog radio button choices -->
+    <!-- Settings screen, Color effect dialog radio button choices -->
     <string name="pref_camera_coloreffect_entry_none">"关闭"</string>
     <string name="pref_camera_coloreffect_entry_mono">"黑白"</string>
     <string name="pref_camera_coloreffect_entry_sepia">"旧照片"</string>
@@ -351,73 +349,73 @@
     <string name="pref_camera_coloreffect_entry_bluetint">"浅蓝"</string>
     <string name="pref_camera_coloreffect_entry_greentint">"浅绿"</string>
 
-   <!-- Settings screen, Select Face Detection -->
+    <!-- Settings screen, Select Face Detection -->
     <string name="pref_camera_facedetection_title">"人脸检测"</string>
 
     <!-- Settings menu, Face Detection choices -->
     <string name="pref_camera_facedetection_entry_off">"关"</string>
     <string name="pref_camera_facedetection_entry_on">"开"</string>
 
-   <!-- Settings screen, Select saturation title -->
+    <!-- Settings screen, Select saturation title -->
     <string name="pref_camera_saturation_title">"饱和度"</string>
 
-   <!-- Settings screen, Select contrast title -->
+    <!-- Settings screen, Select contrast title -->
     <string name="pref_camera_contrast_title">"对比度"</string>
 
-   <!-- Settings screen, Select sharpness title -->
+    <!-- Settings screen, Select sharpness title -->
     <string name="pref_camera_sharpness_title">"清晰度"</string>
 
-   <!-- Settings screen, Select auto exposure title -->
+    <!-- Settings screen, Select auto exposure title -->
     <string name="pref_camera_autoexposure_title">"选择自动曝光模式"</string>
 
-   <!-- Settings screen, auto exposure dialog radio button choices -->
+    <!-- Settings screen, auto exposure dialog radio button choices -->
     <string name="pref_camera_autoexposure_entry_frameaverage">"帧平均"</string>
     <string name="pref_camera_autoexposure_entry_centerweighted">"中心加权"</string>
     <string name="pref_camera_autoexposure_entry_spotmetering">"点测光"</string>
 
-   <!-- Denoise Settings screen, setting title text -->
+    <!-- Denoise Settings screen, setting title text -->
     <string name="pref_camera_denoise_title">"小波消噪"</string>
-   <!-- Denoise Settings screen, Record location dialog choices -->
+    <!-- Denoise Settings screen, Record location dialog choices -->
     <string name="pref_camera_denoise_entry_off">"关"</string>
     <string name="pref_camera_denoise_entry_on">"开"</string>
 
-   <!-- Settings screen, Select Redeye Reduction -->
+    <!-- Settings screen, Select Redeye Reduction -->
     <string name="pref_camera_redeyereduction_title">"红眼消除"</string>
-   <!-- Settings menu, redeye reduction choices -->
+    <!-- Settings menu, redeye reduction choices -->
     <string name="pref_camera_redeyereduction_entry_enable">"开"</string>
     <string name="pref_camera_redeyereduction_entry_disable">"关"</string>
 
-   <!-- Settings screen, Video encoder title -->
+    <!-- Settings screen, Video encoder title -->
     <string name="pref_camera_videoencoder_title">"视频编码"</string>
 
-   <!-- Settings screen, Audio encoder title -->
+    <!-- Settings screen, Audio encoder title -->
     <string name="pref_camera_audioencoder_title">"音频编码"</string>
 
-   <!-- Settings screen, Video duration title -->
+    <!-- Settings screen, Video duration title -->
     <string name="pref_camera_video_duration_title">"视频时长"</string>
-   <!-- Settings screen, Video duration dialog radio button choices -->
+    <!-- Settings screen, Video duration dialog radio button choices -->
     <string name="pref_camera_video_duration_entry_mms">"30 秒(MMS)"</string>
     <string name="pref_camera_video_duration_entry_10">"10 分钟"</string>
     <string name="pref_camera_video_duration_entry_30">"30 分钟"</string>
     <string name="pref_camera_video_duration_entry_nolimit">"无限制"</string>
 
-   <!-- Settings screen, Select hfr title -->
+    <!-- Settings screen, Select hfr title -->
     <string name="pref_camera_hfr_title">"视频高帧率"</string>
     <string name="pref_camera_hfr_entry_off">"关"</string>
 
-   <!-- Settings screen, Anti Banding title -->
+    <!-- Settings screen, Anti Banding title -->
     <string name="pref_camera_antibanding_title">"反带效应"</string>
-   <!-- Settings screen, Anti Banding entries -->
+    <!-- Settings screen, Anti Banding entries -->
     <string name="pref_camera_antibanding_entry_0">"关"</string>
     <string name="pref_camera_antibanding_entry_3">"自动"</string>
 
-   <!-- Settings screen, Select Iso title -->
+    <!-- Settings screen, Select Iso title -->
     <string name="pref_camera_iso_title">"选择 ISO"</string>
-   <!-- Settings screen, ISO dialog radio button choices -->
+    <!-- Settings screen, ISO dialog radio button choices -->
     <string name="pref_camera_iso_entry_auto">"自动"</string>
     <string name="pref_camera_iso_entry_isodeblur">"ISO 自动(HJR)"</string>
 
-   <!-- Settings screen, Multiple levels entries -->
+    <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_saturation_entry_level0">"等级 0"</string>
     <string name="pref_camera_saturation_entry_level1">"等级 1"</string>
     <string name="pref_camera_saturation_entry_level2">"等级 2"</string>
@@ -430,7 +428,7 @@
     <string name="pref_camera_saturation_entry_level9">"等级 9"</string>
     <string name="pref_camera_saturation_entry_level10">"等级 10"</string>
 
-   <!-- Settings screen, Multiple levels entries -->
+    <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_contrast_entry_level0">"等级 0"</string>
     <string name="pref_camera_contrast_entry_level1">"等级 1"</string>
     <string name="pref_camera_contrast_entry_level2">"等级 2"</string>
@@ -443,7 +441,7 @@
     <string name="pref_camera_contrast_entry_level9">"等级 9"</string>
     <string name="pref_camera_contrast_entry_level10">"等级 10"</string>
 
-   <!-- Settings screen, Multiple levels entries -->
+    <!-- Settings screen, Multiple levels entries -->
     <string name="pref_camera_sharpness_entry_level0">等级 0</string>
     <string name="pref_camera_sharpness_entry_level1">等级 1</string>
     <string name="pref_camera_sharpness_entry_level2">等级 2(默认)</string>
@@ -452,26 +450,26 @@
     <string name="pref_camera_sharpness_entry_level5">等级 5</string>
     <string name="pref_camera_sharpness_entry_level6">等级 6</string>
 
-   <!-- Settings screen, setting title text for ZSL-->
+    <!-- Settings screen, setting title text for ZSL-->
     <string name="pref_camera_zsl_title">"零秒快拍"</string>
-   <!-- Settings screen, ZSL location dialog choices -->
+    <!-- Settings screen, ZSL location dialog choices -->
     <string name="pref_camera_zsl_entry_off">"关"</string>
     <string name="pref_camera_zsl_entry_on">"开"</string>
 
-   <!-- Settings screen, Select Touch AF/AEC title -->
+    <!-- Settings screen, Select Touch AF/AEC title -->
     <string name="pref_camera_touchafaec_title">"触摸 AF/AEC"</string>
-   <!-- Settings screen, Touch AF/AEC dialog radio button choices -->
+    <!-- Settings screen, Touch AF/AEC dialog radio button choices -->
     <string name="pref_camera_touchafaec_entry_off">"关"</string>
     <string name="pref_camera_touchafaec_entry_on">"开"</string>
 
     <string name="pref_camera_ae_bracket_hdr_entry_on">"开"</string>
     <string name="pref_camera_ae_bracket_hdr_entry_off">"关"</string>
 
-   <!-- DIS choices -->
+    <!-- DIS choices -->
     <string name="pref_camera_dis_entry_off">"关"</string>
     <string name="pref_camera_dis_entry_on">"开"</string>
 
-   <!-- Settings screen, Selectable zone af title -->
+    <!-- Settings screen, Selectable zone af title -->
     <string name="pref_camera_selectablezoneaf_title">"可选区域自动对焦模式"</string>
 
     <string name="pref_camera_selectablezoneaf_entry_auto">"自动"</string>
@@ -479,7 +477,7 @@
     <string name="pref_camera_selectablezoneaf_entry_centerweighted">"中心加权"</string>
     <string name="pref_camera_selectablezoneaf_entry_frameaverage">"帧平均"</string>
 
-   <!-- error message -->
+    <!-- error message -->
     <string name="error_app_unsupported_hfr">"当前分辨率下不支持高帧率视频，如需高帧率请更改视频画质"</string>
     <string name="error_app_unsupported_hfr_codec">"高帧率下仅支持H264视频编码格式，如需高帧率请更改视频编码"</string>
     <string name="error_app_unsupported">"此编码格式不支持当前的分辨率设置，请切换至H264"</string>
@@ -592,28 +590,28 @@
 
     <!-- video TNR  dialog box entries -->
     <string-array name="pref_camera_video_tnr_entries" translatable="false">
-    <item>@string/pref_camera_video_tnr_entry_disable</item>
-    <item>@string/pref_camera_video_tnr_entry_enable</item>
+        <item>@string/pref_camera_video_tnr_entry_disable</item>
+        <item>@string/pref_camera_video_tnr_entry_enable</item>
     </string-array>
     <string name="pref_camera_video_tnr_entry_disable">禁用</string>
     <string name="pref_camera_video_tnr_entry_enable">启用</string>
 
     <!-- video CDS  dialog box entries -->
     <string-array name="pref_camera_video_cds_entries" translatable="false">
-    <item>@string/pref_camera_video_cds_entry_off</item>
-    <item>@string/pref_camera_video_cds_entry_on</item>
-    <item>@string/pref_camera_video_cds_entry_auto</item>
+        <item>@string/pref_camera_video_cds_entry_off</item>
+        <item>@string/pref_camera_video_cds_entry_on</item>
+        <item>@string/pref_camera_video_cds_entry_auto</item>
     </string-array>
-     <!-- Settings screen, video CDS location dialog choices -->
+    <!-- Settings screen, video CDS location dialog choices -->
     <string name="pref_camera_video_cds_entry_off">关</string>
     <string name="pref_camera_video_cds_entry_on">开</string>
     <string name="pref_camera_video_cds_entry_auto">自动</string>
 
     <!-- CDS  dialog box entries -->
     <string-array name="pref_camera_cds_entries" translatable="false">
-    <item>@string/pref_camera_cds_entry_off</item>
-    <item>@string/pref_camera_cds_entry_on</item>
-    <item>@string/pref_camera_cds_entry_auto</item>
+        <item>@string/pref_camera_cds_entry_off</item>
+        <item>@string/pref_camera_cds_entry_on</item>
+        <item>@string/pref_camera_cds_entry_auto</item>
     </string-array>
     <!-- Settings screen, CDS location dialog choices -->
     <string name="pref_camera_cds_entry_off">关</string>
@@ -622,8 +620,8 @@
 
     <!-- TNR  dialog box entries -->
     <string-array name="pref_camera_tnr_entries" translatable="false">
-    <item>@string/pref_camera_tnr_entry_disable</item>
-    <item>@string/pref_camera_tnr_entry_enable</item>
+        <item>@string/pref_camera_tnr_entry_disable</item>
+        <item>@string/pref_camera_tnr_entry_enable</item>
     </string-array>
     <!-- Settings screen, TNR location dialog choices -->
     <string name="pref_camera_tnr_entry_disable">禁用</string>

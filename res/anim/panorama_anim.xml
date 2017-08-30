@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2015 The Android Open Source Project
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -12,14 +11,13 @@
   limitations under the License.
   -->
 
-<objectAnimator
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:propertyName="trimPathStart"
-        android:valueFrom="0"
-        android:valueTo="1"
-        android:valueType="floatType"
-        android:duration="1000"
-        android:repeatMode="reverse"
-        android:repeatCount="-1"
-        android:interpolator="@android:interpolator/fast_out_slow_in" />
+<objectAnimator xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="1000"
+    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:propertyName="trimPathStart"
+    android:repeatCount="-1"
+    android:repeatMode="reverse"
+    android:valueFrom="0"
+    android:valueTo="1"
+    android:valueType="floatType" />
 

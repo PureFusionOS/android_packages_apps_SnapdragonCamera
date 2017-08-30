@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2014, The Linux Foundation. All rights reserved.
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (c) 2014, The Linux Foundation. All rights reserved.
 
      Redistribution and use in source and binary forms, with or without
      modification, are permitted provided that the following conditions are
@@ -31,7 +30,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/scene_mode_padding" >
+    android:padding="@dimen/scene_mode_padding">
 
     <LinearLayout
         android:id="@+id/border"
@@ -40,7 +39,7 @@
         android:layout_gravity="center"
         android:background="@drawable/scene_mode_view_border"
         android:orientation="vertical"
-        android:padding="2dp" >
+        android:padding="2dp">
 
         <ImageView
             android:id="@+id/image"

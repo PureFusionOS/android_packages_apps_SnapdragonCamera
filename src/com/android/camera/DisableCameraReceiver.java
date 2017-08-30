@@ -31,20 +31,20 @@ public class DisableCameraReceiver extends BroadcastReceiver {
     private static final String TAG = "DisableCameraReceiver";
     private static final boolean CHECK_BACK_CAMERA_ONLY = false;
     private static final String ACTIVITIES[] = {
-        "com.android.camera.CameraLauncher",
+            "com.android.camera.CameraLauncher",
     };
 
     @Override
     public void onReceive(Context context, Intent intent) {
         // Disable camera-related activities if there is no camera.
         boolean needCameraActivity = CHECK_BACK_CAMERA_ONLY
-            ? hasBackCamera()
-            : hasCamera();
+                ? hasBackCamera()
+                : hasCamera();
 
         if (!needCameraActivity) {
             Log.i(TAG, "disable all camera activities");
-            for (int i = 0; i < ACTIVITIES.length; i++) {
-                disableComponent(context, ACTIVITIES[i]);
+            for (String ACTIVITY : ACTIVITIES) {
+                disableComponent(context, ACTIVITY);
             }
         }
 
@@ -79,7 +79,7 @@ public class DisableCameraReceiver extends BroadcastReceiver {
         // We need the DONT_KILL_APP flag, otherwise we will be killed
         // immediately because we are in the same app.
         pm.setComponentEnabledSetting(name,
-            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP);
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP);
     }
 }

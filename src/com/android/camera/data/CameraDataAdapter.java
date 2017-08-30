@@ -41,12 +41,9 @@ public class CameraDataAdapter implements LocalDataAdapter {
     private static final String TAG = "CAM_CameraDataAdapter";
 
     private static final int DEFAULT_DECODE_SIZE = 1600;
-
-    private LocalDataList mImages;
-
-    private Listener mListener;
     private final int mPlaceHolderResourceId;
-
+    private LocalDataList mImages;
+    private Listener mListener;
     private int mSuggestedWidth = DEFAULT_DECODE_SIZE;
     private int mSuggestedHeight = DEFAULT_DECODE_SIZE;
 
@@ -55,6 +52,10 @@ public class CameraDataAdapter implements LocalDataAdapter {
     public CameraDataAdapter(int placeholderResource) {
         mImages = new LocalDataList();
         mPlaceHolderResourceId = placeholderResource;
+    }
+
+    private static String[] getCameraPath() {
+        return new String[]{Storage.DIRECTORY + "/%", SDCard.instance().getDirectory() + "/%"};
     }
 
     @Override
@@ -85,7 +86,7 @@ public class CameraDataAdapter implements LocalDataAdapter {
     @Override
     public void suggestViewSizeBound(int w, int h) {
         if (w <= 0 || h <= 0) {
-            mSuggestedWidth  = mSuggestedHeight = DEFAULT_DECODE_SIZE;
+            mSuggestedWidth = mSuggestedHeight = DEFAULT_DECODE_SIZE;
         } else {
             mSuggestedWidth = (w < DEFAULT_DECODE_SIZE ? w : DEFAULT_DECODE_SIZE);
             mSuggestedHeight = (h < DEFAULT_DECODE_SIZE ? h : DEFAULT_DECODE_SIZE);
@@ -113,10 +114,7 @@ public class CameraDataAdapter implements LocalDataAdapter {
 
     @Override
     public boolean canSwipeInFullScreen(int dataID) {
-        if (dataID < mImages.size() && dataID > 0) {
-            return mImages.get(dataID).canSwipeInFullScreen();
-        }
-        return true;
+        return !(dataID < mImages.size() && dataID > 0) || mImages.get(dataID).canSwipeInFullScreen();
     }
 
     @Override
@@ -135,7 +133,7 @@ public class CameraDataAdapter implements LocalDataAdapter {
         Cursor c = cr.query(uri,
                 LocalMediaData.VideoData.QUERY_PROJECTION,
                 MediaStore.Video.Media.DATA + " like ? or " +
-                MediaStore.Video.Media.DATA + " like ? ", getCameraPath(),
+                        MediaStore.Video.Media.DATA + " like ? ", getCameraPath(),
                 LocalMediaData.VideoData.QUERY_ORDER);
         if (c == null || !c.moveToFirst()) {
             return;
@@ -162,7 +160,7 @@ public class CameraDataAdapter implements LocalDataAdapter {
         Cursor c = cr.query(uri,
                 LocalMediaData.PhotoData.QUERY_PROJECTION,
                 MediaStore.Images.Media.DATA + " like ? or " +
-                MediaStore.Images.Media.DATA + " like ? ", getCameraPath(),
+                        MediaStore.Images.Media.DATA + " like ? ", getCameraPath(),
                 LocalMediaData.PhotoData.QUERY_ORDER);
         if (c == null || !c.moveToFirst()) {
             return;
@@ -252,14 +250,17 @@ public class CameraDataAdapter implements LocalDataAdapter {
         int pos = 0;
         Comparator<LocalData> comp = new LocalData.NewestFirstComparator();
         for (; pos < mImages.size()
-                && comp.compare(data, mImages.get(pos)) > 0; pos++);
+                && comp.compare(data, mImages.get(pos)) > 0; pos++)
+            ;
         mImages.add(pos, data);
         if (mListener != null) {
             mListener.onDataInserted(pos, data);
         }
     }
 
-    /** Update all the data */
+    /**
+     * Update all the data
+     */
     private void replaceData(LocalDataList list) {
         if (list.size() == 0 && mImages.size() == 0) {
             return;
@@ -268,12 +269,6 @@ public class CameraDataAdapter implements LocalDataAdapter {
         if (mListener != null) {
             mListener.onDataLoaded();
         }
-    }
-
-    private static String[] getCameraPath() {
-        String[] cameraPath =
-                {Storage.DIRECTORY + "/%", SDCard.instance().getDirectory() + "/%"};
-        return cameraPath;
     }
 
     private class QueryTask extends AsyncTask<ContentResolver, Void, LocalDataList> {
@@ -293,7 +288,7 @@ public class CameraDataAdapter implements LocalDataAdapter {
                     LocalMediaData.PhotoData.CONTENT_URI,
                     LocalMediaData.PhotoData.QUERY_PROJECTION,
                     MediaStore.Images.Media.DATA + " like ? or " +
-                    MediaStore.Images.Media.DATA + " like ? ", getCameraPath(),
+                            MediaStore.Images.Media.DATA + " like ? ", getCameraPath(),
                     LocalMediaData.PhotoData.QUERY_ORDER);
             if (c != null && c.moveToFirst()) {
                 // build up the list.
@@ -323,7 +318,7 @@ public class CameraDataAdapter implements LocalDataAdapter {
                     LocalMediaData.VideoData.CONTENT_URI,
                     LocalMediaData.VideoData.QUERY_PROJECTION,
                     MediaStore.Video.Media.DATA + " like ? or " +
-                    MediaStore.Video.Media.DATA + " like ? ", getCameraPath(),
+                            MediaStore.Video.Media.DATA + " like ? ", getCameraPath(),
                     LocalMediaData.VideoData.QUERY_ORDER);
             if (c != null && c.moveToFirst()) {
                 // build up the list.
@@ -369,12 +364,12 @@ public class CameraDataAdapter implements LocalDataAdapter {
 
         @Override
         protected Void doInBackground(LocalData... data) {
-            for (int i = 0; i < data.length; i++) {
-                if (!data[i].isDataActionSupported(LocalData.ACTION_DELETE)) {
-                    Log.v(TAG, "Deletion is not supported:" + data[i]);
+            for (LocalData aData : data) {
+                if (!aData.isDataActionSupported(LocalData.ACTION_DELETE)) {
+                    Log.v(TAG, "Deletion is not supported:" + aData);
                     continue;
                 }
-                data[i].delete(mContext);
+                aData.delete(mContext);
             }
             return null;
         }

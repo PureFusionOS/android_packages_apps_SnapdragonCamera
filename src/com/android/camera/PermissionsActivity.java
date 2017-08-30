@@ -2,17 +2,17 @@ package com.android.camera;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.KeyEvent;
-import org.omnirom.snap.R;
 import android.preference.PreferenceManager;
-import android.content.SharedPreferences;
+import android.view.KeyEvent;
+
+import org.omnirom.snap.R;
 
 /**
  * Activity that shows permissions request dialogs and handles lack of critical permissions.
@@ -51,7 +51,7 @@ public class PermissionsActivity extends Activity {
             mCriticalPermissionDenied = false;
         }
     }
-    
+
     private void checkPermissions() {
         if (checkSelfPermission(Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -72,7 +72,7 @@ public class PermissionsActivity extends Activity {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED ||
                 checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
+                        != PackageManager.PERMISSION_GRANTED) {
             mNumPermissionsToRequest = mNumPermissionsToRequest + 2;
             mShouldRequestStoragePermission = true;
         } else {
@@ -131,8 +131,8 @@ public class PermissionsActivity extends Activity {
 
         if (mShouldRequestCameraPermission) {
             if ((grantResults.length >= mIndexPermissionRequestCamera + 1) &&
-                (grantResults[mIndexPermissionRequestCamera] ==
-                        PackageManager.PERMISSION_GRANTED)) {
+                    (grantResults[mIndexPermissionRequestCamera] ==
+                            PackageManager.PERMISSION_GRANTED)) {
                 mFlagHasCameraPermission = true;
             } else {
                 mCriticalPermissionDenied = true;
@@ -140,8 +140,8 @@ public class PermissionsActivity extends Activity {
         }
         if (mShouldRequestMicrophonePermission) {
             if ((grantResults.length >= mIndexPermissionRequestMicrophone + 1) &&
-                (grantResults[mIndexPermissionRequestMicrophone] ==
-                        PackageManager.PERMISSION_GRANTED)) {
+                    (grantResults[mIndexPermissionRequestMicrophone] ==
+                            PackageManager.PERMISSION_GRANTED)) {
                 mFlagHasMicrophonePermission = true;
             } else {
                 mCriticalPermissionDenied = true;
@@ -149,8 +149,8 @@ public class PermissionsActivity extends Activity {
         }
         if (mShouldRequestStoragePermission) {
             if ((grantResults.length >= mIndexPermissionRequestStorageRead + 1) &&
-                (grantResults[mIndexPermissionRequestStorageWrite] ==
-                        PackageManager.PERMISSION_GRANTED) &&
+                    (grantResults[mIndexPermissionRequestStorageWrite] ==
+                            PackageManager.PERMISSION_GRANTED) &&
                     (grantResults[mIndexPermissionRequestStorageRead] ==
                             PackageManager.PERMISSION_GRANTED)) {
                 mFlagHasStoragePermission = true;
@@ -161,8 +161,8 @@ public class PermissionsActivity extends Activity {
 
         if (mShouldRequestLocationPermission) {
             if ((grantResults.length >= mIndexPermissionRequestLocation + 1) &&
-                (grantResults[mIndexPermissionRequestLocation] ==
-                        PackageManager.PERMISSION_GRANTED)) {
+                    (grantResults[mIndexPermissionRequestLocation] ==
+                            PackageManager.PERMISSION_GRANTED)) {
                 // Do nothing
             } else {
                 // Do nothing
@@ -196,22 +196,14 @@ public class PermissionsActivity extends Activity {
     private void handlePermissionsFailure() {
         new AlertDialog.Builder(this).setTitle(getResources().getString(R.string.camera_error_title))
                 .setMessage(getResources().getString(R.string.error_permissions))
-                .setOnKeyListener(new Dialog.OnKeyListener() {
-                    @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            finish();
-                        }
-                        return true;
-                    }
-                })
-                .setPositiveButton(getResources().getString(R.string.dialog_dismiss),
-                        new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setOnKeyListener((dialog, keyCode, event) -> {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
                         finish();
                     }
+                    return true;
                 })
+                .setPositiveButton(getResources().getString(R.string.dialog_dismiss),
+                        (dialog, which) -> finish())
                 .show();
     }
 

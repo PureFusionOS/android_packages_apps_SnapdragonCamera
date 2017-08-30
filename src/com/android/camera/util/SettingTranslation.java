@@ -105,7 +105,7 @@ public class SettingTranslation {
         }
 
         public int get(String key) {
-            Integer res =  strToInt.get(key);
+            Integer res = strToInt.get(key);
             if (res != null) return res;
             else return NOT_FOUND;
         }

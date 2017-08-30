@@ -21,6 +21,7 @@ package com.android.camera.mpo;
 
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -28,12 +29,11 @@ import java.util.List;
  */
 
 public class MpoImageData {
-    private static final String TAG = "MpoImageData";
     static final int OFFSET_TO_FIRST_IFD = 8;
     static final int MP_FORMAT_IDENTIFIER = 0x4D504600; // 'M' 'P' 'F' 'NULL'
     static final int MP_HEADER_SIZE = 8;
     static final int APP_HEADER_SIZE = 6;
-
+    private static final String TAG = "MpoImageData";
     private final MpoIfdData mMpIndexIfdData = new MpoIfdData(MpoIfdData.TYPE_MP_INDEX_IFD);
     private final MpoIfdData mMpAttribIfdData = new MpoIfdData(MpoIfdData.TYPE_MP_ATTRIB_IFD);
     private final byte[] mJpegData;
@@ -123,19 +123,15 @@ public class MpoImageData {
      * are none.
      */
     protected List<MpoTag> getAllTags() {
-        ArrayList<MpoTag> ret = new ArrayList<MpoTag>();
+        ArrayList<MpoTag> ret = new ArrayList<>();
         MpoTag[] tags = mMpIndexIfdData.getAllTags();
         if (tags != null) {
-            for (MpoTag t : tags) {
-                ret.add(t);
-            }
+            Collections.addAll(ret, tags);
         }
 
         tags = mMpAttribIfdData.getAllTags();
         if (tags != null) {
-            for (MpoTag t : tags) {
-                ret.add(t);
-            }
+            Collections.addAll(ret, tags);
         }
 
         if (ret.size() == 0) {
@@ -153,10 +149,8 @@ public class MpoImageData {
         if (tags == null) {
             return null;
         }
-        ArrayList<MpoTag> ret = new ArrayList<MpoTag>(tags.length);
-        for (MpoTag t : tags) {
-            ret.add(t);
-        }
+        ArrayList<MpoTag> ret = new ArrayList<>(tags.length);
+        Collections.addAll(ret, tags);
         if (ret.size() == 0) {
             return null;
         }
@@ -168,7 +162,7 @@ public class MpoImageData {
      * are none.
      */
     protected List<MpoTag> getAllTagsForTagId(short tag) {
-        ArrayList<MpoTag> ret = new ArrayList<MpoTag>();
+        ArrayList<MpoTag> ret = new ArrayList<>();
         MpoTag t = mMpIndexIfdData.getTag(tag);
         if (t != null) {
             ret.add(t);
@@ -207,10 +201,7 @@ public class MpoImageData {
 
             MpoIfdData attribIfd1 = data.getMpIfdData(MpoIfdData.TYPE_MP_ATTRIB_IFD);
             MpoIfdData attribIfd2 = getMpIfdData(MpoIfdData.TYPE_MP_ATTRIB_IFD);
-            if (attribIfd1 != attribIfd2 && attribIfd1 != null && !attribIfd1.equals(attribIfd2)) {
-                return false;
-            }
-            return true;
+            return !(attribIfd1 != attribIfd2 && attribIfd1 != null && !attribIfd1.equals(attribIfd2));
         }
         return false;
     }

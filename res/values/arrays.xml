@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
  * Copyright (C) 2008 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +27,7 @@
         <item>@string/pref_video_quality_entry_vga</item>
         <item>@string/pref_video_quality_entry_cif</item>
         <item>@string/pref_video_quality_entry_qvga</item>
-   </string-array>
+    </string-array>
     <string-array name="pref_video_quality_entryvalues" translatable="false">
         <item>4096x2160</item>
         <item>3840x2160</item>
@@ -558,7 +557,7 @@
         <item>180</item>
         <item>270</item>
     </string-array>
-    
+
     <!-- Grid -->
     <string-array name="pref_switch_entryvalues" translatable="false">
         <item>off</item>

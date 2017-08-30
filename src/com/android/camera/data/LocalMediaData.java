@@ -35,10 +35,11 @@ import android.widget.ImageView;
 import com.android.camera.ui.FilmStripView;
 import com.android.camera.util.CameraUtil;
 import com.android.camera.util.PhotoSphereHelper;
-import org.omnirom.snap.R;
 import com.bumptech.glide.BitmapRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.BitmapEncoder;
+
+import org.omnirom.snap.R;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -58,7 +59,9 @@ public abstract class LocalMediaData implements LocalData {
 
     // GL max texture size: keep bitmaps below this value.
     private static final int MAXIMUM_TEXTURE_SIZE = 2048;
-
+    private static final int JPEG_COMPRESS_QUALITY = 90;
+    private static final BitmapEncoder JPEG_ENCODER =
+            new BitmapEncoder(Bitmap.CompressFormat.JPEG, JPEG_COMPRESS_QUALITY);
     protected final long mContentId;
     protected final String mTitle;
     protected final String mMimeType;
@@ -71,35 +74,31 @@ public abstract class LocalMediaData implements LocalData {
     protected final long mSizeInBytes;
     protected final double mLatitude;
     protected final double mLongitude;
-
     protected ImageView mImageView;
-
-    /** The panorama metadata information of this media data. */
+    /**
+     * The panorama metadata information of this media data.
+     */
     protected PhotoSphereHelper.PanoramaMetadata mPanoramaMetadata;
-
-    /** Used to load photo sphere metadata from image files. */
+    /**
+     * Used to load photo sphere metadata from image files.
+     */
     protected PanoramaMetadataLoader mPanoramaMetadataLoader = null;
-
-    private static final int JPEG_COMPRESS_QUALITY = 90;
-    private static final BitmapEncoder JPEG_ENCODER =
-            new BitmapEncoder(Bitmap.CompressFormat.JPEG, JPEG_COMPRESS_QUALITY);
-
     /**
      * Used for thumbnail loading optimization. True if this data has a
      * corresponding visible view.
      */
     protected Boolean mUsing = false;
 
-    public LocalMediaData (long contentId, String title, String mimeType,
-            long dateTakenInSeconds, long dateModifiedInSeconds, String path,
-            int width, int height, long sizeInBytes, double latitude,
-            double longitude) {
+    public LocalMediaData(long contentId, String title, String mimeType,
+                          long dateTakenInSeconds, long dateModifiedInSeconds, String path,
+                          int width, int height, long sizeInBytes, double latitude,
+                          double longitude) {
         mContentId = contentId;
-        mTitle = new String(title);
-        mMimeType = new String(mimeType);
+        mTitle = title;
+        mMimeType = mimeType;
         mDateTakenInSeconds = dateTakenInSeconds;
         mDateModifiedInSeconds = dateModifiedInSeconds;
-        mPath = new String(path);
+        mPath = path;
         mWidth = width;
         mHeight = height;
         mSizeInBytes = sizeInBytes;
@@ -124,7 +123,7 @@ public abstract class LocalMediaData implements LocalData {
 
     @Override
     public String getTitle() {
-        return new String(mTitle);
+        return mTitle;
     }
 
     @Override
@@ -188,16 +187,13 @@ public abstract class LocalMediaData implements LocalData {
 
         // Load the metadata asynchronously.
         mPanoramaMetadataLoader.getPanoramaMetadata(context,
-                new PanoramaMetadataLoader.PanoramaMetadataCallback() {
-                    @Override
-                    public void onPanoramaMetadataLoaded(PhotoSphereHelper.PanoramaMetadata metadata) {
-                        // Store the metadata and remove the loader to free up
-                        // space.
-                        mPanoramaMetadata = metadata;
-                        mPanoramaMetadataLoader = null;
-                        callback.panoramaInfoAvailable(metadata.mUsePanoramaViewer,
-                                metadata.mIsPanorama360);
-                    }
+                metadata -> {
+                    // Store the metadata and remove the loader to free up
+                    // space.
+                    mPanoramaMetadata = metadata;
+                    mPanoramaMetadataLoader = null;
+                    callback.panoramaInfoAvailable(metadata.mUsePanoramaViewer,
+                            metadata.mIsPanorama360);
                 });
     }
 
@@ -212,8 +208,8 @@ public abstract class LocalMediaData implements LocalData {
     }
 
     protected ImageView fillImageView(Context ctx, ImageView v,
-            int decodeWidth, int decodeHeight, int placeHolderResourceId,
-            LocalDataAdapter adapter, boolean inFullScreen) {
+                                      int decodeWidth, int decodeHeight, int placeHolderResourceId,
+                                      LocalDataAdapter adapter, boolean inFullScreen) {
         Glide.with(ctx)
                 .loadFromMediaStore(getContentUri(), mMimeType, mDateModifiedInSeconds, 0)
                 .fitCenter()
@@ -224,8 +220,8 @@ public abstract class LocalMediaData implements LocalData {
 
     @Override
     public View getView(Activity activity,
-            int decodeWidth, int decodeHeight, int placeHolderResourceId,
-            LocalDataAdapter adapter, boolean inFullScreen) {
+                        int decodeWidth, int decodeHeight, int placeHolderResourceId,
+                        LocalDataAdapter adapter, boolean inFullScreen) {
 
         mImageView = new ImageView(activity);
 
@@ -256,7 +252,7 @@ public abstract class LocalMediaData implements LocalData {
         if (mLatitude == 0 && mLongitude == 0) {
             return null;
         }
-        return new double[] {
+        return new double[]{
                 mLatitude, mLongitude
         };
     }
@@ -297,8 +293,6 @@ public abstract class LocalMediaData implements LocalData {
     public abstract int getViewType();
 
     public static final class PhotoData extends LocalMediaData {
-        private static final String TAG = "CAM_PhotoData";
-
         public static final int COL_ID = 0;
         public static final int COL_TITLE = 1;
         public static final int COL_MIME_TYPE = 2;
@@ -311,9 +305,7 @@ public abstract class LocalMediaData implements LocalData {
         public static final int COL_SIZE = 9;
         public static final int COL_LATITUDE = 10;
         public static final int COL_LONGITUDE = 11;
-
         static final Uri CONTENT_URI = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
         static final String QUERY_ORDER = MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC, "
                 + MediaStore.Images.ImageColumns._ID + " DESC";
         /**
@@ -333,7 +325,7 @@ public abstract class LocalMediaData implements LocalData {
                 MediaStore.Images.ImageColumns.LATITUDE,      // 10, double
                 MediaStore.Images.ImageColumns.LONGITUDE      // 11, double
         };
-
+        private static final String TAG = "CAM_PhotoData";
         private static final int mSupportedUIActions =
                 FilmStripView.ImageData.ACTION_DEMOTE
                         | FilmStripView.ImageData.ACTION_PROMOTE
@@ -341,16 +333,20 @@ public abstract class LocalMediaData implements LocalData {
         private static final int mSupportedDataActions =
                 LocalData.ACTION_DELETE;
 
-        /** 32K buffer. */
+        /**
+         * 32K buffer.
+         */
         private static final byte[] DECODE_TEMP_STORAGE = new byte[32 * 1024];
 
-        /** from MediaStore, can only be 0, 90, 180, 270 */
+        /**
+         * from MediaStore, can only be 0, 90, 180, 270
+         */
         private final int mOrientation;
 
         public PhotoData(long id, String title, String mimeType,
-                long dateTakenInSeconds, long dateModifiedInSeconds,
-                String path, int orientation, int width, int height,
-                long sizeInBytes, double latitude, double longitude) {
+                         long dateTakenInSeconds, long dateModifiedInSeconds,
+                         String path, int orientation, int width, int height,
+                         long sizeInBytes, double latitude, double longitude) {
             super(id, title, mimeType, dateTakenInSeconds, dateModifiedInSeconds,
                     path, width, height, sizeInBytes, latitude, longitude);
             mOrientation = orientation;
@@ -395,10 +391,9 @@ public abstract class LocalMediaData implements LocalData {
             long sizeInBytes = c.getLong(COL_SIZE);
             double latitude = c.getDouble(COL_LATITUDE);
             double longitude = c.getDouble(COL_LONGITUDE);
-            PhotoData result = new PhotoData(id, title, mimeType, dateTakenInSeconds,
+            return new PhotoData(id, title, mimeType, dateTakenInSeconds,
                     dateModifiedInSeconds, path, orientation, width, height,
                     sizeInBytes, latitude, longitude);
-            return result;
         }
 
         @Override
@@ -437,8 +432,7 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         public Uri getContentUri() {
-            Uri baseUri = CONTENT_URI;
-            return baseUri.buildUpon().appendPath(String.valueOf(mContentId)).build();
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(mContentId)).build();
         }
 
         @Override
@@ -480,16 +474,16 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         protected ImageView fillImageView(Context context, final ImageView v, final int decodeWidth,
-                final int decodeHeight, int placeHolderResourceId, LocalDataAdapter adapter,
-                boolean inFullScreen) {
+                                          final int decodeHeight, int placeHolderResourceId, LocalDataAdapter adapter,
+                                          boolean inFullScreen) {
             loadImage(context, v, decodeWidth, decodeHeight, placeHolderResourceId, inFullScreen);
             return v;
         }
 
         private void loadImage(Context context, ImageView imageView, int decodeWidth,
-                int decodeHeight, int placeHolderResourceId, boolean inFullScreen) {
+                               int decodeHeight, int placeHolderResourceId, boolean inFullScreen) {
 
-            if (decodeWidth <= 0 || decodeHeight <=0) {
+            if (decodeWidth <= 0 || decodeHeight <= 0) {
                 return;
             }
 
@@ -524,13 +518,17 @@ public abstract class LocalMediaData implements LocalData {
                     .into(imageView);
         }
 
-        /** Loads a thumbnail with a size targeted to use MediaStore.Images.Thumbnails. */
+        /**
+         * Loads a thumbnail with a size targeted to use MediaStore.Images.Thumbnails.
+         */
         private BitmapRequestBuilder<Uri, Bitmap> loadMediaStoreThumb(Context context) {
             return loadUri(context)
                     .override(MEDIASTORE_THUMB_WIDTH, MEDIASTORE_THUMB_HEIGHT);
         }
 
-        /** Loads an image using a MediaStore Uri with our default options. */
+        /**
+         * Loads an image using a MediaStore Uri with our default options.
+         */
         private BitmapRequestBuilder<Uri, Bitmap> loadUri(Context context) {
             return Glide.with(context)
                     .loadFromMediaStore(getContentUri(), mMimeType, mDateModifiedInSeconds, mOrientation)
@@ -540,7 +538,7 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         public boolean rotate90Degrees(Context context, LocalDataAdapter adapter,
-                int currentDataId, boolean clockwise) {
+                                       int currentDataId, boolean clockwise) {
             RotationTask task = new RotationTask(context, adapter,
                     currentDataId, clockwise);
             task.execute(this);
@@ -564,14 +562,6 @@ public abstract class LocalMediaData implements LocalData {
         public static final int COL_DURATION = 12;
 
         static final Uri CONTENT_URI = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-
-        private static final int mSupportedUIActions =
-                FilmStripView.ImageData.ACTION_DEMOTE
-                        | FilmStripView.ImageData.ACTION_PROMOTE;
-        private static final int mSupportedDataActions =
-                LocalData.ACTION_DELETE
-                        | LocalData.ACTION_PLAY;
-
         static final String QUERY_ORDER = MediaStore.Video.VideoColumns.DATE_TAKEN + " DESC, "
                 + MediaStore.Video.VideoColumns._ID + " DESC";
         /**
@@ -592,14 +582,21 @@ public abstract class LocalMediaData implements LocalData {
                 MediaStore.Video.VideoColumns.LONGITUDE,     // 11 double
                 MediaStore.Video.VideoColumns.DURATION       // 12 long
         };
-
-        /** The duration in milliseconds. */
+        private static final int mSupportedUIActions =
+                FilmStripView.ImageData.ACTION_DEMOTE
+                        | FilmStripView.ImageData.ACTION_PROMOTE;
+        private static final int mSupportedDataActions =
+                LocalData.ACTION_DELETE
+                        | LocalData.ACTION_PLAY;
+        /**
+         * The duration in milliseconds.
+         */
         private long mDurationInSeconds;
 
         public VideoData(long id, String title, String mimeType,
-                long dateTakenInSeconds, long dateModifiedInSeconds,
-                String path, int width, int height, long sizeInBytes,
-                double latitude, double longitude, long durationInSeconds) {
+                         long dateTakenInSeconds, long dateModifiedInSeconds,
+                         String path, int width, int height, long sizeInBytes,
+                         double latitude, double longitude, long durationInSeconds) {
             super(id, title, mimeType, dateTakenInSeconds, dateModifiedInSeconds,
                     path, width, height, sizeInBytes, latitude, longitude);
             mDurationInSeconds = durationInSeconds;
@@ -663,10 +660,9 @@ public abstract class LocalMediaData implements LocalData {
             double latitude = c.getDouble(COL_LATITUDE);
             double longitude = c.getDouble(COL_LONGITUDE);
             long durationInSeconds = c.getLong(COL_DURATION) / 1000;
-            VideoData d = new VideoData(id, title, mimeType, dateTakenInSeconds,
+            return new VideoData(id, title, mimeType, dateTakenInSeconds,
                     dateModifiedInSeconds, path, width, height, sizeInBytes,
                     latitude, longitude, durationInSeconds);
-            return d;
         }
 
         @Override
@@ -699,8 +695,7 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         public Uri getContentUri() {
-            Uri baseUri = CONTENT_URI;
-            return baseUri.buildUpon().appendPath(String.valueOf(mContentId)).build();
+            return CONTENT_URI.buildUpon().appendPath(String.valueOf(mContentId)).build();
         }
 
         @Override
@@ -730,17 +725,17 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         protected ImageView fillImageView(Context context, final ImageView v, final int decodeWidth,
-                final int decodeHeight, int placeHolderResourceId, LocalDataAdapter adapter,
-                boolean inFullScreen) {
+                                          final int decodeHeight, int placeHolderResourceId, LocalDataAdapter adapter,
+                                          boolean inFullScreen) {
 
             //TODO: Figure out why these can be <= 0.
-            if (decodeWidth <= 0 || decodeHeight <=0) {
+            if (decodeWidth <= 0 || decodeHeight <= 0) {
                 return v;
             }
 
             // band-aid over a race condition where the filmstrip is in the process
             // of refreshing because of new media just as the camera exits
-            if ((context instanceof Activity) && ((Activity)context).isDestroyed()) {
+            if ((context instanceof Activity) && ((Activity) context).isDestroyed()) {
                 Log.d(TAG, "aborted fillImageView because context was destroyed");
                 return v;
             }
@@ -764,8 +759,8 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         public View getView(final Activity activity,
-                int decodeWidth, int decodeHeight, int placeHolderResourceId,
-                LocalDataAdapter adapter, boolean inFullScreen) {
+                            int decodeWidth, int decodeHeight, int placeHolderResourceId,
+                            LocalDataAdapter adapter, boolean inFullScreen) {
 
             // ImageView for the bitmap.
             mImageView = new ImageView(activity);
@@ -782,12 +777,7 @@ public abstract class LocalMediaData implements LocalData {
             icon.setLayoutParams(new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.CENTER));
-            icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    CameraUtil.playVideo(activity, getContentUri(), mTitle);
-                }
-            });
+            icon.setOnClickListener(v -> CameraUtil.playVideo(activity, getContentUri(), mTitle));
 
             FrameLayout f = new FrameLayout(activity);
             f.addView(mImageView);
@@ -802,7 +792,7 @@ public abstract class LocalMediaData implements LocalData {
 
         @Override
         public boolean rotate90Degrees(Context context, LocalDataAdapter adapter,
-                int currentDataId, boolean clockwise) {
+                                       int currentDataId, boolean clockwise) {
             // We don't support rotation for video data.
             Log.e(TAG, "Unexpected call in rotate90Degrees()");
             return false;

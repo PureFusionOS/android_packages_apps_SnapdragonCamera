@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,18 +13,17 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="1175086483881127797">"ກ້ອງ"</string>
     <string name="video_camera_label" msgid="1723708322021743770">"ກ້ອງວິດີໂອ"</string>
     <string name="details_ms" msgid="6618163484662724641">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="4842276230698703554">"%1$d:%2$02d:%3$02d"</string>
     <string name="set_image" msgid="3969690281401045698">"ຕັ້ງຮູບເປັນ"</string>
     <string name="delete" msgid="2714492172818940424">"ລຶບ"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="8811352590292754044">"ລຶບລາຍການທີ່ເລືອກ?"</item>
-    <item quantity="other" msgid="5075283252850066610">"ລຶບລາຍການທີ່ເລືອກບໍ່?"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="8811352590292754044" quantity="one">"ລຶບລາຍການທີ່ເລືອກ?"</item>
+        <item msgid="5075283252850066610" quantity="other">"ລຶບລາຍການທີ່ເລືອກບໍ່?"</item>
+    </plurals>
     <string name="share" msgid="8581089487762243115">"ແບ່ງປັນ"</string>
     <string name="share_panorama" msgid="3558466186935359444">"ແບ່ງປັນພາໂນຣາມາ"</string>
     <string name="share_as_photo" msgid="4831213580709167218">"ແບ່ງປັນເປັນຮູບ"</string>
@@ -33,21 +31,21 @@
     <string name="undo" msgid="5110048345890050107">"ຍົກເລີກ"</string>
     <string name="details" msgid="4404020741542549488">"ລາຍລະອຽດ"</string>
     <string name="close" msgid="4826166926297479820">"ປິດ"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9217673864242686656">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="one" msgid="5806616411905812727">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="other" msgid="3767743589502328221">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="8095100906728830821">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="one" msgid="9063509704521984072">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="other" msgid="135044054552480485">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="1942343672734097509">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="one" msgid="1456436514367094505">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-    <item quantity="other" msgid="1511467088339194694">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="9217673864242686656" quantity="zero">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+        <item msgid="5806616411905812727" quantity="one">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+        <item msgid="3767743589502328221" quantity="other">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="8095100906728830821" quantity="zero">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+        <item msgid="9063509704521984072" quantity="one">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+        <item msgid="135044054552480485" quantity="other">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="1942343672734097509" quantity="zero">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+        <item msgid="1456436514367094505" quantity="one">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+        <item msgid="1511467088339194694" quantity="other">"ເລືອກ %1$d ລາຍການແລ້ວ"</item>
+    </plurals>
     <string name="show_on_map" msgid="8542853913632649160">"ສະແດງໃນແຜນທີ່"</string>
     <string name="rotate_left" msgid="2618440058490662604">"ໝຸນຊ້າຍ"</string>
     <string name="rotate_right" msgid="4896096424267838355">"ໝຸນຂວາ"</string>
@@ -88,10 +86,10 @@
     <string name="camera_error_title" msgid="6200558085072670067">"ກ້ອງຖ່າຍຮູບຜິດພາດ"</string>
     <string name="cannot_connect_camera" msgid="4311259792784598381">"ບໍ່ສາມາດເຊື່ອມຕໍ່ກັບກ້ອງໄດ້."</string>
     <string name="camera_disabled" msgid="6963443549010040595">"ກ້ອງໄດ້ຖືກປິດໄວ້ເນື່ອງຈາກນະໂຍບາຍຄວາມປອດໄພ."</string>
-    <string name="wait" msgid="765601745709933047">"ກະລຸນາລໍຖ້າ..."</string>
-    <string name="no_storage" product="default" msgid="5922012950780548098">"ໃສ່ SD card ກ່ອນນຳໃຊ້ກ້ອງ."</string>
-    <string name="preparing_sd" product="default" msgid="7435693655017362767">"ກຳລັງກະກຽມ SD card ..."</string>
-    <string name="access_sd_fail" product="default" msgid="2634861611082499811">"ບໍ່ສາມາດເຂົ້າເຖິງ SD card ໄດ້."</string>
+    <string name="wait" msgid="765601745709933047">"ກະລຸນາລໍຖ້າ…"</string>
+    <string name="no_storage" msgid="5922012950780548098" product="default">"ໃສ່ SD card ກ່ອນນຳໃຊ້ກ້ອງ."</string>
+    <string name="preparing_sd" msgid="7435693655017362767" product="default">"ກຳລັງກະກຽມ SD card …"</string>
+    <string name="access_sd_fail" msgid="2634861611082499811" product="default">"ບໍ່ສາມາດເຂົ້າເຖິງ SD card ໄດ້."</string>
     <string name="time_lapse_title" msgid="3267978566401228497">"ການບັນທຶກພາບທາມແລບ"</string>
     <string name="capturing" msgid="5255164204641920893">"ກຳລັງບັນທຶກ"</string>
     <string name="pref_camera_id_title" msgid="4680648115225411185">"ເລືອກກ້ອງ"</string>
@@ -100,10 +98,10 @@
     <string name="pref_camera_recordlocation_title" msgid="3354956161456185749">"ສະຖານທີ່ຈັດເກັບ"</string>
     <string name="pref_camera_location_label" msgid="8695441802378057719">"ສະຖານທີ່"</string>
     <string name="pref_camera_timer_title" msgid="4728838281741571323">"ໂຕນັບເວລາຖອຍຫຼັງ"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="8919878087230098328">"1 ວິນາທີ"</item>
-    <item quantity="other" msgid="5782794798884172289">"%d ວິນາທີ"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="8919878087230098328" quantity="one">"1 ວິນາທີ"</item>
+        <item msgid="5782794798884172289" quantity="other">"%d ວິນາທີ"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (6225207881203007747) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="9036987234878551217">"ສຽງປີີບໃນເວລານັບຖອຍຫຼັງ"</string>
@@ -188,7 +186,7 @@
     <string name="pref_camera_id_label_back" msgid="1645608049757733858">"ກ້ອງຫນ້າ"</string>
     <string name="pref_camera_id_label_front" msgid="349308803062874842">"ກ້ອງຫຼັງ"</string>
     <string name="dialog_ok" msgid="774141340500181131">"ຕົກລົງ"</string>
-    <string name="spaceIsLow_content" product="default" msgid="4522771065344332702">"SD card ຂອງທ່ານກຳລັງຈະເຕັມ. ໃຫ້ປ່ຽນການຕັ້ງຄ່າຄຸນນະພາບ ຫຼືລຶບຮູບໃດນຶ່ງ ຫຼືໄຟລ໌ອື່ນໆອອກກ່ອນ."</string>
+    <string name="spaceIsLow_content" msgid="4522771065344332702" product="default">"SD card ຂອງທ່ານກຳລັງຈະເຕັມ. ໃຫ້ປ່ຽນການຕັ້ງຄ່າຄຸນນະພາບ ຫຼືລຶບຮູບໃດນຶ່ງ ຫຼືໄຟລ໌ອື່ນໆອອກກ່ອນ."</string>
     <string name="video_reach_size_limit" msgid="9196836111505731836">"ເຖິງຂີດຈຳກັດຂອງຂະໜາດແລ້ວ."</string>
     <string name="pano_too_fast_prompt" msgid="2503148095578052177">"ໄວເກີນໄປ"</string>
     <string name="pano_dialog_prepare_preview" msgid="4445235163599534263">"ກຳລັງກຽມຮູບພາໂນຣາມາ"</string>
@@ -196,7 +194,7 @@
     <string name="pano_dialog_title" msgid="6662642763395425145">"ຮູບສີແຈສາກແນວນອນ"</string>
     <string name="pano_capture_indication" msgid="4002128831255023954">"ກຳລັງຖ່າຍພາໂນຣາມາ"</string>
     <string name="pano_dialog_waiting_previous" msgid="2646847402743245320">"ກຳລັງລໍຖ້າພາໂນຣາມາອັນກ່ອນ"</string>
-    <string name="pano_review_saving_indication_str" msgid="4691771283450663293">"ກຳລັງບັນທຶກ..."</string>
+    <string name="pano_review_saving_indication_str" msgid="4691771283450663293">"ກຳລັງບັນທຶກ…"</string>
     <string name="pano_review_rendering" msgid="2743087719999377155">"ກຳລັງປະມວນພາບພາໂນຣາມາ"</string>
     <string name="tap_to_focus" msgid="3519718196270593468">"ສຳພັດເພື່ອໂຟກັສ."</string>
     <string name="pref_video_effect_title" msgid="594570613431209010">"ເອັບເຟັກ"</string>
@@ -285,7 +283,7 @@
     <string name="camera_menu_more_label" msgid="7951917844735828365">"ຕົວເລືອກເພີ່ມເຕີມ"</string>
     <string name="camera_menu_settings_label" msgid="3862756725328016822">"ການຕັ້ງຄ່າ"</string>
     <string name="create_tiny_planet" msgid="5186918191372107343">"ສ້າງດາວເຄາະນ້ອຍ"</string>
-    <string name="saving_tiny_planet" msgid="8828265180177375494">"ກຳລັງບັນທຶກດາວເຄາະນ້ອຍ..."</string>
+    <string name="saving_tiny_planet" msgid="8828265180177375494">"ກຳລັງບັນທຶກດາວເຄາະນ້ອຍ…"</string>
     <string name="tiny_planet_zoom" msgid="2985522360577158474">"ຊູມ"</string>
     <string name="tiny_planet_rotate" msgid="5445336705705350004">"ໝຸນ"</string>
     <string name="crop_save" msgid="2841974981340098579">"ບັນທຶກ"</string>

@@ -333,7 +333,7 @@ public class ProMode extends View {
                 vg.removeView(mAddedViews.get(i));
             }
         }
-        mAddedViews = new ArrayList<View>();
+        mAddedViews = new ArrayList<>();
     }
 
     @Override

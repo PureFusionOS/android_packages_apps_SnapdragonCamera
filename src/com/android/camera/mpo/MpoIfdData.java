@@ -28,10 +28,10 @@ import java.util.Map;
 public class MpoIfdData {
     public static final int TYPE_MP_INDEX_IFD = 1;
     public static final int TYPE_MP_ATTRIB_IFD = 2;
-    public static final byte[] MP_FORMAT_VER_VALUE = { 0x30, 0x31, 0x30, 0x30 };
+    public static final byte[] MP_FORMAT_VER_VALUE = {0x30, 0x31, 0x30, 0x30};
 
     private final int mIfdId;
-    private final Map<Short, MpoTag> mTags = new HashMap<Short, MpoTag>();
+    private final Map<Short, MpoTag> mTags = new HashMap<>();
     private int mOffsetToNextIfd = 0;
 
     /**
@@ -83,17 +83,17 @@ public class MpoIfdData {
     }
 
     /**
-     * Sets the offset of next IFD.
-     */
-    protected void setOffsetToNextIfd(int offset) {
-        mOffsetToNextIfd = offset;
-    }
-
-    /**
      * Gets the offset of next IFD.
      */
     protected int getOffsetToNextIfd() {
         return mOffsetToNextIfd;
+    }
+
+    /**
+     * Sets the offset of next IFD.
+     */
+    protected void setOffsetToNextIfd(int offset) {
+        mOffsetToNextIfd = offset;
     }
 
     /**

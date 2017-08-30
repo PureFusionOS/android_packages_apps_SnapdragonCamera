@@ -40,32 +40,46 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptizoomFilter implements ImageFilter{
+public class OptizoomFilter implements ImageFilter {
     public static final int NUM_REQUIRED_IMAGE = 8;
+    private static String TAG = "OptizoomFilter";
+    private static boolean mIsSupported = true;
+
+    static {
+        try {
+            System.loadLibrary("jni_optizoom");
+            mIsSupported = true;
+        } catch (UnsatisfiedLinkError e) {
+            mIsSupported = false;
+        }
+    }
+
     private int mWidth;
     private int mHeight;
     private int mStrideY;
     private int mStrideVU;
-    private static String TAG = "OptizoomFilter";
     private int temp;
-    private static boolean mIsSupported = true;
     private ByteBuffer mOutBuf;
     private CaptureModule mModule;
 
+    public OptizoomFilter(CaptureModule module) {
+        mModule = module;
+    }
+
     private static void Log(String msg) {
-        if(DEBUG) {
+        if (DEBUG) {
             Log.d(TAG, msg);
         }
     }
 
-    public OptizoomFilter(CaptureModule module) {
-       mModule = module;
+    public static boolean isSupportedStatic() {
+        return mIsSupported;
     }
 
     @Override
     public List<CaptureRequest> setRequiredImages(CaptureRequest.Builder builder) {
-        List<CaptureRequest> list = new ArrayList<CaptureRequest>();
-        for(int i=0; i < NUM_REQUIRED_IMAGE; i++) {
+        List<CaptureRequest> list = new ArrayList<>();
+        for (int i = 0; i < NUM_REQUIRED_IMAGE; i++) {
             list.add(builder.build());
         }
         return list;
@@ -84,12 +98,12 @@ public class OptizoomFilter implements ImageFilter{
     @Override
     public void init(int width, int height, int strideY, int strideVU) {
         Log("init");
-        mWidth = width/2*2;
-        mHeight = height/2*2;
-        mStrideY = strideY/2*2;
-        mStrideVU = strideVU/2*2;
-        mOutBuf = ByteBuffer.allocate(mStrideY*mHeight*6);  // YUV Buffer to hold (mWidth*2) X (mHeight*2)
-        Log("width: "+mWidth+" height: "+mHeight+" strideY: "+mStrideY+" strideVU: "+mStrideVU);
+        mWidth = width / 2 * 2;
+        mHeight = height / 2 * 2;
+        mStrideY = strideY / 2 * 2;
+        mStrideVU = strideVU / 2 * 2;
+        mOutBuf = ByteBuffer.allocate(mStrideY * mHeight * 6);  // YUV Buffer to hold (mWidth*2) X (mHeight*2)
+        Log("width: " + mWidth + " height: " + mHeight + " strideY: " + mStrideY + " strideVU: " + mStrideVU);
         nativeInit(mWidth, mHeight, mStrideY, mStrideVU,
                 0, 0, mWidth, mHeight, NUM_REQUIRED_IMAGE);
     }
@@ -115,11 +129,11 @@ public class OptizoomFilter implements ImageFilter{
         int[] roi = new int[4];
         int status = nativeProcessImage(mOutBuf.array(), mModule.getZoomValue(), roi);
         Log("processImage done");
-        if(status < 0) { //In failure case, library will return the first image as it is.
+        if (status < 0) { //In failure case, library will return the first image as it is.
             Log.w(TAG, "Fail to process the optizoom. It only processes when zoomValue >= 1.5f");
-            return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0]+roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
+            return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
         } else { //In success case, it will return twice bigger width and height.
-            return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0]+roi[2], roi[1] + roi[3]), mWidth*2, mHeight*2, mStrideY*2);
+            return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mWidth * 2, mHeight * 2, mStrideY * 2);
         }
     }
 
@@ -143,22 +157,12 @@ public class OptizoomFilter implements ImageFilter{
                               CameraCaptureSession.CaptureCallback callback, Handler handler) {
     }
 
-    public static boolean isSupportedStatic() {
-        return mIsSupported;
-    }
-
     private native int nativeInit(int width, int height, int yStride, int vuStride,
-                                   int roiX, int roiY, int roiW, int roiH, int numImages);
-    private native int nativeDeinit();
-    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
-    private native int nativeProcessImage(byte[] buffer, float zoomLvl, int[] roi);
+                                  int roiX, int roiY, int roiW, int roiH, int numImages);
 
-    static {
-        try {
-            System.loadLibrary("jni_optizoom");
-            mIsSupported = true;
-        }catch(UnsatisfiedLinkError e) {
-            mIsSupported = false;
-        }
-    }
+    private native int nativeDeinit();
+
+    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
+
+    private native int nativeProcessImage(byte[] buffer, float zoomLvl, int[] roi);
 }

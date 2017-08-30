@@ -16,18 +16,11 @@
 
 package com.android.camera;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.nio.ByteOrder;
-
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.location.Location;
 import android.net.Uri;
@@ -37,6 +30,8 @@ import android.os.IBinder;
 import android.provider.MediaStore.Video;
 import android.util.Log;
 
+import com.adobe.xmp.XMPException;
+import com.adobe.xmp.XMPMeta;
 import com.android.camera.exif.ExifInterface;
 import com.android.camera.mpo.MpoData;
 import com.android.camera.mpo.MpoImageData;
@@ -46,8 +41,10 @@ import com.android.camera.util.XmpUtil;
 import org.codeaurora.snapcam.filter.GDepth;
 import org.codeaurora.snapcam.filter.GImage;
 
-import com.adobe.xmp.XMPException;
-import com.adobe.xmp.XMPMeta;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.nio.ByteOrder;
 
 
 /*
@@ -58,7 +55,7 @@ public class MediaSaveService extends Service {
 
     // The memory limit for unsaved image is 50MB.
     private static final int SAVE_TASK_MEMORY_LIMIT_IN_MB =
-                                   android.os.SystemProperties.getInt("persist.camera.perf.memlimit", 60);
+            android.os.SystemProperties.getInt("persist.camera.perf.memlimit", 60);
     private static final int SAVE_TASK_MEMORY_LIMIT = SAVE_TASK_MEMORY_LIMIT_IN_MB * 1024 * 1024;
     private static final String TAG = "CAM_" + MediaSaveService.class.getSimpleName();
 
@@ -66,20 +63,6 @@ public class MediaSaveService extends Service {
     private Listener mListener;
     // Memory used by the total queued save request, in bytes.
     private long mMemoryUse;
-
-    public interface Listener {
-        public void onQueueStatus(boolean full);
-    }
-
-    public interface OnMediaSavedListener {
-        public void onMediaSaved(Uri uri);
-    }
-
-    class LocalBinder extends Binder {
-        public MediaSaveService getService() {
-            return MediaSaveService.this;
-        }
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -105,11 +88,11 @@ public class MediaSaveService extends Service {
     }
 
     public void addMpoImage(final byte[] csImage,
-            final byte[] bayerImg, final byte[] monoImg,
-            int width, int height,
-            String title, long date, Location loc, int orientation,
-            OnMediaSavedListener l, ContentResolver resolver,
-            String pictureFormat) {
+                            final byte[] bayerImg, final byte[] monoImg,
+                            int width, int height,
+                            String title, long date, Location loc, int orientation,
+                            OnMediaSavedListener l, ContentResolver resolver,
+                            String pictureFormat) {
         if (isQueueFull()) {
             Log.e(TAG, "Cannot add image when the queue is full");
             return;
@@ -130,8 +113,8 @@ public class MediaSaveService extends Service {
     }
 
     public void addImage(final byte[] data, String title, long date, Location loc,
-            int width, int height, int orientation, ExifInterface exif,
-            OnMediaSavedListener l, ContentResolver resolver, String pictureFormat) {
+                         int width, int height, int orientation, ExifInterface exif,
+                         OnMediaSavedListener l, ContentResolver resolver, String pictureFormat) {
         if (isQueueFull()) {
             Log.e(TAG, "Cannot add image when the queue is full");
             return;
@@ -162,15 +145,15 @@ public class MediaSaveService extends Service {
     }
 
     public void addXmpImage(byte[] mainImage, GImage bayer, GDepth gDepth,
-                                   String title, long date, Location loc, int width, int height,
-                                   int orientation, ExifInterface exif,
-                                   OnMediaSavedListener l, ContentResolver resolver, String pictureFormat) {
+                            String title, long date, Location loc, int width, int height,
+                            int orientation, ExifInterface exif,
+                            OnMediaSavedListener l, ContentResolver resolver, String pictureFormat) {
         if (isQueueFull()) {
             Log.e(TAG, "Cannot add image when the queue is full");
             return;
         }
         XmpImageSaveTask t = new XmpImageSaveTask(mainImage, bayer, gDepth,
-                title, date,  (loc == null) ? null : new Location(loc),
+                title, date, (loc == null) ? null : new Location(loc),
                 width, height, orientation, exif, resolver, l, pictureFormat);
 
         mMemoryUse += mainImage.length;
@@ -186,17 +169,18 @@ public class MediaSaveService extends Service {
         // When dimensions are unknown, pass 0 as width and height,
         // and decode image for width and height later in a background thread
         addImage(data, title, date, loc, 0, 0, orientation, exif, l, resolver,
-                 PhotoModule.PIXEL_FORMAT_JPEG);
+                PhotoModule.PIXEL_FORMAT_JPEG);
     }
+
     public void addImage(final byte[] data, String title, Location loc,
-            int width, int height, int orientation, ExifInterface exif,
-            OnMediaSavedListener l, ContentResolver resolver) {
+                         int width, int height, int orientation, ExifInterface exif,
+                         OnMediaSavedListener l, ContentResolver resolver) {
         addImage(data, title, System.currentTimeMillis(), loc, width, height,
-                orientation, exif, l, resolver,PhotoModule.PIXEL_FORMAT_JPEG);
+                orientation, exif, l, resolver, PhotoModule.PIXEL_FORMAT_JPEG);
     }
 
     public void addVideo(String path, long duration, ContentValues values,
-            OnMediaSavedListener l, ContentResolver resolver) {
+                         OnMediaSavedListener l, ContentResolver resolver) {
         // We don't set a queue limit for video saving because the file
         // is already in the storage. Only updating the database.
         new VideoSaveTask(path, duration, values, l, resolver).execute();
@@ -216,6 +200,20 @@ public class MediaSaveService extends Service {
         if (mListener != null) mListener.onQueueStatus(false);
     }
 
+    public interface Listener {
+        public void onQueueStatus(boolean full);
+    }
+
+    public interface OnMediaSavedListener {
+        public void onMediaSaved(Uri uri);
+    }
+
+    class LocalBinder extends Binder {
+        public MediaSaveService getService() {
+            return MediaSaveService.this;
+        }
+    }
+
     private class MpoSaveTask extends AsyncTask<Void, Void, Uri> {
         private byte[] csImage;
         private byte[] bayerImage;
@@ -230,9 +228,9 @@ public class MediaSaveService extends Service {
         private String pictureFormat;
 
         public MpoSaveTask(byte[] csImage, byte[] bayerImg,
-                byte[] monoImg, int width, int height, String title, long date,
-                Location loc, int orientation, OnMediaSavedListener listener,
-                ContentResolver resolver, String pictureFormat) {
+                           byte[] monoImg, int width, int height, String title, long date,
+                           Location loc, int orientation, OnMediaSavedListener listener,
+                           ContentResolver resolver, String pictureFormat) {
             this.csImage = csImage;
             this.bayerImage = bayerImg;
             this.monoImage = monoImg;
@@ -315,7 +313,7 @@ public class MediaSaveService extends Service {
         @Override
         protected Long doInBackground(Void... params) {
             long length = Storage.addRawImage(title, data, pictureFormat);
-            return new Long(length);
+            return length;
         }
 
         @Override
@@ -326,7 +324,7 @@ public class MediaSaveService extends Service {
         }
     }
 
-    private class ImageSaveTask extends AsyncTask <Void, Void, Uri> {
+    private class ImageSaveTask extends AsyncTask<Void, Void, Uri> {
         private byte[] data;
         private String title;
         private long date;
@@ -382,7 +380,7 @@ public class MediaSaveService extends Service {
         }
     }
 
-    private class XmpImageSaveTask extends AsyncTask <Void, Void, Uri> {
+    private class XmpImageSaveTask extends AsyncTask<Void, Void, Uri> {
         private byte[] mainImage;
         private GImage bayer;
         private GDepth gDepth;
@@ -425,7 +423,7 @@ public class MediaSaveService extends Service {
         @Override
         protected Uri doInBackground(Void... v) {
             data = embedGDepthAndBayerInClearSight(mainImage);
-            if ( data == null ) {
+            if (data == null) {
                 data = mainImage;
                 Log.e(TAG, "embedGDepthAndBayerInClearSight fail");
             }
@@ -453,14 +451,14 @@ public class MediaSaveService extends Service {
 
         private byte[] embedGDepthAndBayerInClearSight(byte[] clearSightImageBytes) {
             Log.d(TAG, "embedGDepthInClearSight");
-            if ( clearSightImageBytes == null || (gDepth ==null && bayer==null) ) {
+            if (clearSightImageBytes == null || (gDepth == null && bayer == null)) {
                 Log.d(TAG, "clearSightImageBytes is null");
                 return null;
             }
 
             XMPMeta xmpMeta = XmpUtil.createXMPMeta();
             try {
-                if ( gDepth != null ) {
+                if (gDepth != null) {
                     xmpMeta.setProperty(GDepth.NAMESPACE_URL, GDepth.PROPERTY_MIME, gDepth.getMime());
                     xmpMeta.setProperty(GDepth.NAMESPACE_URL, GDepth.PROPERTY_NEAR, gDepth.getNear());
                     xmpMeta.setProperty(GDepth.NAMESPACE_URL, GDepth.PROPERTY_FAR, gDepth.getFar());
@@ -473,35 +471,35 @@ public class MediaSaveService extends Service {
                     xmpMeta.setProperty(GDepth.NAMESPACE_URL, GDepth.PROPERTY_ROI_HEIGHT, roi.height());
                 }
 
-                if ( bayer != null ) {
+                if (bayer != null) {
                     xmpMeta.setProperty(GImage.NAMESPACE_URL, GImage.PROPERTY_MIME, bayer.getMime());
                 }
 
 
-            } catch(XMPException exception) {
+            } catch (XMPException exception) {
                 Log.d(TAG, "create XMPMeta error", exception);
                 return null;
             }
 
             XMPMeta extendXmpMeta = XmpUtil.createXMPMeta();
-            try{
-                if ( gDepth != null) {
+            try {
+                if (gDepth != null) {
                     extendXmpMeta.setProperty(GDepth.NAMESPACE_URL, GDepth.PROPERTY_DATA, gDepth.getData());
                 }
 
-                if ( bayer != null ) {
+                if (bayer != null) {
                     extendXmpMeta.setProperty(GImage.NAMESPACE_URL, GImage.PROPERTY_DATA, bayer.getData());
                 }
-            }catch(XMPException exception) {
+            } catch (XMPException exception) {
                 Log.d(TAG, "create extended XMPMeta error", exception);
             }
 
 
             ByteArrayInputStream bais = new ByteArrayInputStream(clearSightImageBytes);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            if ( XmpUtil.writeXMPMeta(bais, baos, xmpMeta, extendXmpMeta) ){
+            if (XmpUtil.writeXMPMeta(bais, baos, xmpMeta, extendXmpMeta)) {
                 return baos.toByteArray();
-            }else{
+            } else {
                 Log.e(TAG, "embedGDepthInClearSight failure ");
                 return null;
             }
@@ -509,7 +507,7 @@ public class MediaSaveService extends Service {
         }
     }
 
-    private class VideoSaveTask extends AsyncTask <Void, Void, Uri> {
+    private class VideoSaveTask extends AsyncTask<Void, Void, Uri> {
         private String path;
         private long duration;
         private ContentValues values;
@@ -517,7 +515,7 @@ public class MediaSaveService extends Service {
         private ContentResolver resolver;
 
         public VideoSaveTask(String path, long duration, ContentValues values,
-                OnMediaSavedListener l, ContentResolver r) {
+                             OnMediaSavedListener l, ContentResolver r) {
             this.path = path;
             this.duration = duration;
             this.values = new ContentValues(values);

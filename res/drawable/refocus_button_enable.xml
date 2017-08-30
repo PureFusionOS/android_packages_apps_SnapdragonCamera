@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright (c) 2015, The Linux Foundation. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -28,7 +27,7 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-        android:shape="rectangle">
+    android:shape="rectangle">
     <stroke
         android:width="1dp"
         android:color="#29b6f6" />

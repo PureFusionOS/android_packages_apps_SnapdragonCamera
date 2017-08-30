@@ -34,38 +34,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.android.camera.util.CameraUtil;
+
 import org.omnirom.snap.R;
 
 
 public class BestPictureActionDialogLayout extends RelativeLayout implements View.OnClickListener {
 
+    int mode;
     private TextView mTitleText;
     private TextView mContent;
     private Button mNativeBt;
     private Button mPositiveBt;
     private Button mOKButton;
-    int mode;
     private IDialogDataControler mDialogDataControler;
-
-    public interface IDialogDataControler {
-
-        String getTitleString();
-
-        String getContentString();
-
-        String getPositionButtonString();
-
-        String getNativeButtonString();
-
-        String getOKButtonString();
-
-        void doClickPositionBtAction();
-
-        void doClickNativeBtAction();
-
-        void doClickOKBtAction();
-    }
 
     public BestPictureActionDialogLayout(Context context) {
         this(context, null);
@@ -78,7 +61,6 @@ public class BestPictureActionDialogLayout extends RelativeLayout implements Vie
     public BestPictureActionDialogLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
 
     public void setDialogDataControler(View root, IDialogDataControler dialogDataControler) {
         mode = (int) root.getTag();
@@ -131,5 +113,24 @@ public class BestPictureActionDialogLayout extends RelativeLayout implements Vie
             default:
                 break;
         }
+    }
+
+    public interface IDialogDataControler {
+
+        String getTitleString();
+
+        String getContentString();
+
+        String getPositionButtonString();
+
+        String getNativeButtonString();
+
+        String getOKButtonString();
+
+        void doClickPositionBtAction();
+
+        void doClickNativeBtAction();
+
+        void doClickOKBtAction();
     }
 }

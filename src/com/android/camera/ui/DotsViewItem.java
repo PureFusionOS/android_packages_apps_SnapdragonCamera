@@ -31,5 +31,6 @@ package com.android.camera.ui;
 
 public interface DotsViewItem {
     int getTotalItemNums();
+
     boolean isChosen(int index);
 }

@@ -31,10 +31,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.camera.data.MediaDetails;
+
 import org.omnirom.snap.R;
 
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map.Entry;
@@ -47,7 +47,7 @@ public class DetailsDialog {
     /**
      * Creates a dialog for showing media data.
      *
-     * @param context the Android context.
+     * @param context      the Android context.
      * @param mediaDetails the media details to display.
      * @return A dialog that can be made visible to show the media details.
      */
@@ -59,12 +59,64 @@ public class DetailsDialog {
         final AlertDialog.Builder builder =
                 new AlertDialog.Builder(context);
         return builder.setTitle(R.string.details).setView(detailsList)
-                .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                    }
-                }).create();
+                .setPositiveButton(R.string.close, (dialog, whichButton) -> dialog.dismiss()).create();
+    }
+
+    public static String getDetailsName(Context context, int key) {
+        switch (key) {
+            case MediaDetails.INDEX_TITLE:
+                return context.getString(R.string.title);
+            case MediaDetails.INDEX_DESCRIPTION:
+                return context.getString(R.string.description);
+            case MediaDetails.INDEX_DATETIME:
+                return context.getString(R.string.time);
+            case MediaDetails.INDEX_LOCATION:
+                return context.getString(R.string.location);
+            case MediaDetails.INDEX_PATH:
+                return context.getString(R.string.path);
+            case MediaDetails.INDEX_WIDTH:
+                return context.getString(R.string.width);
+            case MediaDetails.INDEX_HEIGHT:
+                return context.getString(R.string.height);
+            case MediaDetails.INDEX_ORIENTATION:
+                return context.getString(R.string.orientation);
+            case MediaDetails.INDEX_DURATION:
+                return context.getString(R.string.duration);
+            case MediaDetails.INDEX_MIMETYPE:
+                return context.getString(R.string.mimetype);
+            case MediaDetails.INDEX_SIZE:
+                return context.getString(R.string.file_size);
+            case MediaDetails.INDEX_MAKE:
+                return context.getString(R.string.maker);
+            case MediaDetails.INDEX_MODEL:
+                return context.getString(R.string.model);
+            case MediaDetails.INDEX_FLASH:
+                return context.getString(R.string.flash);
+            case MediaDetails.INDEX_APERTURE:
+                return context.getString(R.string.aperture);
+            case MediaDetails.INDEX_FOCAL_LENGTH:
+                return context.getString(R.string.focal_length);
+            case MediaDetails.INDEX_WHITE_BALANCE:
+                return context.getString(R.string.white_balance);
+            case MediaDetails.INDEX_EXPOSURE_TIME:
+                return context.getString(R.string.exposure_time);
+            case MediaDetails.INDEX_ISO:
+                return context.getString(R.string.iso);
+            default:
+                return "Unknown key" + key;
+        }
+    }
+
+    /**
+     * Throw an assertion error wit the given message.
+     *
+     * @param message the message, can contain placeholders.
+     * @param args    if he message contains placeholders, these values will be
+     *                used to fill them.
+     */
+    private static void fail(String message, Object... args) {
+        throw new AssertionError(
+                args.length == 0 ? message : String.format(message, args));
     }
 
     /**
@@ -83,7 +135,7 @@ public class DetailsDialog {
         public DetailsAdapter(Context context, MediaDetails details) {
             mContext = context;
             mMediaDetails = details;
-            mItems = new ArrayList<String>(details.size());
+            mItems = new ArrayList<>(details.size());
             setDetails(context, details);
         }
 
@@ -277,71 +329,18 @@ public class DetailsDialog {
             }
         }
 
-        /** Converts the given integer to a localized String version. */
+        /**
+         * Converts the given integer to a localized String version.
+         */
         private String toLocalNumber(int n) {
             return String.format(mDefaultLocale, "%d", n);
         }
 
-        /** Converts the given double to a localized String version. */
+        /**
+         * Converts the given double to a localized String version.
+         */
         private String toLocalNumber(double n) {
             return mDecimalFormat.format(n);
         }
-    }
-
-    public static String getDetailsName(Context context, int key) {
-        switch (key) {
-            case MediaDetails.INDEX_TITLE:
-                return context.getString(R.string.title);
-            case MediaDetails.INDEX_DESCRIPTION:
-                return context.getString(R.string.description);
-            case MediaDetails.INDEX_DATETIME:
-                return context.getString(R.string.time);
-            case MediaDetails.INDEX_LOCATION:
-                return context.getString(R.string.location);
-            case MediaDetails.INDEX_PATH:
-                return context.getString(R.string.path);
-            case MediaDetails.INDEX_WIDTH:
-                return context.getString(R.string.width);
-            case MediaDetails.INDEX_HEIGHT:
-                return context.getString(R.string.height);
-            case MediaDetails.INDEX_ORIENTATION:
-                return context.getString(R.string.orientation);
-            case MediaDetails.INDEX_DURATION:
-                return context.getString(R.string.duration);
-            case MediaDetails.INDEX_MIMETYPE:
-                return context.getString(R.string.mimetype);
-            case MediaDetails.INDEX_SIZE:
-                return context.getString(R.string.file_size);
-            case MediaDetails.INDEX_MAKE:
-                return context.getString(R.string.maker);
-            case MediaDetails.INDEX_MODEL:
-                return context.getString(R.string.model);
-            case MediaDetails.INDEX_FLASH:
-                return context.getString(R.string.flash);
-            case MediaDetails.INDEX_APERTURE:
-                return context.getString(R.string.aperture);
-            case MediaDetails.INDEX_FOCAL_LENGTH:
-                return context.getString(R.string.focal_length);
-            case MediaDetails.INDEX_WHITE_BALANCE:
-                return context.getString(R.string.white_balance);
-            case MediaDetails.INDEX_EXPOSURE_TIME:
-                return context.getString(R.string.exposure_time);
-            case MediaDetails.INDEX_ISO:
-                return context.getString(R.string.iso);
-            default:
-                return "Unknown key" + key;
-        }
-    }
-
-    /**
-     * Throw an assertion error wit the given message.
-     *
-     * @param message the message, can contain placeholders.
-     * @param args if he message contains placeholders, these values will be
-     *            used to fill them.
-     */
-    private static void fail(String message, Object... args) {
-        throw new AssertionError(
-                args.length == 0 ? message : String.format(message, args));
     }
 }

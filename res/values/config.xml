@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2012 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2012 The Android Open Source Project
                    2015 The CyanogenMod Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +42,7 @@
 
     <!-- Set's manufacturer specific parameters on startup. 
          Example: lge-camera=1;cam-mode=0 -->
-    <string name="manufacturer_key_values"></string>
+    <string name="manufacturer_key_values" />
 
     <!-- Use following iso parameter.
          Example: lg-iso

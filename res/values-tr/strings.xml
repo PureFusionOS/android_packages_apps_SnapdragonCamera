@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,18 +13,17 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="1175086483881127797">"Kamera"</string>
     <string name="video_camera_label" msgid="1723708322021743770">"Video Kamera"</string>
     <string name="details_ms" msgid="6618163484662724641">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="4842276230698703554">"%1$d:%2$02d:%3$02d"</string>
     <string name="set_image" msgid="3969690281401045698">"Resmi ayarlayın"</string>
     <string name="delete" msgid="2714492172818940424">"Sil"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="8811352590292754044">"Seçilen öğe silinsin mi?"</item>
-    <item quantity="other" msgid="5075283252850066610">"Seçilen öğeler silinsin mi?"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="8811352590292754044" quantity="one">"Seçilen öğe silinsin mi?"</item>
+        <item msgid="5075283252850066610" quantity="other">"Seçilen öğeler silinsin mi?"</item>
+    </plurals>
     <string name="share" msgid="8581089487762243115">"Paylaş"</string>
     <string name="share_panorama" msgid="3558466186935359444">"Panoramayı paylaş"</string>
     <string name="share_as_photo" msgid="4831213580709167218">"Fotoğraf olarak paylaş"</string>
@@ -33,21 +31,21 @@
     <string name="undo" msgid="5110048345890050107">"GERİ AL"</string>
     <string name="details" msgid="4404020741542549488">"Ayrıntılar"</string>
     <string name="close" msgid="4826166926297479820">"Kapat"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9217673864242686656">"%1$d tane seçildi"</item>
-    <item quantity="one" msgid="5806616411905812727">"%1$d tane seçildi"</item>
-    <item quantity="other" msgid="3767743589502328221">"%1$d tane seçildi"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="8095100906728830821">"%1$d tane seçildi"</item>
-    <item quantity="one" msgid="9063509704521984072">"%1$d tane seçildi"</item>
-    <item quantity="other" msgid="135044054552480485">"%1$d tane seçildi"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="1942343672734097509">"%1$d tane seçildi"</item>
-    <item quantity="one" msgid="1456436514367094505">"%1$d tane seçildi"</item>
-    <item quantity="other" msgid="1511467088339194694">"%1$d tane seçildi"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="9217673864242686656" quantity="zero">"%1$d tane seçildi"</item>
+        <item msgid="5806616411905812727" quantity="one">"%1$d tane seçildi"</item>
+        <item msgid="3767743589502328221" quantity="other">"%1$d tane seçildi"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="8095100906728830821" quantity="zero">"%1$d tane seçildi"</item>
+        <item msgid="9063509704521984072" quantity="one">"%1$d tane seçildi"</item>
+        <item msgid="135044054552480485" quantity="other">"%1$d tane seçildi"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="1942343672734097509" quantity="zero">"%1$d tane seçildi"</item>
+        <item msgid="1456436514367094505" quantity="one">"%1$d tane seçildi"</item>
+        <item msgid="1511467088339194694" quantity="other">"%1$d tane seçildi"</item>
+    </plurals>
     <string name="show_on_map" msgid="8542853913632649160">"Haritada göster"</string>
     <string name="rotate_left" msgid="2618440058490662604">"Sola döndür"</string>
     <string name="rotate_right" msgid="4896096424267838355">"Sağa döndür"</string>
@@ -89,9 +87,9 @@
     <string name="cannot_connect_camera" msgid="4311259792784598381">"Kameraya bağlanılamıyor."</string>
     <string name="camera_disabled" msgid="6963443549010040595">"Güvenlik politikaları nedeniyle kamera devre dışı bırakıldı."</string>
     <string name="wait" msgid="765601745709933047">"Lütfen bekleyin…"</string>
-    <string name="no_storage" product="default" msgid="5922012950780548098">"Kamerayı kullanmadan önce bir SD kart takın."</string>
-    <string name="preparing_sd" product="default" msgid="7435693655017362767">"SD kart hazırlanıyor..."</string>
-    <string name="access_sd_fail" product="default" msgid="2634861611082499811">"SD karta erişilemedi."</string>
+    <string name="no_storage" msgid="5922012950780548098" product="default">"Kamerayı kullanmadan önce bir SD kart takın."</string>
+    <string name="preparing_sd" msgid="7435693655017362767" product="default">"SD kart hazırlanıyor…"</string>
+    <string name="access_sd_fail" msgid="2634861611082499811" product="default">"SD karta erişilemedi."</string>
     <string name="time_lapse_title" msgid="3267978566401228497">"Zaman atlamalı kayıt"</string>
     <string name="capturing" msgid="5255164204641920893">"Fotoğraf çekiliyor"</string>
     <string name="pref_camera_id_title" msgid="4680648115225411185">"Kamera seçin"</string>
@@ -100,10 +98,10 @@
     <string name="pref_camera_recordlocation_title" msgid="3354956161456185749">"Konumu kaydet"</string>
     <string name="pref_camera_location_label" msgid="8695441802378057719">"KONUM"</string>
     <string name="pref_camera_timer_title" msgid="4728838281741571323">"Geri sayım zamanlayıcısı"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="8919878087230098328">"1 saniye"</item>
-    <item quantity="other" msgid="5782794798884172289">"%d saniye"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="8919878087230098328" quantity="one">"1 saniye"</item>
+        <item msgid="5782794798884172289" quantity="other">"%d saniye"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (6225207881203007747) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="9036987234878551217">"Geri sayımda bip sesi çıkar"</string>
@@ -188,7 +186,7 @@
     <string name="pref_camera_id_label_back" msgid="1645608049757733858">"ÖN KAMERA"</string>
     <string name="pref_camera_id_label_front" msgid="349308803062874842">"ARKA KAMERA"</string>
     <string name="dialog_ok" msgid="774141340500181131">"Tamam"</string>
-    <string name="spaceIsLow_content" product="default" msgid="4522771065344332702">"SD kartınızda boş alan azaldı. Kalite ayarını değiştirin veya bazı resimleri ya da diğer dosyaları silin."</string>
+    <string name="spaceIsLow_content" msgid="4522771065344332702" product="default">"SD kartınızda boş alan azaldı. Kalite ayarını değiştirin veya bazı resimleri ya da diğer dosyaları silin."</string>
     <string name="video_reach_size_limit" msgid="9196836111505731836">"Boyut sınırına ulaşıldı."</string>
     <string name="pano_too_fast_prompt" msgid="2503148095578052177">"Çok hızlı"</string>
     <string name="pano_dialog_prepare_preview" msgid="4445235163599534263">"Panorama hazırlanıyor"</string>

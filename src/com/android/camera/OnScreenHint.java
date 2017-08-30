@@ -31,7 +31,7 @@ import org.omnirom.snap.R;
  * A on-screen hint is a view containing a little message for the user and will
  * be shown on the screen continuously.  This class helps you create and show
  * those.
- *
+ * <p>
  * <p>
  * When the view is shown to the user, appears as a floating view over the
  * application.
@@ -41,25 +41,25 @@ import org.omnirom.snap.R;
  */
 public class OnScreenHint {
     static final String TAG = "OnScreenHint";
-
+    private final WindowManager.LayoutParams mParams =
+            new WindowManager.LayoutParams();
+    private final WindowManager mWM;
+    private final Handler mHandler = new Handler();
     int mGravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
     int mX, mY;
     float mHorizontalMargin;
     float mVerticalMargin;
     View mView;
+    private final Runnable mHide = this::handleHide;
     View mNextView;
-
-    private final WindowManager.LayoutParams mParams =
-            new WindowManager.LayoutParams();
-    private final WindowManager mWM;
-    private final Handler mHandler = new Handler();
+    private final Runnable mShow = this::handleShow;
 
     /**
      * Construct an empty OnScreenHint object.
      *
-     * @param context  The context to use.  Usually your
-     *                 {@link android.app.Application} or
-     *                 {@link android.app.Activity} object.
+     * @param context The context to use.  Usually your
+     *                {@link android.app.Application} or
+     *                {@link android.app.Activity} object.
      */
     private OnScreenHint(Context context) {
         mWM = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -74,6 +74,29 @@ public class OnScreenHint {
         mParams.windowAnimations = R.style.Animation_OnScreenHint;
         mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL;
         mParams.setTitle("OnScreenHint");
+    }
+
+    /**
+     * Make a standard hint that just contains a text view.
+     *
+     * @param context The context to use.  Usually your
+     *                {@link android.app.Application} or
+     *                {@link android.app.Activity} object.
+     * @param text    The text to show.  Can be formatted text.
+     */
+    public static OnScreenHint makeText(Context context, CharSequence text) {
+        OnScreenHint result = new OnScreenHint(context);
+
+        LayoutInflater inflate =
+                (LayoutInflater) context.getSystemService(
+                        Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflate.inflate(R.layout.on_screen_hint, null);
+        TextView tv = (TextView) v.findViewById(R.id.message);
+        tv.setText(text);
+
+        result.mNextView = v;
+
+        return result;
     }
 
     /**
@@ -94,32 +117,9 @@ public class OnScreenHint {
     }
 
     /**
-     * Make a standard hint that just contains a text view.
-     *
-     * @param context  The context to use.  Usually your
-     *                 {@link android.app.Application} or
-     *                 {@link android.app.Activity} object.
-     * @param text     The text to show.  Can be formatted text.
-     *
-     */
-    public static OnScreenHint makeText(Context context, CharSequence text) {
-        OnScreenHint result = new OnScreenHint(context);
-
-        LayoutInflater inflate =
-                (LayoutInflater) context.getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        View v = inflate.inflate(R.layout.on_screen_hint, null);
-        TextView tv = (TextView) v.findViewById(R.id.message);
-        tv.setText(text);
-
-        result.mNextView = v;
-
-        return result;
-    }
-
-    /**
      * Update the text in a OnScreenHint that was previously created using one
      * of the makeText() methods.
+     *
      * @param s The new text for the OnScreenHint.
      */
     public void setText(CharSequence s) {
@@ -172,19 +172,5 @@ public class OnScreenHint {
             mView = null;
         }
     }
-
-    private final Runnable mShow = new Runnable() {
-        @Override
-        public void run() {
-            handleShow();
-        }
-    };
-
-    private final Runnable mHide = new Runnable() {
-        @Override
-        public void run() {
-            handleHide();
-        }
-    };
 }
 

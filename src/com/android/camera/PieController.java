@@ -27,23 +27,22 @@ import com.android.camera.ui.PieItem;
 import com.android.camera.ui.PieItem.OnClickListener;
 import com.android.camera.ui.PieRenderer;
 import com.android.camera.ui.RotateTextToast;
+
 import org.omnirom.snap.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class PieController {
 
-    private static String TAG = "CAM_piecontrol";
-
     protected static final int MODE_PHOTO = 0;
     protected static final int MODE_VIDEO = 1;
-
-    protected static float CENTER = (float) Math.PI / 2;
     protected static final float SWEEP = 0.06f;
-
+    protected static float CENTER = (float) Math.PI / 2;
+    private static String TAG = "CAM_piecontrol";
     protected Activity mActivity;
     protected PreferenceGroup mPreferenceGroup;
     protected OnPreferenceChangedListener mListener;
@@ -52,16 +51,16 @@ public class PieController {
     private Map<IconListPreference, PieItem> mPreferenceMap;
     private Map<IconListPreference, String> mOverrides;
 
-    public void setListener(OnPreferenceChangedListener listener) {
-        mListener = listener;
-    }
-
     public PieController(Activity activity, PieRenderer pie) {
         mActivity = activity;
         mRenderer = pie;
-        mPreferences = new ArrayList<IconListPreference>();
-        mPreferenceMap = new HashMap<IconListPreference, PieItem>();
-        mOverrides = new HashMap<IconListPreference, String>();
+        mPreferences = new ArrayList<>();
+        mPreferenceMap = new HashMap<>();
+        mOverrides = new HashMap<>();
+    }
+
+    public void setListener(OnPreferenceChangedListener listener) {
+        mListener = listener;
     }
 
     public void initialize(PreferenceGroup group) {
@@ -124,13 +123,10 @@ public class PieController {
                 inner.setLabel(pref.getLabels()[i]);
                 item.addItem(inner);
                 final int index = i;
-                inner.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(PieItem item) {
-                        pref.setValueIndex(index);
-                        reloadPreference(pref);
-                        onSettingChanged(pref);
-                    }
+                inner.setOnClickListener(item1 -> {
+                    pref.setValueIndex(index);
+                    reloadPreference(pref);
+                    onSettingChanged(pref);
                 });
             }
         }
@@ -158,30 +154,26 @@ public class PieController {
         mPreferenceMap.put(pref, item);
         if (addListener) {
             final PieItem fitem = item;
-            item.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(PieItem item) {
-                    if (!item.isEnabled()) {
-                        return;
-                    }
-                    IconListPreference pref = (IconListPreference) mPreferenceGroup
-                            .findPreference(prefKey);
-                    int index = pref.findIndexOfValue(pref.getValue());
-                    CharSequence[] values = pref.getEntryValues();
-                    index = (index + 1) % values.length;
-                    pref.setValueIndex(index);
-                    // when enable HDR,inform to disable Continuous Shot
-                    if (index == 1 && prefKey == CameraSettings.KEY_CAMERA_HDR)
-                    {
-                        RotateTextToast.makeText(mActivity, R.string.HDR_disable_continuous_shot,
-                                Toast.LENGTH_LONG).show();
-                    }
-                    fitem.setLabel(pref.getLabels()[index]);
-                    fitem.setImageResource(mActivity,
-                            ((IconListPreference) pref).getLargeIconIds()[index]);
-                    reloadPreference(pref);
-                    onSettingChanged(pref);
+            item.setOnClickListener(item1 -> {
+                if (!item1.isEnabled()) {
+                    return;
                 }
+                IconListPreference pref1 = (IconListPreference) mPreferenceGroup
+                        .findPreference(prefKey);
+                int index1 = pref1.findIndexOfValue(pref1.getValue());
+                CharSequence[] values = pref1.getEntryValues();
+                index1 = (index1 + 1) % values.length;
+                pref1.setValueIndex(index1);
+                // when enable HDR,inform to disable Continuous Shot
+                if (index1 == 1 && Objects.equals(prefKey, CameraSettings.KEY_CAMERA_HDR)) {
+                    RotateTextToast.makeText(mActivity, R.string.HDR_disable_continuous_shot,
+                            Toast.LENGTH_LONG).show();
+                }
+                fitem.setLabel(pref1.getLabels()[index1]);
+                fitem.setImageResource(mActivity,
+                        pref1.getLargeIconIds()[index1]);
+                reloadPreference(pref1);
+                onSettingChanged(pref1);
             });
         }
         return item;
@@ -189,8 +181,7 @@ public class PieController {
 
 
     public PieItem makeDialItem(ListPreference pref, int iconId, float center, float sweep) {
-        PieItem item = makeItem(iconId);
-        return item;
+        return makeItem(iconId);
     }
 
     public void addItem(String prefKey) {
@@ -205,7 +196,7 @@ public class PieController {
             int index = pref.findIndexOfValue(pref.getValue());
             item.setLabel(pref.getLabels()[index]);
             item.setImageResource(mActivity,
-                    ((IconListPreference) pref).getLargeIconIds()[index]);
+                    pref.getLargeIconIds()[index]);
         }
     }
 
@@ -247,7 +238,7 @@ public class PieController {
     }
 
     // Scene mode may override other camera settings (ex: flash mode).
-    public void overrideSettings(final String ... keyvalues) {
+    public void overrideSettings(final String... keyvalues) {
         if (keyvalues.length % 2 != 0) {
             throw new IllegalArgumentException();
         }
@@ -256,7 +247,7 @@ public class PieController {
         }
     }
 
-    private void override(IconListPreference pref, final String ... keyvalues) {
+    private void override(IconListPreference pref, final String... keyvalues) {
         mOverrides.remove(pref);
         for (int i = 0; i < keyvalues.length; i += 2) {
             String key = keyvalues[i];

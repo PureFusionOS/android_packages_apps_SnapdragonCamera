@@ -31,38 +31,50 @@ package com.android.camera.imageprocessor.filter;
 import android.graphics.Rect;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.CaptureResult;
 import android.os.Handler;
 import android.util.Log;
 
 import com.android.camera.CaptureModule;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
-public class ChromaflashFilter implements ImageFilter{
+public class ChromaflashFilter implements ImageFilter {
     public static final int NUM_REQUIRED_IMAGE = 6;
+    private static String TAG = "ChromaflashFilter";
+    private static boolean mIsSupported = false;
+
+    static {
+        try {
+            System.loadLibrary("jni_chromaflash");
+            mIsSupported = true;
+        } catch (UnsatisfiedLinkError e) {
+            Log.d(TAG, e.toString());
+            mIsSupported = false;
+        }
+    }
+
     private int mWidth;
     private int mHeight;
     private int mStrideY;
     private int mStrideVU;
-    private static String TAG = "ChromaflashFilter";
-
-    private static boolean mIsSupported = false;
     private ByteBuffer mOutBuf;
     private CaptureModule mModule;
     private int mImageNum = -1;
 
+    public ChromaflashFilter(CaptureModule module) {
+        mModule = module;
+    }
+
     private static void Log(String msg) {
-        if(DEBUG) {
+        if (DEBUG) {
             Log.d(TAG, msg);
         }
     }
-    public ChromaflashFilter(CaptureModule module) {
-        mModule = module;
+
+    public static boolean isSupportedStatic() {
+        return mIsSupported;
     }
 
     @Override
@@ -83,13 +95,13 @@ public class ChromaflashFilter implements ImageFilter{
     @Override
     public void init(int width, int height, int strideY, int strideVU) {
         Log("init");
-        mWidth = width/2*2;
-        mHeight = height/2*2;
-        mStrideY = strideY/2*2;
-        mStrideVU = strideVU/2*2;
-        mOutBuf = ByteBuffer.allocate(mStrideY*mHeight*3/2);
+        mWidth = width / 2 * 2;
+        mHeight = height / 2 * 2;
+        mStrideY = strideY / 2 * 2;
+        mStrideVU = strideVU / 2 * 2;
+        mOutBuf = ByteBuffer.allocate(mStrideY * mHeight * 3 / 2);
         mImageNum = -1;
-        Log("width: "+mWidth+" height: "+mHeight+" strideY: "+mStrideY+" strideVU: "+mStrideVU);
+        Log("width: " + mWidth + " height: " + mHeight + " strideY: " + mStrideY + " strideVU: " + mStrideVU);
         nativeInit(mWidth, mHeight, mStrideY, mStrideVU,
                 0, 0, mWidth, mHeight, NUM_REQUIRED_IMAGE);
     }
@@ -105,7 +117,7 @@ public class ChromaflashFilter implements ImageFilter{
     @Override
     public void addImage(ByteBuffer bY, ByteBuffer bVU, int imageNum, Object param) {
         Log("addImage");
-        if(imageNum == 1 || imageNum == 2 || imageNum == 4) {
+        if (imageNum == 1 || imageNum == 2 || imageNum == 4) {
             mImageNum = imageNum;
             return;
         }
@@ -113,7 +125,7 @@ public class ChromaflashFilter implements ImageFilter{
         int vuActualSize = bVU.remaining();
         mImageNum = imageNum;
         int status = nativeAddImage(bY, bVU, yActualSize, vuActualSize, imageNum);
-        if(status != 0) {
+        if (status != 0) {
             Log.e(TAG, "Fail to add image");
         }
     }
@@ -125,10 +137,10 @@ public class ChromaflashFilter implements ImageFilter{
         int status = nativeProcessImage(mOutBuf.array(), roi);
         Log("processImage done");
         mImageNum = -1;
-        if(status < 0) { //In failure case, library will return the first image as it is.
+        if (status < 0) { //In failure case, library will return the first image as it is.
             Log.w(TAG, "Fail to process the image.");
         }
-        return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0]+roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
+        return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
     }
 
     @Override
@@ -175,7 +187,8 @@ public class ChromaflashFilter implements ImageFilter{
                             captureSession.capture(builder.build(), callback, handler);
                         }
                     }
-                } catch(CameraAccessException e) {}
+                } catch (CameraAccessException ignored) {
+                }
 
             }
         }.start();
@@ -183,30 +196,19 @@ public class ChromaflashFilter implements ImageFilter{
 
     private void waitForImage(int index) {
         try {
-            while(mImageNum < index) {
+            while (mImageNum < index) {
                 Thread.sleep(50);
             }
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
-    }
-
-    public static boolean isSupportedStatic() {
-        return mIsSupported;
     }
 
     private native int nativeInit(int width, int height, int yStride, int vuStride,
                                   int roiX, int roiY, int roiW, int roiH, int numImages);
-    private native int nativeDeinit();
-    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
-    private native int nativeProcessImage(byte[] buffer, int[] roi);
 
-    static {
-        try {
-            System.loadLibrary("jni_chromaflash");
-            mIsSupported = true;
-        }catch(UnsatisfiedLinkError e) {
-            Log.d(TAG, e.toString());
-            mIsSupported = false;
-        }
-    }
+    private native int nativeDeinit();
+
+    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
+
+    private native int nativeProcessImage(byte[] buffer, int[] roi);
 }

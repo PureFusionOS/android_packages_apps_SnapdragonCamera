@@ -38,11 +38,6 @@ public class RecordLocationPreference extends IconListPreference {
         mResolver = context.getContentResolver();
     }
 
-    @Override
-    public String getValue() {
-        return get(getSharedPreferences(), getKey()) ? VALUE_ON : VALUE_OFF;
-    }
-
     public static boolean get(SharedPreferences pref, String key) {
         String value = pref.getString(key, VALUE_NONE);
         return VALUE_ON.equals(value);
@@ -52,5 +47,10 @@ public class RecordLocationPreference extends IconListPreference {
         String value = pref.getString(
                 key, VALUE_NONE);
         return !VALUE_NONE.equals(value);
+    }
+
+    @Override
+    public String getValue() {
+        return get(getSharedPreferences(), getKey()) ? VALUE_ON : VALUE_OFF;
     }
 }

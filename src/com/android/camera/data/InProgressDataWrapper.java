@@ -19,12 +19,12 @@ package com.android.camera.data;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.android.camera.util.PhotoSphereHelper;
+
 import org.omnirom.snap.R;
 
 /**
@@ -51,7 +51,7 @@ public class InProgressDataWrapper implements LocalData {
     public View getView(
             Activity a, int width, int height,
             int placeHolderResourceId, LocalDataAdapter adapter, boolean inFullScreen) {
-        View v =  mLocalData.getView(a, width, height, placeHolderResourceId,
+        View v = mLocalData.getView(a, width, height, placeHolderResourceId,
                 adapter, inFullScreen);
 
         if (mHasProgressBar) {

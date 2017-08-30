@@ -36,7 +36,6 @@ import android.hardware.camera2.CaptureResult;
 import android.os.Handler;
 import android.util.Log;
 import android.util.Range;
-import android.util.Rational;
 
 import com.android.camera.CaptureModule;
 
@@ -44,49 +43,65 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SharpshooterFilter implements ImageFilter{
+public class SharpshooterFilter implements ImageFilter {
     public static final int NUM_REQUIRED_IMAGE = 5;
+    private static String TAG = "SharpshooterFilter";
+    private static boolean mIsSupported = true;
+
+    static {
+        try {
+            System.loadLibrary("jni_sharpshooter");
+            mIsSupported = true;
+        } catch (UnsatisfiedLinkError e) {
+            Log.d(TAG, e.toString());
+            mIsSupported = false;
+        }
+    }
+
     private int mWidth;
     private int mHeight;
     private int mStrideY;
     private int mStrideVU;
-    private static String TAG = "SharpshooterFilter";
     private int temp;
-    private static boolean mIsSupported = true;
     private ByteBuffer mOutBuf;
     private CaptureModule mModule;
     private int mSenseValue = 0;
     private long mExpoTime;
 
-    private static void Log(String msg) {
-        if(DEBUG) {
-            Log.d(TAG, msg);
-        }
-    }
-
     public SharpshooterFilter(CaptureModule module) {
         mModule = module;
     }
 
+    private static void Log(String msg) {
+        if (DEBUG) {
+            Log.d(TAG, msg);
+        }
+    }
+
+    public static boolean isSupportedStatic() {
+        return mIsSupported;
+    }
+
     private void getSenseUpperValue() {
-        if(mSenseValue == 0) {
+        if (mSenseValue == 0) {
             Range<Integer> sensRange = mModule.getMainCameraCharacteristics().get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
             mSenseValue = sensRange.getUpper();
         }
     }
+
     @Override
     public List<CaptureRequest> setRequiredImages(CaptureRequest.Builder builder) {
         getSenseUpperValue();
-        mExpoTime = (mModule.getPreviewCaptureResult().get(CaptureResult.SENSOR_EXPOSURE_TIME)/2);
-        int isoValue = (mModule.getPreviewCaptureResult().get(CaptureResult.SENSOR_SENSITIVITY)).intValue()*2;
-        if(isoValue < mSenseValue) {
+        mExpoTime = (mModule.getPreviewCaptureResult().get(CaptureResult.SENSOR_EXPOSURE_TIME) / 2);
+        int isoValue = mModule.getPreviewCaptureResult().get(CaptureResult.SENSOR_SENSITIVITY) * 2;
+        if (isoValue < mSenseValue) {
             mSenseValue = isoValue;
         }
 
-        List<CaptureRequest> list = new ArrayList<CaptureRequest>();
-        for(int i=0; i < NUM_REQUIRED_IMAGE; i++) {
+        List<CaptureRequest> list = new ArrayList<>();
+        for (int i = 0; i < NUM_REQUIRED_IMAGE; i++) {
             builder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_OFF);
-            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, new Long(mExpoTime));
+            builder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, mExpoTime);
             builder.set(CaptureRequest.SENSOR_SENSITIVITY, mSenseValue);
             list.add(builder.build());
         }
@@ -106,12 +121,12 @@ public class SharpshooterFilter implements ImageFilter{
     @Override
     public void init(int width, int height, int strideY, int strideVU) {
         Log("init");
-        mWidth = width/2*2;
-        mHeight = height/2*2;
-        mStrideY = strideY/2*2;
-        mStrideVU = strideVU/2*2;
-        mOutBuf = ByteBuffer.allocate(mStrideY*mHeight*3/2);
-        Log("width: "+mWidth+" height: "+mHeight+" strideY: "+mStrideY+" strideVU: "+mStrideVU);
+        mWidth = width / 2 * 2;
+        mHeight = height / 2 * 2;
+        mStrideY = strideY / 2 * 2;
+        mStrideVU = strideVU / 2 * 2;
+        mOutBuf = ByteBuffer.allocate(mStrideY * mHeight * 3 / 2);
+        Log("width: " + mWidth + " height: " + mHeight + " strideY: " + mStrideY + " strideVU: " + mStrideVU);
         nativeInit(mWidth, mHeight, mStrideY, mStrideVU,
                 0, 0, mWidth, mHeight, NUM_REQUIRED_IMAGE);
     }
@@ -129,7 +144,7 @@ public class SharpshooterFilter implements ImageFilter{
         int yActualSize = bY.remaining();
         int vuActualSize = bVU.remaining();
         int status = nativeAddImage(bY, bVU, yActualSize, vuActualSize, imageNum);
-        if(status != 0) {
+        if (status != 0) {
             Log.e(TAG, "Fail to add image");
         }
     }
@@ -140,10 +155,10 @@ public class SharpshooterFilter implements ImageFilter{
         int[] roi = new int[4];
         int status = nativeProcessImage(mOutBuf.array(), (int) (mExpoTime / 1000000), mSenseValue, roi);
         Log("processImage done");
-        if(status < 0) { //In failure case, library will return the first image as it is.
+        if (status < 0) { //In failure case, library will return the first image as it is.
             Log.w(TAG, "Fail to process the image.");
         }
-        return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0]+roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
+        return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
     }
 
     @Override
@@ -167,23 +182,12 @@ public class SharpshooterFilter implements ImageFilter{
 
     }
 
-    public static boolean isSupportedStatic() {
-        return mIsSupported;
-    }
-
     private native int nativeInit(int width, int height, int yStride, int vuStride,
-                                   int roiX, int roiY, int roiW, int roiH, int numImages);
-    private native int nativeDeinit();
-    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
-    private native int nativeProcessImage(byte[] buffer, int expoTime, int isoValue, int[] roi);
+                                  int roiX, int roiY, int roiW, int roiH, int numImages);
 
-    static {
-        try {
-            System.loadLibrary("jni_sharpshooter");
-            mIsSupported = true;
-        }catch(UnsatisfiedLinkError e) {
-            Log.d(TAG, e.toString());
-            mIsSupported = false;
-        }
-    }
+    private native int nativeDeinit();
+
+    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
+
+    private native int nativeProcessImage(byte[] buffer, int expoTime, int isoValue, int[] roi);
 }

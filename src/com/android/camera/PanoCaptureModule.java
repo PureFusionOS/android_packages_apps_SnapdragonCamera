@@ -27,8 +27,6 @@ import android.content.res.Configuration;
 import android.graphics.ImageFormat;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
@@ -40,14 +38,11 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.location.Location;
-import android.media.Image;
-import android.media.ImageReader;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.util.Size;
-import android.util.SparseIntArray;
 import android.view.Display;
 import android.view.KeyEvent;
 import android.view.OrientationEventListener;
@@ -56,64 +51,49 @@ import android.view.SurfaceHolder;
 import android.view.View;
 import android.widget.Toast;
 
-import com.android.camera.PhotoModule.NamedImages;
-import com.android.camera.PhotoModule.NamedImages.NamedEntity;
 import com.android.camera.data.LocalData;
 import com.android.camera.exif.ExifInterface;
-import com.android.camera.ui.RotateTextToast;
 import com.android.camera.util.CameraUtil;
 
 import org.omnirom.snap.R;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.TimeZone;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 public class PanoCaptureModule implements CameraModule, PhotoController {
+    public static final float TARGET_RATIO = 4f / 3f;
     /**
      * Camera state: Showing camera preview.
      */
     private static final int STATE_PREVIEW = 0;
-
     private static final String TAG = "SnapCam_PanoCaptureModule";
-
     private static final int BAYER_CAMERA_ID = 0;
+    private static final int STATE_WAITING_LOCK = 1;
     private CaptureRequest.Builder mPreviewRequestBuilder;
     private CaptureRequest mPreviewRequest;
     private int mState = STATE_PREVIEW;
     private Semaphore mCameraOpenCloseLock = new Semaphore(1);
-
     private boolean mSurfaceReady = false;
     private boolean mCameraOpened = false;
     private CameraDevice mCameraDevice;
     private String mCameraId;
     private PanoCaptureUI mUI;
     private CameraActivity mActivity;
-
     private CameraCaptureSession mCaptureSession;
-
     private HandlerThread mCameraThread;
-
     private Handler mCameraHandler;
-
     private ContentResolver mContentResolver;
     private Size mOutputSize;
     private PanoCaptureFrameProcessor mFrameProcessor;
     private int mOrientation = OrientationEventListener.ORIENTATION_UNKNOWN;
     private LocationManager mLocationManager;
-    private Object mSessionLock = new Object();
-    public static final float TARGET_RATIO = 4f/3f;
-    private static final int STATE_WAITING_LOCK = 1;
+    private final Object mSessionLock = new Object();
     private Semaphore mFocusLockSemaphore = new Semaphore(1);
     private boolean mIsLockFocusAttempted = false;
     private int mCameraSensorOrientation;
@@ -159,14 +139,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
         @Override
         public void onOpened(CameraDevice cameraDevice) {
             mCameraOpenCloseLock.release();
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    mUI.onCameraOpened();
-                }
-
-
-            });
+            mActivity.runOnUiThread(() -> mUI.onCameraOpened());
             mCameraDevice = cameraDevice;
             mCameraOpened = true;
             createSession();
@@ -192,6 +165,14 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
 
     };
 
+    private static void writeLocation(Location location, ExifInterface exif) {
+        if (location == null) {
+            return;
+        }
+        exif.addGpsTags(location.getLatitude(), location.getLongitude());
+        exif.setTag(exif.buildTag(ExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider()));
+    }
+
     private void closeSession() {
         synchronized (mSessionLock) {
             if (mFrameProcessor != null) {
@@ -204,7 +185,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
     private void createSession() {
         if (!mCameraOpened || !mSurfaceReady) return;
         synchronized (mSessionLock) {
-            List<Surface> list = new LinkedList<Surface>();
+            List<Surface> list = new LinkedList<>();
             try {
                 Surface surface = null;
                 SurfaceHolder sh = mUI.getSurfaceHolder();
@@ -214,17 +195,17 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
                 if (surface == null)
                     return;
 
-                if(mFrameProcessor == null) {
+                if (mFrameProcessor == null) {
                     mFrameProcessor = new PanoCaptureFrameProcessor(mOutputSize, mActivity, mUI, this);
                 }
 
                 mPreviewRequestBuilder = mCameraDevice.createCaptureRequest(CameraDevice
-                           .TEMPLATE_PREVIEW);
+                        .TEMPLATE_PREVIEW);
                 mPreviewRequestBuilder.addTarget(mFrameProcessor.getInputSurface());
                 mPreviewRequestBuilder.addTarget(surface);
 
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE,
-                            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
                 mPreviewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE,
                         CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
                 mPreviewRequest = mPreviewRequestBuilder.build();
@@ -256,10 +237,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
                             }
                         }, null
                 );
-            } catch (CameraAccessException e) {
-                Log.e(TAG, "createSession: " + e.toString());
-                mActivity.finish();
-            } catch (SecurityException e) {
+            } catch (CameraAccessException | SecurityException e) {
                 Log.e(TAG, "createSession: " + e.toString());
                 mActivity.finish();
             }
@@ -281,16 +259,13 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
 
     public void changePanoStatus(boolean newStatus, boolean isCancelling) {
         mUI.onPanoStatusChange(newStatus);
-        if(mFrameProcessor != null) {
+        if (mFrameProcessor != null) {
             mFrameProcessor.changePanoStatus(newStatus, isCancelling);
         }
     }
 
     public boolean isPanoActive() {
-        if(mFrameProcessor != null) {
-            return mFrameProcessor.isPanoActive();
-        }
-        return false;
+        return mFrameProcessor != null && mFrameProcessor.isPanoActive();
     }
 
     private void setUpCameraOutputs() {
@@ -323,7 +298,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
     private Size getOutputSize(float ratio, Size[] prevSizes, int screenW, int
             screenH) {
         Size optimal = prevSizes[0];
-        for (Size prevSize: prevSizes) {
+        for (Size prevSize : prevSizes) {
             float prevRatio = (float) prevSize.getWidth() / prevSize.getHeight();
             if (Math.abs(prevRatio - ratio) < 0.01) {
                 if (prevSize.getWidth() <= screenH && prevSize.getHeight() <= screenW) {
@@ -363,7 +338,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
             throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
         } finally {
             mCameraOpenCloseLock.release();
-            if(wasPreviousCameraOpenFailed) {
+            if (wasPreviousCameraOpenFailed) {
                 mActivity.finish();
             }
         }
@@ -401,11 +376,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
                 Log.d(TAG, "Time out waiting to lock camera opening.");
             }
             manager.openCamera(mCameraId, mStateCallback, mCameraHandler);
-        } catch (SecurityException e) {
-            Log.e(TAG, "openCamera: " + e.toString());
-            Toast.makeText(mActivity, "Can't open camera, please restart it", Toast.LENGTH_LONG).show();
-            mActivity.finish();
-        } catch (CameraAccessException e) {
+        } catch (SecurityException | CameraAccessException e) {
             Log.e(TAG, "openCamera: " + e.toString());
             Toast.makeText(mActivity, "Can't open camera, please restart it", Toast.LENGTH_LONG).show();
             mActivity.finish();
@@ -479,7 +450,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
                 exif.addGpsDateTimeStampTag(timeTaken);
                 exif.addDateTimeStampTag(ExifInterface.TAG_DATE_TIME, timeTaken,
                         TimeZone.getDefault());
-                exif.setTag(exif.buildTag(ExifInterface.TAG_ORIENTATION,orientation));
+                exif.setTag(exif.buildTag(ExifInterface.TAG_ORIENTATION, orientation));
                 writeLocation(loc, exif);
                 exif.writeExif(jpegData, filepath);
             } catch (IOException e) {
@@ -491,14 +462,6 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
                     jpegLength, filepath, width, height, LocalData.MIME_TYPE_JPEG);
         }
         return null;
-    }
-
-    private static void writeLocation(Location location, ExifInterface exif) {
-        if (location == null) {
-            return;
-        }
-        exif.addGpsTags(location.getLatitude(), location.getLongitude());
-        exif.setTag(exif.buildTag(ExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider()));
     }
 
     @Override
@@ -689,11 +652,10 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
 
     @Override
     public void onShutterButtonClick() {
-        if(!mFocusLockSemaphore.tryAcquire())
+        if (!mFocusLockSemaphore.tryAcquire())
             return;
         mFocusLockSemaphore.release();
         if (mState == STATE_WAITING_LOCK) {
-            return;
         } else {
             if (isPanoActive()) {
                 changePanoStatus(false, false);
@@ -718,12 +680,12 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
             mFocusLockSemaphore.release();
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
     }
 
     public void unlockFocus() {
-        if(!mIsLockFocusAttempted) {
+        if (!mIsLockFocusAttempted) {
             return;
         }
         Log.d(TAG, "unlockFocus ");
@@ -739,7 +701,7 @@ public class PanoCaptureModule implements CameraModule, PhotoController {
             mFocusLockSemaphore.release();
         } catch (CameraAccessException e) {
             e.printStackTrace();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         mIsLockFocusAttempted = false;
     }

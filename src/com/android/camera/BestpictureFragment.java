@@ -35,6 +35,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import org.omnirom.snap.R;
 
 public class BestpictureFragment extends Fragment {
@@ -45,6 +46,9 @@ public class BestpictureFragment extends Fragment {
     private ImageView mPictureSelectButton;
     private BestpictureActivity.ImageItems mImageItems;
 
+    public BestpictureFragment() {
+    }
+
     public static BestpictureFragment create(int imageNum, BestpictureActivity.ImageItems items) {
         BestpictureFragment fragment = new BestpictureFragment();
         Bundle args = new Bundle();
@@ -53,19 +57,16 @@ public class BestpictureFragment extends Fragment {
         return fragment;
     }
 
-    public BestpictureFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mImageNum = getArguments().getInt(PARAM_IMAGE_NUM);
-        mImageItems = ((BestpictureActivity)getActivity()).getImageItems();
+        mImageItems = ((BestpictureActivity) getActivity()).getImageItems();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
+                             Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater
                 .inflate(R.layout.bestpicture_page, container, false);
         mImageView = (ImageView) rootView.findViewById(R.id.image_view);
@@ -74,19 +75,16 @@ public class BestpictureFragment extends Fragment {
             initSelectButton();
             mImageView.setImageBitmap(mImageItems.getBitmap(mImageNum));
             rootView.findViewById(R.id.picture_select).setOnClickListener(
-                    new View.OnClickListener() {
-                @Override
-                public void onClick(final View v) {
-                    mImageItems.toggleImageSelection(mImageNum);
-                    initSelectButton();
-                    }
-            });
+                    v -> {
+                        mImageItems.toggleImageSelection(mImageNum);
+                        initSelectButton();
+                    });
         }
         return rootView;
     }
 
     private void initSelectButton() {
-        if(mImageItems.isChosen(mImageNum)) {
+        if (mImageItems.isChosen(mImageNum)) {
             mPictureSelectButton.setBackground(getResources().getDrawable(R.drawable.pick_the_best_photo_selected, null));
         } else {
             mPictureSelectButton.setBackground(getResources().getDrawable(R.drawable.pick_the_best_photo_unselected, null));

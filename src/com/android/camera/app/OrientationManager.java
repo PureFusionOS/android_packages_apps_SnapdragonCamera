@@ -21,12 +21,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.OrientationEventListener;
 import android.view.Surface;
-
-import com.android.camera.util.ApiHelper;
 
 public class OrientationManager {
     private static final String TAG = "CAM_OrientationManager";
@@ -40,6 +36,37 @@ public class OrientationManager {
     public OrientationManager(Activity activity) {
         mActivity = activity;
         mOrientationListener = new MyOrientationEventListener(activity);
+    }
+
+    private static int roundOrientation(int orientation, int orientationHistory) {
+        boolean changeOrientation = false;
+        if (orientationHistory == OrientationEventListener.ORIENTATION_UNKNOWN) {
+            changeOrientation = true;
+        } else {
+            int dist = Math.abs(orientation - orientationHistory);
+            dist = Math.min(dist, 360 - dist);
+            changeOrientation = (dist >= 45 + ORIENTATION_HYSTERESIS);
+        }
+        if (changeOrientation) {
+            return ((orientation + 45) / 90 * 90) % 360;
+        }
+        return orientationHistory;
+    }
+
+    private static int getDisplayRotation(Activity activity) {
+        int rotation = activity.getWindowManager().getDefaultDisplay()
+                .getRotation();
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                return 0;
+            case Surface.ROTATION_90:
+                return 90;
+            case Surface.ROTATION_180:
+                return 180;
+            case Surface.ROTATION_270:
+                return 270;
+        }
+        return 0;
     }
 
     public void resume() {
@@ -74,6 +101,14 @@ public class OrientationManager {
         }
     }
 
+    public int getDisplayRotation() {
+        return getDisplayRotation(mActivity);
+    }
+
+    public int getCompensation() {
+        return 0;
+    }
+
     // This listens to the device orientation, so we can update the compensation.
     private class MyOrientationEventListener extends OrientationEventListener {
         public MyOrientationEventListener(Context context) {
@@ -88,40 +123,5 @@ public class OrientationManager {
             if (orientation == ORIENTATION_UNKNOWN) return;
             orientation = roundOrientation(orientation, 0);
         }
-    }
-
-    public int getDisplayRotation() {
-        return getDisplayRotation(mActivity);
-    }
-
-    public int getCompensation() {
-        return 0;
-    }
-
-    private static int roundOrientation(int orientation, int orientationHistory) {
-        boolean changeOrientation = false;
-        if (orientationHistory == OrientationEventListener.ORIENTATION_UNKNOWN) {
-            changeOrientation = true;
-        } else {
-            int dist = Math.abs(orientation - orientationHistory);
-            dist = Math.min(dist, 360 - dist);
-            changeOrientation = (dist >= 45 + ORIENTATION_HYSTERESIS);
-        }
-        if (changeOrientation) {
-            return ((orientation + 45) / 90 * 90) % 360;
-        }
-        return orientationHistory;
-    }
-
-    private static int getDisplayRotation(Activity activity) {
-        int rotation = activity.getWindowManager().getDefaultDisplay()
-                .getRotation();
-        switch (rotation) {
-            case Surface.ROTATION_0: return 0;
-            case Surface.ROTATION_90: return 90;
-            case Surface.ROTATION_180: return 180;
-            case Surface.ROTATION_270: return 270;
-        }
-        return 0;
     }
 }

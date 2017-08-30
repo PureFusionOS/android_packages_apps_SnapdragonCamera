@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,18 +13,17 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="1175086483881127797">"ម៉ាស៊ីន​ថត"</string>
     <string name="video_camera_label" msgid="1723708322021743770">"ម៉ាស៊ីន​ថត​វីដេអូ"</string>
     <string name="details_ms" msgid="6618163484662724641">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="4842276230698703554">"%1$d:%2$02d:%3$02d"</string>
     <string name="set_image" msgid="3969690281401045698">"កំណត់​រូបភាព​ជា"</string>
     <string name="delete" msgid="2714492172818940424">"លុប"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="8811352590292754044">"លុប​ធាតុ​ដែល​បាន​ជ្រើស?"</item>
-    <item quantity="other" msgid="5075283252850066610">"លុប​ធាតុ​ដែល​បាន​ជ្រើស?"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="8811352590292754044" quantity="one">"លុប​ធាតុ​ដែល​បាន​ជ្រើស?"</item>
+        <item msgid="5075283252850066610" quantity="other">"លុប​ធាតុ​ដែល​បាន​ជ្រើស?"</item>
+    </plurals>
     <string name="share" msgid="8581089487762243115">"ចែក​រំលែក"</string>
     <string name="share_panorama" msgid="3558466186935359444">"ចែករំលែក​ទេសភាព"</string>
     <string name="share_as_photo" msgid="4831213580709167218">"ចែករំលែក​ជា​រូបថត"</string>
@@ -33,21 +31,21 @@
     <string name="undo" msgid="5110048345890050107">"​មិន​ធ្វើវិញ"</string>
     <string name="details" msgid="4404020741542549488">"ព័ត៌មាន​លម្អិត"</string>
     <string name="close" msgid="4826166926297479820">"បិទ"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="9217673864242686656">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="one" msgid="5806616411905812727">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="other" msgid="3767743589502328221">"បាន​ជ្រើស %1$d"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="8095100906728830821">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="one" msgid="9063509704521984072">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="other" msgid="135044054552480485">"បាន​ជ្រើស %1$d"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="1942343672734097509">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="one" msgid="1456436514367094505">"បាន​ជ្រើស %1$d"</item>
-    <item quantity="other" msgid="1511467088339194694">"បាន​ជ្រើស %1$d"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="9217673864242686656" quantity="zero">"បាន​ជ្រើស %1$d"</item>
+        <item msgid="5806616411905812727" quantity="one">"បាន​ជ្រើស %1$d"</item>
+        <item msgid="3767743589502328221" quantity="other">"បាន​ជ្រើស %1$d"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="8095100906728830821" quantity="zero">"បាន​ជ្រើស %1$d"</item>
+        <item msgid="9063509704521984072" quantity="one">"បាន​ជ្រើស %1$d"</item>
+        <item msgid="135044054552480485" quantity="other">"បាន​ជ្រើស %1$d"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="1942343672734097509" quantity="zero">"បាន​ជ្រើស %1$d"</item>
+        <item msgid="1456436514367094505" quantity="one">"បាន​ជ្រើស %1$d"</item>
+        <item msgid="1511467088339194694" quantity="other">"បាន​ជ្រើស %1$d"</item>
+    </plurals>
     <string name="show_on_map" msgid="8542853913632649160">"បង្ហាញ​​លើ​ផែនទី"</string>
     <string name="rotate_left" msgid="2618440058490662604">"បង្វិល​ឆ្វេង"</string>
     <string name="rotate_right" msgid="4896096424267838355">"បង្វិល​ស្ដាំ"</string>
@@ -89,9 +87,9 @@
     <string name="cannot_connect_camera" msgid="4311259792784598381">"មិន​អាច​តភ្ជាប់​ម៉ាស៊ីន​ថត។"</string>
     <string name="camera_disabled" msgid="6963443549010040595">"បាន​បិទ​ម៉ាស៊ីន​ថត ដោយសារ​គោលនយោបាយ​សុវត្ថិភាព។"</string>
     <string name="wait" msgid="765601745709933047">"សូម​រង់ចាំ…"</string>
-    <string name="no_storage" product="default" msgid="5922012950780548098">"បញ្ចូល​កាត​អេសឌី​មុន​នឹង​ប្រើ​ម៉ាស៊ីន​ថត។"</string>
-    <string name="preparing_sd" product="default" msgid="7435693655017362767">"កំពុង​រៀបចំ​កាត​អេសឌី..."</string>
-    <string name="access_sd_fail" product="default" msgid="2634861611082499811">"មិន​អាច​ចូល​ដំណើរការ​កាត​អេសឌី។"</string>
+    <string name="no_storage" msgid="5922012950780548098" product="default">"បញ្ចូល​កាត​អេសឌី​មុន​នឹង​ប្រើ​ម៉ាស៊ីន​ថត។"</string>
+    <string name="preparing_sd" msgid="7435693655017362767" product="default">"កំពុង​រៀបចំ​កាត​អេសឌី…"</string>
+    <string name="access_sd_fail" msgid="2634861611082499811" product="default">"មិន​អាច​ចូល​ដំណើរការ​កាត​អេសឌី។"</string>
     <string name="time_lapse_title" msgid="3267978566401228497">"កំណត់ត្រា​​ពេល​វេលា​កន្លង​ទៅ"</string>
     <string name="capturing" msgid="5255164204641920893">"កំពុង​ចាប់​យក"</string>
     <string name="pref_camera_id_title" msgid="4680648115225411185">"ជ្រើស​ម៉ាស៊ីន​ថត"</string>
@@ -100,10 +98,10 @@
     <string name="pref_camera_recordlocation_title" msgid="3354956161456185749">"ទីតាំង​រក្សាទុក"</string>
     <string name="pref_camera_location_label" msgid="8695441802378057719">"ទីកន្លែង"</string>
     <string name="pref_camera_timer_title" msgid="4728838281741571323">"កម្មវិធី​រាប់​ថយក្រោយ"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="8919878087230098328">"1 វិនាទី"</item>
-    <item quantity="other" msgid="5782794798884172289">"%d វិនាទី"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="8919878087230098328" quantity="one">"1 វិនាទី"</item>
+        <item msgid="5782794798884172289" quantity="other">"%d វិនាទី"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (6225207881203007747) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="9036987234878551217">"សំឡេង​​អំឡុង​ពេល​​រាប់​ថយក្រោយ"</string>
@@ -176,7 +174,7 @@
     <string name="pref_camera_id_label_back" msgid="1645608049757733858">"ម៉ាស៊ីន​ថត​ខាងមុខ"</string>
     <string name="pref_camera_id_label_front" msgid="349308803062874842">"ម៉ាស៊ីន​ថត​ខាងក្រោយ"</string>
     <string name="dialog_ok" msgid="774141340500181131">"យល់ព្រម"</string>
-    <string name="spaceIsLow_content" product="default" msgid="4522771065344332702">"កាត​អេសឌី​របស់​អ្នក​ពេញ​ហើយ។ ប្ដូរ​ការ​កំណត់​គុណភាព លុប​រូបភាព​ ឬ​ឯកសារ​​មួយ​ចំនួន​ចេញ។"</string>
+    <string name="spaceIsLow_content" msgid="4522771065344332702" product="default">"កាត​អេសឌី​របស់​អ្នក​ពេញ​ហើយ។ ប្ដូរ​ការ​កំណត់​គុណភាព លុប​រូបភាព​ ឬ​ឯកសារ​​មួយ​ចំនួន​ចេញ។"</string>
     <string name="video_reach_size_limit" msgid="9196836111505731836">"បាន​ដល់​ទំហំ​ដែល​បាន​កំណត់។"</string>
     <string name="pano_too_fast_prompt" msgid="2503148095578052177">"លឿន​ពេក"</string>
     <string name="pano_dialog_prepare_preview" msgid="4445235163599534263">"កំពុង​រៀបចំ​ទេសភាព"</string>
@@ -184,7 +182,7 @@
     <string name="pano_dialog_title" msgid="6662642763395425145">"ទេសភាព"</string>
     <string name="pano_capture_indication" msgid="4002128831255023954">"កំពុង​ចាប់​យក​ទេសភាព"</string>
     <string name="pano_dialog_waiting_previous" msgid="2646847402743245320">"កំពុង​រង់ចាំ​ទេសភាព​មុន"</string>
-    <string name="pano_review_saving_indication_str" msgid="4691771283450663293">"កំពុង​រក្សាទុក..."</string>
+    <string name="pano_review_saving_indication_str" msgid="4691771283450663293">"កំពុង​រក្សាទុក…"</string>
     <string name="pano_review_rendering" msgid="2743087719999377155">"​​បង្ហាញ​ទេសភាព"</string>
     <string name="tap_to_focus" msgid="3519718196270593468">"ប៉ះ ដើម្បី​ផ្ដោត។"</string>
     <string name="pref_video_effect_title" msgid="594570613431209010">"បែបផែន"</string>
@@ -273,7 +271,7 @@
     <string name="camera_menu_more_label" msgid="7951917844735828365">"ជម្រើស​ច្រើន​ទៀត"</string>
     <string name="camera_menu_settings_label" msgid="3862756725328016822">"ការកំណត់"</string>
     <string name="create_tiny_planet" msgid="5186918191372107343">"បង្កើត​ពិភព​ដ៏​តូច"</string>
-    <string name="saving_tiny_planet" msgid="8828265180177375494">"កំពុង​រក្សាទុក​ពិភព​ដ៏​តូច..."</string>
+    <string name="saving_tiny_planet" msgid="8828265180177375494">"កំពុង​រក្សាទុក​ពិភព​ដ៏​តូច…"</string>
     <string name="tiny_planet_zoom" msgid="2985522360577158474">"ពង្រីក/បង្រួម"</string>
     <string name="tiny_planet_rotate" msgid="5445336705705350004">"បង្វិល"</string>
     <string name="crop_save" msgid="2841974981340098579">"រក្សាទុក"</string>

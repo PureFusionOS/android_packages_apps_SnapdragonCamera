@@ -29,12 +29,8 @@
 package com.android.camera;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.ImageFormat;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.renderscript.Allocation;
@@ -42,34 +38,27 @@ import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicYuvToRGB;
 import android.renderscript.Type;
-import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
 
-import com.android.camera.ui.PanoCaptureProcessView;
-
-import java.io.ByteArrayOutputStream;
-
 public class PanoCaptureFrameProcessor {
 
+    public ProcessingTask mTask;
+    ScriptIntrinsicYuvToRGB mRsYuvToRGB;
     private Allocation mInputAllocation;
     private Allocation mARGBOutputAllocation;
-
     private Surface mSurface;
     private HandlerThread mProcessingThread;
     private Handler mProcessingHandler;
-
-    public ProcessingTask mTask;
     private Size mSize;
     private RenderScript mRs;
     private PanoCaptureUI mUI;
     private Activity mActivity;
     private PanoCaptureModule mController;
-    ScriptIntrinsicYuvToRGB mRsYuvToRGB;
     private Bitmap mBitmap;
     private boolean mIsPanoActive = false;
-    private Object mPanoSwitchLock = new Object();
-    private Object mAllocationLock = new Object();
+    private final Object mPanoSwitchLock = new Object();
+    private final Object mAllocationLock = new Object();
     private boolean mIsAllocationEverUsed;
 
     public PanoCaptureFrameProcessor(Size dimensions, Activity activity, PanoCaptureUI ui, PanoCaptureModule controller) {
@@ -105,12 +94,12 @@ public class PanoCaptureFrameProcessor {
     }
 
     public void clear() {
-        if(mIsPanoActive) {
+        if (mIsPanoActive) {
             changePanoStatus(false, true);
         }
         synchronized (mAllocationLock) {
             mInputAllocation.setOnBufferAvailableListener(null);
-            if(mIsAllocationEverUsed) {
+            if (mIsAllocationEverUsed) {
                 mRs.destroy();
                 mInputAllocation.destroy();
                 mARGBOutputAllocation.destroy();
@@ -124,7 +113,7 @@ public class PanoCaptureFrameProcessor {
             mProcessingThread.join();
             mProcessingThread = null;
             mProcessingHandler = null;
-        } catch (InterruptedException e) {
+        } catch (InterruptedException ignored) {
         }
     }
 
@@ -137,11 +126,11 @@ public class PanoCaptureFrameProcessor {
     }
 
     public void changePanoStatus(boolean newStatus, boolean isCancelling) {
-        if(newStatus == mIsPanoActive) {
+        if (newStatus == mIsPanoActive) {
             return;
         }
         synchronized (mPanoSwitchLock) {
-            if(mUI.isPanoCompleting()) {
+            if (mUI.isPanoCompleting()) {
                 return;
             }
             mIsPanoActive = newStatus;
@@ -149,7 +138,7 @@ public class PanoCaptureFrameProcessor {
                 mUI.onFrameAvailable(null, isCancelling);
             }
         }
-        if(!mIsPanoActive) {
+        if (!mIsPanoActive) {
             mController.unlockFocus();
         }
     }
@@ -168,9 +157,9 @@ public class PanoCaptureFrameProcessor {
 
         @Override
         public void onBufferAvailable(Allocation a) {
-            if(mProcessingHandler == null)
+            if (mProcessingHandler == null)
                 return;
-            synchronized(this) {
+            synchronized (this) {
                 mPendingFrames++;
                 mProcessingHandler.post(this);
             }
@@ -179,14 +168,14 @@ public class PanoCaptureFrameProcessor {
         @Override
         public void run() {
             int pendingFrames;
-            synchronized(this) {
+            synchronized (this) {
                 pendingFrames = mPendingFrames;
                 mPendingFrames = 0;
                 mProcessingHandler.removeCallbacks(this);
             }
 
             synchronized (mAllocationLock) {
-                if(mInputAllocation == null || mARGBOutputAllocation == null)
+                if (mInputAllocation == null || mARGBOutputAllocation == null)
                     return;
                 mIsAllocationEverUsed = true;
                 for (int i = 0; i < pendingFrames; i++) {

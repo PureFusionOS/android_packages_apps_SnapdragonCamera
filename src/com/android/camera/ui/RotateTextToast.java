@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import java.util.HashSet;
-
 import android.app.Activity;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -27,19 +25,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.camera.util.CameraUtil;
+
 import org.omnirom.snap.R;
+
+import java.util.HashSet;
 
 public class RotateTextToast {
     private static final int LONG_DELAY = 3500;
     private static final int SHORT_DELAY = 2000;
-
+    private static HashSet<RotateLayout> mToasts = new HashSet<>();
+    private static int mOrientation;
     private ViewGroup mLayoutRoot;
     private RotateLayout mToast;
+    private final Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            CameraUtil.fadeOut(mToast);
+            mLayoutRoot.removeView(mToast);
+            mToasts.remove(mToast);
+            mToast = null;
+        }
+    };
     private Handler mHandler;
     private int mDuration;
-
-    private static HashSet<RotateLayout> mToasts = new HashSet<RotateLayout>();
-    private static int mOrientation;
 
     private RotateTextToast(Activity activity, int duration) {
         mLayoutRoot = (ViewGroup) activity.getWindow().getDecorView();
@@ -63,22 +71,6 @@ public class RotateTextToast {
         tv.setText(textResourceId);
     }
 
-    private final Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            CameraUtil.fadeOut(mToast);
-            mLayoutRoot.removeView(mToast);
-            mToasts.remove(mToast);
-            mToast = null;
-        }
-    };
-
-    public void show() {
-        mToasts.add(mToast);
-        mToast.setVisibility(View.VISIBLE);
-        mHandler.postDelayed(mRunnable, mDuration);
-    }
-
     public static RotateTextToast makeText(Activity activity, int textResourceId, int duration) {
         return new RotateTextToast(activity, textResourceId, duration);
     }
@@ -89,8 +81,14 @@ public class RotateTextToast {
 
     public static void setOrientation(int orientation) {
         mOrientation = orientation;
-        for (final RotateLayout toast: mToasts) {
+        for (final RotateLayout toast : mToasts) {
             toast.setOrientation(orientation, false);
         }
+    }
+
+    public void show() {
+        mToasts.add(mToast);
+        mToast.setVisibility(View.VISIBLE);
+        mHandler.postDelayed(mRunnable, mDuration);
     }
 }

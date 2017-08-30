@@ -40,64 +40,57 @@ import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.Type;
-import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
-import android.widget.Toast;
 
 import com.android.camera.CaptureModule;
-import com.android.camera.SettingsManager;
 import com.android.camera.imageprocessor.filter.BeautificationFilter;
 import com.android.camera.imageprocessor.filter.ImageFilter;
 import com.android.camera.imageprocessor.filter.TrackingFocusFrameListener;
-import com.android.camera.ui.RotateTextToast;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import org.omnirom.snap.R;
 
 public class FrameProcessor {
 
+    public static final int FILTER_NONE = 0;
+    public static final int FILTER_MAKEUP = 1;
+    public static final int LISTENER_TRACKING_FOCUS = 2;
+    ScriptC_YuvToRgb mRsYuvToRGB;
+    ScriptC_rotator mRsRotator;
     private ImageReader mInputImageReader;
     private Allocation mInputAllocation;
     private Allocation mProcessAllocation;
     private Allocation mOutputAllocation;
     private Allocation mVideoOutputAllocation;
-
     private HandlerThread mProcessingThread;
     private Handler mProcessingHandler;
     private HandlerThread mOutingThread;
     private Handler mOutingHandler;
     private HandlerThread mListeningThread;
     private Handler mListeningHandler;
-
     private ProcessingTask mTask;
     private ListeningTask mListeningTask;
     private RenderScript mRs;
     private Activity mActivity;
-    ScriptC_YuvToRgb mRsYuvToRGB;
-    ScriptC_rotator mRsRotator;
     private Size mSize;
-    private Object mAllocationLock = new Object();
+    private final Object mAllocationLock = new Object();
     private boolean mIsAllocationEverUsed;
     private ArrayList<ImageFilter> mPreviewFilters;
     private ArrayList<ImageFilter> mFinalFilters;
     private Surface mSurfaceAsItIs;
     private Surface mVideoSurfaceAsItIs;
     private boolean mIsActive = false;
-    public static final int FILTER_NONE = 0;
-    public static final int FILTER_MAKEUP = 1;
-    public static final int LISTENER_TRACKING_FOCUS = 2;
     private CaptureModule mModule;
     private boolean mIsVideoOn = false;
 
     public FrameProcessor(Activity activity, CaptureModule module) {
         mActivity = activity;
         mModule = module;
-        mPreviewFilters = new ArrayList<ImageFilter>();
-        mFinalFilters = new ArrayList<ImageFilter>();
+        mPreviewFilters = new ArrayList<>();
+        mFinalFilters = new ArrayList<>();
 
         mRs = RenderScript.create(mActivity);
         mRsYuvToRGB = new ScriptC_YuvToRgb(mRs);
@@ -156,7 +149,7 @@ public class FrameProcessor {
         mRsRotator.set_height(height);
         mRsRotator.set_pad(stridePad);
         int degree = 90;
-        if(mModule.getMainCameraCharacteristics() != null) {
+        if (mModule.getMainCameraCharacteristics() != null) {
             degree = mModule.getMainCameraCharacteristics().
                     get(CameraCharacteristics.SENSOR_ORIENTATION);
             if (mModule.getMainCameraId() == CaptureModule.FRONT_ID) {
@@ -184,18 +177,18 @@ public class FrameProcessor {
                 filter.deinit();
             }
         }
-        mPreviewFilters = new ArrayList<ImageFilter>();
-        mFinalFilters = new ArrayList<ImageFilter>();
+        mPreviewFilters = new ArrayList<>();
+        mFinalFilters = new ArrayList<>();
     }
 
     public void onOpen(ArrayList<Integer> filterIds, final Size size) {
         cleanFilterSet();
         if (filterIds != null) {
             for (Integer i : filterIds) {
-                addFilter(i.intValue());
+                addFilter(i);
             }
         }
-        if(isFrameFilterEnabled() || isFrameListnerEnabled()) {
+        if (isFrameFilterEnabled() || isFrameListnerEnabled()) {
             init(size);
         }
     }
@@ -245,7 +238,7 @@ public class FrameProcessor {
                 mProcessingThread.join();
                 mProcessingThread = null;
                 mProcessingHandler = null;
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
         if (mOutingThread != null) {
@@ -254,7 +247,7 @@ public class FrameProcessor {
                 mOutingThread.join();
                 mOutingThread = null;
                 mOutingHandler = null;
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
         if (mListeningThread != null) {
@@ -263,7 +256,7 @@ public class FrameProcessor {
                 mListeningThread.join();
                 mListeningThread = null;
                 mListeningHandler = null;
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
         for (ImageFilter filter : mPreviewFilters) {
@@ -274,7 +267,7 @@ public class FrameProcessor {
         }
     }
 
-    public void onDestory(){
+    public void onDestory() {
         if (mRs != null) {
             mRs.destroy();
         }
@@ -291,7 +284,7 @@ public class FrameProcessor {
     }
 
     public List<Surface> getInputSurfaces() {
-        List<Surface> surfaces = new ArrayList<Surface>();
+        List<Surface> surfaces = new ArrayList<>();
         if (mPreviewFilters.size() == 0 && mFinalFilters.size() == 0) {
             surfaces.add(mSurfaceAsItIs);
             if (mIsVideoOn) {
@@ -310,17 +303,11 @@ public class FrameProcessor {
     }
 
     public boolean isFrameFilterEnabled() {
-        if (mFinalFilters.size() == 0) {
-            return false;
-        }
-        return true;
+        return mFinalFilters.size() != 0;
     }
 
     public boolean isFrameListnerEnabled() {
-        if (mPreviewFilters.size() == 0) {
-            return false;
-        }
-        return true;
+        return mPreviewFilters.size() != 0;
     }
 
     public void setOutputSurface(Surface surface) {
@@ -401,7 +388,7 @@ public class FrameProcessor {
                             }
                         } else {
                             filter.init(mSize.getWidth(), mSize.getHeight(), stride, stride);
-                            filter.addImage(bY, bVU, 0, new Boolean(true));
+                            filter.addImage(bY, bVU, 0, Boolean.TRUE);
                             needToFeedSurface = true;
                         }
                         bY.rewind();
@@ -414,7 +401,7 @@ public class FrameProcessor {
                         mOutingHandler.post(this);
                     }
                     image.close();
-                } catch (IllegalStateException e) {
+                } catch (IllegalStateException ignored) {
                 }
             }
         }
@@ -485,9 +472,9 @@ public class FrameProcessor {
                 mBY.rewind();
                 mBVU.rewind();
                 mFilter.init(mWidth, mHeight, mStride, mStride);
-                mFilter.addImage(mBY, mBVU, 0, new Boolean(true));
+                mFilter.addImage(mBY, mBVU, 0, Boolean.TRUE);
                 mMutureLock.release();
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
     }

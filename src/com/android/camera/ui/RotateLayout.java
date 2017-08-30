@@ -21,7 +21,6 @@ import android.graphics.Matrix;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.FrameLayout;
 
 // A RotateLayout is designed to display a single item and provides the
@@ -29,9 +28,9 @@ import android.widget.FrameLayout;
 public class RotateLayout extends ViewGroup implements Rotatable {
     @SuppressWarnings("unused")
     private static final String TAG = "RotateLayout";
+    protected View mChild;
     private int mOrientation;
     private Matrix mMatrix = new Matrix();
-    protected View mChild;
 
     public RotateLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -44,6 +43,7 @@ public class RotateLayout extends ViewGroup implements Rotatable {
 
     @Override
     protected void onFinishInflate() {
+        super.onFinishInflate();
         setupChild(getChildAt(0));
     }
 
@@ -86,7 +86,7 @@ public class RotateLayout extends ViewGroup implements Rotatable {
     @Override
     protected void onMeasure(int widthSpec, int heightSpec) {
         int w = 0, h = 0, p = getPaddingTop();
-        switch(mOrientation) {
+        switch (mOrientation) {
             case 0:
             case 180:
                 measureChild(mChild, widthSpec, heightSpec);

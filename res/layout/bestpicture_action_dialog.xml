@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (c) 2017, The Linux Foundation. All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
@@ -27,12 +26,11 @@
   OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
   IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
-<com.android.camera.ui.BestPictureActionDialogLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.camera.ui.BestPictureActionDialogLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/dialog_background"
-    android:id="@+id/mlayout">
+    android:background="@color/dialog_background">
 
     <TextView
         android:id="@+id/mtitle"
@@ -40,9 +38,9 @@
         android:layout_height="30dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
+        android:textColor="@color/dialog_text"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="@color/dialog_text"/>
+        android:textStyle="bold" />
 
 
     <TextView
@@ -52,8 +50,8 @@
         android:layout_below="@+id/mtitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:textSize="15sp"
-        android:textColor="@color/dialog_text"/>
+        android:textColor="@color/dialog_text"
+        android:textSize="15sp" />
 
     <RelativeLayout
         android:id="@+id/showagainlayout"
@@ -67,7 +65,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="30dp"/>
+            android:layout_marginLeft="30dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -76,7 +74,7 @@
             android:layout_marginLeft="5dp"
             android:layout_toRightOf="@+id/mcheck"
             android:text="@string/dialog_do_not_show"
-            android:textColor="@color/dialog_text"/>
+            android:textColor="@color/dialog_text" />
     </RelativeLayout>
 
 
@@ -86,7 +84,7 @@
         android:layout_height="1dp"
         android:layout_below="@+id/showagainlayout"
         android:layout_marginTop="10dp"
-        android:background="@color/dialog_hr"/>
+        android:background="@color/dialog_hr" />
 
     <Button
         android:id="@+id/nativebt"
@@ -99,7 +97,7 @@
         android:layout_marginTop="10dp"
         android:background="@null"
         android:textAllCaps="false"
-        android:textColor="@color/dialog_button"/>
+        android:textColor="@color/dialog_button" />
 
     <Button
         android:id="@+id/positivebt"
@@ -112,7 +110,7 @@
         android:layout_marginTop="10dp"
         android:background="@null"
         android:textAllCaps="false"
-        android:textColor="@color/dialog_button"/>
+        android:textColor="@color/dialog_button" />
 
     <Button
         android:id="@+id/okbt"
@@ -124,7 +122,7 @@
         android:layout_marginTop="10dp"
         android:background="@null"
         android:textAllCaps="false"
-        android:textColor="#8EE5EE"/>
+        android:textColor="#8EE5EE" />
 
 
 </com.android.camera.ui.BestPictureActionDialogLayout>

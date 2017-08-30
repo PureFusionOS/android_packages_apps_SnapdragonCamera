@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -30,7 +28,10 @@ import android.widget.ListView;
 
 import com.android.camera.ListPreference;
 import com.android.camera.PreferenceGroup;
+
 import org.omnirom.snap.R;
+
+import java.util.ArrayList;
 
 /* A popup window that contains several camera settings. */
 public class MoreSettingPopup extends AbstractSettingPopup
@@ -40,87 +41,24 @@ public class MoreSettingPopup extends AbstractSettingPopup
     private static final String TAG = "MoreSettingPopup";
 
     private Listener mListener;
-    private ArrayList<ListPreference> mListItem = new ArrayList<ListPreference>();
+    private ArrayList<ListPreference> mListItem = new ArrayList<>();
 
     // Keep track of which setting items are disabled
     // e.g. White balance will be disabled when scene mode is set to non-auto
     private boolean[] mEnabled;
 
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
-        public void onPreferenceClicked(ListPreference pref);
-    }
-
-    private class MoreSettingAdapter extends ArrayAdapter<ListPreference> {
-        LayoutInflater mInflater;
-        String mOnString;
-        String mOffString;
-        MoreSettingAdapter() {
-            super(MoreSettingPopup.this.getContext(), 0, mListItem);
-            Context context = getContext();
-            mInflater = LayoutInflater.from(context);
-            mOnString = context.getString(R.string.setting_on);
-            mOffString = context.getString(R.string.setting_off);
-        }
-
-        private int getSettingLayoutId(ListPreference pref) {
-
-            if (isOnOffPreference(pref)) {
-                return R.layout.in_line_setting_check_box;
-            }
-            return R.layout.in_line_setting_menu;
-        }
-
-        private boolean isOnOffPreference(ListPreference pref) {
-            CharSequence[] entries = pref.getEntries();
-            if (entries.length != 2) return false;
-            String str1 = entries[0].toString();
-            String str2 = entries[1].toString();
-            return ((str1.equals(mOnString) && str2.equals(mOffString)) ||
-                    (str1.equals(mOffString) && str2.equals(mOnString)));
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ListPreference pref = mListItem.get(position);
-            int viewLayoutId = getSettingLayoutId(pref);
-            InLineSettingItem view = (InLineSettingItem)convertView;
-
-            view = (InLineSettingItem)
-                    mInflater.inflate(viewLayoutId, parent, false);
-
-            view.initialize(pref); // no init for restore one
-            view.setSettingChangedListener(MoreSettingPopup.this);
-            if (position >= 0 && position < mEnabled.length) {
-                view.setEnabled(mEnabled[position]);
-            } else {
-                Log.w(TAG, "Invalid input: enabled list length, " + mEnabled.length
-                        + " position " + position);
-            }
-            return view;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            if (position >= 0 && position < mEnabled.length) {
-                return mEnabled[position];
-            }
-            return true;
-        }
+    public MoreSettingPopup(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     public void setSettingChangedListener(Listener listener) {
         mListener = listener;
     }
 
-    public MoreSettingPopup(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
     public void initialize(PreferenceGroup group, String[] keys) {
         // Prepare the setting items.
-        for (int i = 0; i < keys.length; ++i) {
-            ListPreference pref = group.findPreference(keys[i]);
+        for (String key : keys) {
+            ListPreference pref = group.findPreference(key);
             if (pref != null) mListItem.add(pref);
         }
 
@@ -156,7 +94,7 @@ public class MoreSettingPopup extends AbstractSettingPopup
     }
 
     // Scene mode can override other camera settings (ex: flash mode).
-    public void overrideSettings(final String ... keyvalues) {
+    public void overrideSettings(final String... keyvalues) {
         int count = mEnabled == null ? 0 : mEnabled.length;
         for (int i = 0; i < keyvalues.length; i += 2) {
             String key = keyvalues[i];
@@ -180,7 +118,7 @@ public class MoreSettingPopup extends AbstractSettingPopup
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id) {
+                            long id) {
         if (mListener != null) {
             ListPreference pref = mListItem.get(position);
             mListener.onPreferenceClicked(pref);
@@ -197,6 +135,68 @@ public class MoreSettingPopup extends AbstractSettingPopup
                         (InLineSettingItem) mSettingList.getChildAt(i);
                 settingItem.reloadPreference();
             }
+        }
+    }
+
+    static public interface Listener {
+        public void onSettingChanged(ListPreference pref);
+
+        public void onPreferenceClicked(ListPreference pref);
+    }
+
+    private class MoreSettingAdapter extends ArrayAdapter<ListPreference> {
+        LayoutInflater mInflater;
+        String mOnString;
+        String mOffString;
+
+        MoreSettingAdapter() {
+            super(MoreSettingPopup.this.getContext(), 0, mListItem);
+            Context context = getContext();
+            mInflater = LayoutInflater.from(context);
+            mOnString = context.getString(R.string.setting_on);
+            mOffString = context.getString(R.string.setting_off);
+        }
+
+        private int getSettingLayoutId(ListPreference pref) {
+
+            if (isOnOffPreference(pref)) {
+                return R.layout.in_line_setting_check_box;
+            }
+            return R.layout.in_line_setting_menu;
+        }
+
+        private boolean isOnOffPreference(ListPreference pref) {
+            CharSequence[] entries = pref.getEntries();
+            if (entries.length != 2) return false;
+            String str1 = entries[0].toString();
+            String str2 = entries[1].toString();
+            return ((str1.equals(mOnString) && str2.equals(mOffString)) ||
+                    (str1.equals(mOffString) && str2.equals(mOnString)));
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ListPreference pref = mListItem.get(position);
+            int viewLayoutId = getSettingLayoutId(pref);
+            InLineSettingItem view = (InLineSettingItem) convertView;
+
+            view = (InLineSettingItem)
+                    mInflater.inflate(viewLayoutId, parent, false);
+
+            view.initialize(pref); // no init for restore one
+            view.setSettingChangedListener(MoreSettingPopup.this);
+            if (position >= 0 && position < mEnabled.length) {
+                view.setEnabled(mEnabled[position]);
+            } else {
+                Log.w(TAG, "Invalid input: enabled list length, " + mEnabled.length
+                        + " position " + position);
+            }
+            return view;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return !(position >= 0 && position < mEnabled.length) || mEnabled[position];
         }
     }
 }

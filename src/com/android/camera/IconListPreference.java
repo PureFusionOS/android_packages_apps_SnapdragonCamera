@@ -16,8 +16,6 @@
 
 package com.android.camera;
 
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -25,7 +23,11 @@ import android.util.AttributeSet;
 
 import org.omnirom.snap.R;
 
-/** A {@code ListPreference} where each entry has a corresponding icon. */
+import java.util.List;
+
+/**
+ * A {@code ListPreference} where each entry has a corresponding icon.
+ */
 public class IconListPreference extends ListPreference {
     private int mSingleIconId;
     private int mIconIds[];
@@ -60,12 +62,24 @@ public class IconListPreference extends ListPreference {
         return mIconIds;
     }
 
+    public void setIconIds(int[] iconIds) {
+        mIconIds = iconIds;
+    }
+
     public int[] getLargeIconIds() {
         return mLargeIconIds;
     }
 
+    public void setLargeIconIds(int[] largeIconIds) {
+        mLargeIconIds = largeIconIds;
+    }
+
     public int[] getThumbnailIds() {
         return mThumbnailIds;
+    }
+
+    public void setThumbnailIds(int[] thumbnailIds) {
+        mThumbnailIds = thumbnailIds;
     }
 
     public int[] getImageIds() {
@@ -74,18 +88,6 @@ public class IconListPreference extends ListPreference {
 
     public boolean getUseSingleIcon() {
         return mUseSingleIcon;
-    }
-
-    public void setIconIds(int[] iconIds) {
-        mIconIds = iconIds;
-    }
-
-    public void setLargeIconIds(int[] largeIconIds) {
-        mLargeIconIds = largeIconIds;
-    }
-
-    public void setThumbnailIds(int[] thumbnailIds) {
-        mThumbnailIds = thumbnailIds;
     }
 
     public void setUseSingleIcon(boolean useSingle) {
@@ -125,7 +127,8 @@ public class IconListPreference extends ListPreference {
             mLargeIconIds = largeIconIds.toArray(new int[largeIconIds.size()]);
         }
         if (mImageIds != null) mImageIds = imageIds.toArray(new int[imageIds.size()]);
-        if (mThumbnailIds != null) mThumbnailIds = thumbnailIds.toArray(new int[thumbnailIds.size()]);
+        if (mThumbnailIds != null)
+            mThumbnailIds = thumbnailIds.toArray(new int[thumbnailIds.size()]);
         super.filterUnsupported(supported);
     }
 }

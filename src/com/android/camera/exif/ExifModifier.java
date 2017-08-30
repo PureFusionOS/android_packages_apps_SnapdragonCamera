@@ -18,7 +18,6 @@ package com.android.camera.exif;
 
 import android.util.Log;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -31,19 +30,9 @@ class ExifModifier {
     public static final boolean DEBUG = false;
     private final ByteBuffer mByteBuffer;
     private final ExifData mTagToModified;
-    private final List<TagOffset> mTagOffsets = new ArrayList<TagOffset>();
+    private final List<TagOffset> mTagOffsets = new ArrayList<>();
     private final ExifInterface mInterface;
     private int mOffsetBase;
-
-    private static class TagOffset {
-        final int mOffset;
-        final ExifTag mTag;
-
-        TagOffset(ExifTag tag, int offset) {
-            mTag = tag;
-            mOffset = offset;
-        }
-    }
 
     protected ExifModifier(ByteBuffer byteBuffer, ExifInterface iRef) throws IOException,
             ExifInvalidFormatException {
@@ -72,7 +61,7 @@ class ExifModifier {
         try {
             is = new ByteBufferInputStream(mByteBuffer);
             int flag = 0;
-            IfdData[] ifdDatas = new IfdData[] {
+            IfdData[] ifdDatas = new IfdData[]{
                     mTagToModified.getIfdData(IfdId.TYPE_IFD_0),
                     mTagToModified.getIfdData(IfdId.TYPE_IFD_1),
                     mTagToModified.getIfdData(IfdId.TYPE_IFD_EXIF),
@@ -192,5 +181,15 @@ class ExifModifier {
 
     public void modifyTag(ExifTag tag) {
         mTagToModified.addTag(tag);
+    }
+
+    private static class TagOffset {
+        final int mOffset;
+        final ExifTag mTag;
+
+        TagOffset(ExifTag tag, int offset) {
+            mTag = tag;
+            mOffset = offset;
+        }
     }
 }

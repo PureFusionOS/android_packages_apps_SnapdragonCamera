@@ -42,6 +42,13 @@ import com.android.camera.CaptureUI;
 import com.android.camera.imageprocessor.filter.TrackingFocusFrameListener;
 
 public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndicator {
+    public final static int STATUS_INIT = 0;
+    public final static int STATUS_INPUT = 1;
+    public final static int STATUS_TRACKING = 2;
+    public final static int STATUS_TRACKED = 3;
+    private final static int CIRCLE_THUMB_SIZE = 100;
+    private final static String TAG = "TrackingFocusRenderer";
+    private final static boolean DEBUG = false; //Enabling DEBUG LOG reduces the performance drastically.
     private FocusRequestThread mFocusRequestThread = null;
     private TrackingFocusFrameListener.Result mResult;
     private CameraActivity mActivity;
@@ -49,23 +56,24 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
     private Paint mTargetPaint;
     private int mInX = -1;
     private int mInY = -1;
-    private final static int CIRCLE_THUMB_SIZE = 100;
-    private Object mLock = new Object();
+    private final Object mLock = new Object();
     private Rect mSurfaceDim;
     private CaptureUI mUI;
-
-    public final static int STATUS_INIT = 0;
-    public final static int STATUS_INPUT = 1;
-    public final static int STATUS_TRACKING = 2;
-    public final static int STATUS_TRACKED = 3;
     private int mStatus = STATUS_INIT;
     private boolean mIsFlipped = false;
+    private Rect mRect;
 
-    private final static String TAG = "TrackingFocusRenderer";
-    private final static boolean DEBUG = false; //Enabling DEBUG LOG reduces the performance drastically.
+    public TrackingFocusRenderer(CameraActivity activity, CaptureModule module, CaptureUI ui) {
+        mActivity = activity;
+        mModule = module;
+        mUI = ui;
+        mTargetPaint = new Paint();
+        mTargetPaint.setStrokeWidth(4f);
+        mTargetPaint.setStyle(Paint.Style.STROKE);
+    }
 
     private void printErrorLog(String msg) {
-        if(DEBUG) {
+        if (DEBUG) {
             android.util.Log.e(TAG, msg);
         }
     }
@@ -73,21 +81,17 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        if(mModule.getMainCameraCharacteristics() != null &&
-                mModule.getMainCameraCharacteristics().get(CameraCharacteristics.SENSOR_ORIENTATION) == 270) {
-            mIsFlipped = true;
-        } else {
-            mIsFlipped = false;
-        }
+        mIsFlipped = mModule.getMainCameraCharacteristics() != null &&
+                mModule.getMainCameraCharacteristics().get(CameraCharacteristics.SENSOR_ORIENTATION) == 270;
 
-        if(!visible) {
+        if (!visible) {
             synchronized (mLock) {
                 mStatus = STATUS_INIT;
                 mResult = null;
                 mInX = 0;
                 mInY = 0;
             }
-            if(mFocusRequestThread != null) {
+            if (mFocusRequestThread != null) {
                 mFocusRequestThread.kill();
                 mFocusRequestThread = null;
             }
@@ -101,15 +105,6 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
         mSurfaceDim = new Rect(left, top, right, bottom);
     }
 
-    public TrackingFocusRenderer(CameraActivity activity, CaptureModule module, CaptureUI ui) {
-        mActivity = activity;
-        mModule = module;
-        mUI = ui;
-        mTargetPaint = new Paint();
-        mTargetPaint.setStrokeWidth(4f);
-        mTargetPaint.setStyle(Paint.Style.STROKE);
-    }
-
     @Override
     public boolean handlesTouch() {
         return true;
@@ -117,17 +112,17 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(mSurfaceDim == null) {
+        if (mSurfaceDim == null) {
             return true;
         }
-        switch(event.getActionMasked()) {
+        switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 break;
             case MotionEvent.ACTION_UP:
                 synchronized (mLock) {
                     mInX = (int) event.getX();
                     mInY = (int) event.getY();
-                    if(!mSurfaceDim.contains(mInX, mInY)) {
+                    if (!mSurfaceDim.contains(mInX, mInY)) {
                         break;
                     }
                     mStatus = STATUS_INPUT;
@@ -144,20 +139,20 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
                 return null;
             }
             mStatus = STATUS_TRACKING;
-            int x = (mUI.getDisplaySize().y-1-mInY);
+            int x = (mUI.getDisplaySize().y - 1 - mInY);
             int y = mInX;
             int bottomMargin = mUI.getDisplaySize().y - mSurfaceDim.bottom;
-            x = (int)((x - bottomMargin)*((float)width/mSurfaceDim.height()));
-            y = (int)((y - mSurfaceDim.left)*((float)height/mSurfaceDim.width()));
+            x = (int) ((x - bottomMargin) * ((float) width / mSurfaceDim.height()));
+            y = (int) ((y - mSurfaceDim.left) * ((float) height / mSurfaceDim.width()));
 
             /* It's supposed to give x,y like above but library x,y is reversed*/
-            if(mModule.isBackCamera()) {
-                if(!mIsFlipped) {
+            if (mModule.isBackCamera()) {
+                if (!mIsFlipped) {
                     x = width - 1 - x;
                     y = height - 1 - y;
                 }
             } else {  //Front camera
-                if(!mIsFlipped) {
+                if (!mIsFlipped) {
                     x = width - 1 - x;
                 } else {
                     y = height - 1 - y;
@@ -170,7 +165,7 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
 
     public void putRegisteredCords(TrackingFocusFrameListener.Result result, int width, int height) {
         synchronized (mLock) {
-            if(result != null && result.pos != null &&
+            if (result != null && result.pos != null &&
                     !(result.pos.width() == 0 && result.pos.height() == 0)) {
                 result.pos = translateToSurface(result.pos, width, height);
                 mResult = result;
@@ -179,11 +174,7 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
                 mStatus = STATUS_TRACKING;
             }
         }
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                update();
-            }
-        });
+        mActivity.runOnUiThread(this::update);
     }
 
     private Rect translateToSurface(Rect src, int width, int height) {
@@ -191,58 +182,56 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
         int x = src.centerY();
         int y = width-1-src.centerX();
          */
-        int x = height-1-src.centerY();
+        int x = height - 1 - src.centerY();
         int y = src.centerX();
 
-        if(!mModule.isBackCamera()) {
-            if(mIsFlipped) {
+        if (!mModule.isBackCamera()) {
+            if (mIsFlipped) {
                 y = width - 1 - src.centerX();
             } else {
                 x = src.centerY();
             }
         } else { //Back Camera
-            if(mIsFlipped) {
+            if (mIsFlipped) {
                 x = src.centerY();
-                y = width - 1 -src.centerX();
+                y = width - 1 - src.centerX();
             }
         }
 
-        int w = (int)(src.height()*((float)mSurfaceDim.width()/height));
-        int h = (int)(src.width()*((float)mSurfaceDim.height()/width));
-        x = mSurfaceDim.left + (int)(x*((float)mSurfaceDim.width()/height));
-        y = mSurfaceDim.top + (int)(y*((float)mSurfaceDim.height()/width));
+        int w = (int) (src.height() * ((float) mSurfaceDim.width() / height));
+        int h = (int) (src.width() * ((float) mSurfaceDim.height() / width));
+        x = mSurfaceDim.left + (int) (x * ((float) mSurfaceDim.width() / height));
+        y = mSurfaceDim.top + (int) (y * ((float) mSurfaceDim.height() / width));
         Rect rect = new Rect();
-        rect.left = x - w/2;
-        rect.top = y - h/2;
+        rect.left = x - w / 2;
+        rect.top = y - h / 2;
         rect.right = rect.left + w;
         rect.bottom = rect.top + h;
         return rect;
     }
 
-    private Rect mRect;
-
     @Override
     public void onDraw(Canvas canvas) {
         synchronized (mLock) {
-            if(mResult == null) {
+            if (mResult == null) {
                 return;
             }
-            if(mStatus == STATUS_TRACKED) {
+            if (mStatus == STATUS_TRACKED) {
                 mRect = mResult.pos;
             }
         }
 
-        if(mStatus == STATUS_TRACKED) {
-            if(mRect != null) {
+        if (mStatus == STATUS_TRACKED) {
+            if (mRect != null) {
                 mTargetPaint.setColor(Color.GREEN);
                 canvas.drawRect(mRect, mTargetPaint);
             }
-        } else if(mStatus == STATUS_TRACKING){
-            if(mRect != null) {
+        } else if (mStatus == STATUS_TRACKING) {
+            if (mRect != null) {
                 mTargetPaint.setColor(Color.RED);
                 canvas.drawRect(mRect, mTargetPaint);
             }
-        } else if(mStatus == STATUS_INPUT){
+        } else if (mStatus == STATUS_INPUT) {
             mTargetPaint.setColor(Color.RED);
             canvas.drawCircle(mInX, mInY, CIRCLE_THUMB_SIZE, mTargetPaint);
         }
@@ -267,10 +256,10 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
     }
 
     private class FocusRequestThread extends Thread {
-        private boolean isRunning = true;
         private final static int FOCUS_DELAY = 1000;
         private final static int MIN_DIFF_CORDS = 100;
         private final static int MIN_DIFF_SIZE = 100;
+        private boolean isRunning = true;
         private int mOldX = -MIN_DIFF_CORDS;
         private int mOldY = -MIN_DIFF_CORDS;
         private int mOldWidth = -MIN_DIFF_SIZE;
@@ -285,10 +274,10 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
         }
 
         public void run() {
-            while(isRunning) {
+            while (isRunning) {
                 try {
                     Thread.sleep(FOCUS_DELAY);
-                }catch(InterruptedException e) {
+                } catch (InterruptedException e) {
                     //Ignore
                 }
 
@@ -302,15 +291,15 @@ public class TrackingFocusRenderer extends OverlayRenderer implements FocusIndic
                     mNewWidth = mResult.pos.width();
                     mNewHeight = mResult.pos.height();
                 }
-                if(Math.abs(mOldX - mNewX) >= MIN_DIFF_CORDS || Math.abs(mOldY - mNewY) >= MIN_DIFF_CORDS  ||
+                if (Math.abs(mOldX - mNewX) >= MIN_DIFF_CORDS || Math.abs(mOldY - mNewY) >= MIN_DIFF_CORDS ||
                         Math.abs(mOldWidth - mNewWidth) >= MIN_DIFF_SIZE || Math.abs(mOldHeight - mNewHeight) >= MIN_DIFF_SIZE) {
                     try {
                         mModule.onSingleTapUp(null, mNewX, mNewY);
-                    mOldX = mNewX;
-                    mOldY = mNewY;
-                    mOldWidth = mNewWidth;
-                    mOldHeight = mNewHeight;
-                    } catch(Exception e) {
+                        mOldX = mNewX;
+                        mOldY = mNewY;
+                        mOldWidth = mNewWidth;
+                        mOldHeight = mNewHeight;
+                    } catch (Exception ignored) {
                     }
                 }
             }

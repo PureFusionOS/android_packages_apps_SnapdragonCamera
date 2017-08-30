@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2016, The Linux Foundation. All rights reserved.
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (c) 2016, The Linux Foundation. All rights reserved.
 
      Redistribution and use in source and binary forms, with or without
      modification, are permitted provided that the following conditions are
@@ -31,7 +30,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:visibility="invisible">
+    android:visibility="invisible"
+    android:baselineAligned="false">
 
     <com.android.camera.ui.RotateLayout
         android:id="@+id/exposure_rotate_layout"

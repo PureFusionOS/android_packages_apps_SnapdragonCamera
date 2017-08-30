@@ -37,15 +37,22 @@ import android.hardware.Camera.CameraInfo;
 import android.hardware.Camera.Parameters;
 import android.hardware.Camera.Size;
 import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.impl.CameraMetadataNative;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.hardware.camera2.utils.SurfaceUtils;
 import android.location.Location;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.ParcelFileDescriptor;
+import android.os.SystemProperties;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.Range;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.OrientationEventListener;
@@ -55,15 +62,14 @@ import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Toast;
-import android.os.SystemProperties;
 
 import com.android.camera.CameraActivity;
 import com.android.camera.CameraDisabledException;
 import com.android.camera.CameraHolder;
 import com.android.camera.CameraManager;
 import com.android.camera.CameraSettings;
+import com.android.camera.SettingsManager;
 import com.android.camera.ui.RotateTextToast;
-import com.android.camera.util.IntentHelper;
 
 import org.omnirom.snap.R;
 
@@ -71,24 +77,15 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Locale;
-import android.util.Range;
-import java.util.StringTokenizer;
-
-import com.android.camera.SettingsManager;
-import android.hardware.camera2.CameraAccessException;
-import android.hardware.camera2.CameraCaptureSession;
-import android.hardware.camera2.params.StreamConfigurationMap;
-import android.hardware.camera2.CaptureRequest;
-import android.hardware.camera2.impl.CameraMetadataNative;
-import android.hardware.camera2.utils.SurfaceUtils;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -96,25 +93,16 @@ import static android.content.Context.MODE_PRIVATE;
  * Collection of utility functions used in this package.
  */
 public class CameraUtil {
-    private static final String TAG = "Util";
-
-    // For calculate the best fps range for still image capture.
-    private final static int MAX_PREVIEW_FPS_TIMES_1000 = 400000;
-    private final static int PREFERRED_PREVIEW_FPS_TIMES_1000 = 30000;
-
     // For creating crop intents.
     public static final String KEY_RETURN_DATA = "return-data";
     public static final String KEY_SHOW_WHEN_LOCKED = "showWhenLocked";
-
     // Orientation hysteresis amount used in rounding, in degrees
     public static final int ORIENTATION_HYSTERESIS = 5;
-
     public static final String REVIEW_ACTION = "com.android.camera.action.REVIEW";
     // See android.hardware.Camera.ACTION_NEW_PICTURE.
     public static final String ACTION_NEW_PICTURE = "android.hardware.action.NEW_PICTURE";
     // See android.hardware.Camera.ACTION_NEW_VIDEO.
     public static final String ACTION_NEW_VIDEO = "android.hardware.action.NEW_VIDEO";
-
     // Broadcast Action: The camera application has become active in picture-taking mode.
     public static final String ACTION_CAMERA_STARTED = "com.android.camera.action.CAMERA_STARTED";
     // Broadcast Action: The camera application is no longer in active picture-taking mode.
@@ -132,36 +120,50 @@ public class CameraUtil {
     // Fields from android.hardware.Camera.Parameters
     public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
     public static final String RECORDING_HINT = "recording-hint";
-    private static final String AUTO_EXPOSURE_LOCK_SUPPORTED = "auto-exposure-lock-supported";
-    private static final String AUTO_WHITE_BALANCE_LOCK_SUPPORTED = "auto-whitebalance-lock-supported";
-    private static final String VIDEO_SNAPSHOT_SUPPORTED = "video-snapshot-supported";
-    private static final String AUTO_HDR_SUPPORTED = "auto-hdr-supported";
     public static final String SCENE_MODE_HDR = "hdr";
     public static final String TRUE = "true";
     public static final String FALSE = "false";
-
-    // Fields for the show-on-maps-functionality
-    private static final String MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
-    private static final String MAPS_CLASS_NAME = "com.google.android.maps.MapsActivity";
-
-    /** Has to be in sync with the receiving MovieActivity. */
+    /**
+     * Has to be in sync with the receiving MovieActivity.
+     */
     public static final String KEY_TREAT_UP_AS_BACK = "treat-up-as-back";
-    /** Judge the value whether is from lockscreen come in or not */
+    /**
+     * Judge the value whether is from lockscreen come in or not
+     */
     public static final String KEY_IS_SECURE_CAMERA = "is_secure_camera";
-
     public static final int RATIO_UNKNOWN = 0;
     public static final int RATIO_16_9 = 1;
     public static final int RATIO_4_3 = 2;
     public static final int RATIO_3_2 = 3;
     public static final int MODE_TWO_BT = 1;
     public static final int MODE_ONE_BT = 0;
-    private static final String DIALOG_CONFIG = "dialog_config";
     public static final String KEY_SAVE = "save";
     public static final String KEY_DELETE = "delete";
     public static final String KEY_DELETE_ALL = "delete_all";
+    private static final String TAG = "Util";
+    // For calculate the best fps range for still image capture.
+    private final static int MAX_PREVIEW_FPS_TIMES_1000 = 400000;
+    private final static int PREFERRED_PREVIEW_FPS_TIMES_1000 = 30000;
+    private static final String AUTO_EXPOSURE_LOCK_SUPPORTED = "auto-exposure-lock-supported";
+    private static final String AUTO_WHITE_BALANCE_LOCK_SUPPORTED = "auto-whitebalance-lock-supported";
+    private static final String VIDEO_SNAPSHOT_SUPPORTED = "video-snapshot-supported";
+    private static final String AUTO_HDR_SUPPORTED = "auto-hdr-supported";
+    // Fields for the show-on-maps-functionality
+    private static final String MAPS_PACKAGE_NAME = "com.google.android.apps.maps";
+    private static final String MAPS_CLASS_NAME = "com.google.android.maps.MapsActivity";
+    private static final String DIALOG_CONFIG = "dialog_config";
+    // Private intent extras. Test only.
+    private static final String EXTRAS_CAMERA_FACING =
+            "android.intent.extras.CAMERA_FACING";
+    private static float sPixelDensity = 1;
+    private static ImageFileNamer sImageFileNamer;
+    private static int sLocation[] = new int[2];
+
+    private CameraUtil() {
+    }
 
     public static boolean isSupported(String value, List<String> supported) {
-        return supported == null ? false : supported.indexOf(value) >= 0;
+        return supported != null && supported.indexOf(value) >= 0;
     }
 
     public static boolean isAutoExposureLockSupported(Parameters params) {
@@ -171,6 +173,7 @@ public class CameraUtil {
     public static boolean isAutoHDRSupported(Parameters params) {
         return TRUE.equals(params.get(AUTO_HDR_SUPPORTED));
     }
+
     public static boolean isAutoWhiteBalanceLockSupported(Parameters params) {
         return TRUE.equals(params.get(AUTO_WHITE_BALANCE_LOCK_SUPPORTED));
     }
@@ -191,7 +194,7 @@ public class CameraUtil {
     public static boolean isFocusAreaSupported(Parameters params) {
         return (params.getMaxNumFocusAreas() > 0
                 && isSupported(Parameters.FOCUS_MODE_AUTO,
-                        params.getSupportedFocusModes()));
+                params.getSupportedFocusModes()));
     }
 
     public static boolean isSupported(Parameters params, String key) {
@@ -200,16 +203,6 @@ public class CameraUtil {
 
     public static boolean isBurstSupported(Parameters params) {
         return isSupported(params, "num-snaps-per-shutter");
-    }
-
-    // Private intent extras. Test only.
-    private static final String EXTRAS_CAMERA_FACING =
-            "android.intent.extras.CAMERA_FACING";
-
-    private static float sPixelDensity = 1;
-    private static ImageFileNamer sImageFileNamer;
-
-    private CameraUtil() {
     }
 
     public static void initialize(Context context) {
@@ -290,7 +283,7 @@ public class CameraUtil {
      * request is 3. So we round up the sample size to avoid OOM.
      */
     public static int computeSampleSize(BitmapFactory.Options options,
-            int minSideLength, int maxNumOfPixels) {
+                                        int minSideLength, int maxNumOfPixels) {
         int initialSize = computeInitialSampleSize(options, minSideLength,
                 maxNumOfPixels);
 
@@ -308,7 +301,7 @@ public class CameraUtil {
     }
 
     private static int computeInitialSampleSize(BitmapFactory.Options options,
-            int minSideLength, int maxNumOfPixels) {
+                                                int minSideLength, int maxNumOfPixels) {
         double w = options.outWidth;
         double h = options.outHeight;
 
@@ -316,7 +309,7 @@ public class CameraUtil {
                 (int) Math.ceil(Math.sqrt(w * h / maxNumOfPixels));
         int upperBound = (minSideLength < 0) ? 128 :
                 (int) Math.min(Math.floor(w / minSideLength),
-                Math.floor(h / minSideLength));
+                        Math.floor(h / minSideLength));
 
         if (upperBound < lowerBound) {
             // return the larger one when there is no overlapping zone.
@@ -381,7 +374,7 @@ public class CameraUtil {
     }
 
     public static boolean isCamera2Supported(Context context) {
-        android.hardware.camera2.CameraManager manager = (android.hardware.camera2.CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
+        android.hardware.camera2.CameraManager manager = (android.hardware.camera2.CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
 
         try {
             CameraCharacteristics characteristics = manager.getCameraCharacteristics(manager.getCameraIdList()[0]);
@@ -397,7 +390,7 @@ public class CameraUtil {
                 default:
                     return false;
             }
-        } catch(CameraAccessException | NumberFormatException e) {
+        } catch (CameraAccessException | NumberFormatException e) {
             Log.e(TAG, "exception trying to get camera characteristics");
         }
 
@@ -411,12 +404,7 @@ public class CameraUtil {
             throwIfCameraDisabled(activity);
             return CameraHolder.instance().open(handler, cameraId, cb);
         } catch (CameraDisabledException ex) {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    cb.onCameraDisabled(cameraId);
-                }
-            });
+            handler.post(() -> cb.onCameraDisabled(cameraId));
         }
         return null;
     }
@@ -425,12 +413,7 @@ public class CameraUtil {
         if (activity == null || activity.isFinishing())
             return;
         DialogInterface.OnClickListener buttonListener =
-                new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                activity.finish();
-            }
-        };
+                (dialog, which) -> activity.finish();
         TypedValue out = new TypedValue();
         activity.getTheme().resolveAttribute(android.R.attr.alertDialogIcon, out, true);
         new AlertDialog.Builder(activity)
@@ -448,7 +431,7 @@ public class CameraUtil {
     }
 
     public static boolean equals(Object a, Object b) {
-        return (a == b) || (a == null ? false : a.equals(b));
+        return (a == b) || (a != null && a.equals(b));
     }
 
     public static int nextPowerOf2(int n) {
@@ -483,10 +466,14 @@ public class CameraUtil {
         int rotation = activity.getWindowManager().getDefaultDisplay()
                 .getRotation();
         switch (rotation) {
-            case Surface.ROTATION_0: return 0;
-            case Surface.ROTATION_90: return 90;
-            case Surface.ROTATION_180: return 180;
-            case Surface.ROTATION_270: return 270;
+            case Surface.ROTATION_0:
+                return 0;
+            case Surface.ROTATION_90:
+                return 90;
+            case Surface.ROTATION_180:
+                return 180;
+            case Surface.ROTATION_270:
+                return 270;
         }
         return 0;
     }
@@ -500,6 +487,7 @@ public class CameraUtil {
     /**
      * Calculate the default orientation of the device based on the width and
      * height of the display when rotation = 0 (i.e. natural width and height)
+     *
      * @param activity the activity context
      * @return whether the default orientation of the device is portrait
      */
@@ -546,8 +534,8 @@ public class CameraUtil {
             changeOrientation = true;
         } else {
             int dist = Math.abs(orientation - orientationHistory);
-            dist = Math.min( dist, 360 - dist );
-            changeOrientation = ( dist >= 45 + ORIENTATION_HYSTERESIS );
+            dist = Math.min(dist, 360 - dist);
+            changeOrientation = (dist >= 45 + ORIENTATION_HYSTERESIS);
         }
         if (changeOrientation) {
             return ((orientation + 45) / 90 * 90) % 360;
@@ -569,7 +557,7 @@ public class CameraUtil {
         String uMax = SystemProperties.get("camera.display.umax", "");
         String lMax = SystemProperties.get("camera.display.lmax", "");
         if ((uMax.length() > 0) && (lMax.length() > 0)) {
-            Log.v(TAG,"display uMax "+ uMax + " lMax " + lMax);
+            Log.v(TAG, "display uMax " + uMax + " lMax " + lMax);
             String uMaxArr[] = uMax.split("x", 2);
             String lMaxArr[] = lMax.split("x", 2);
             try {
@@ -578,22 +566,22 @@ public class CameraUtil {
                 int lMaxWidth = Integer.parseInt(lMaxArr[0]);
                 int lMaxHeight = Integer.parseInt(lMaxArr[1]);
                 int defaultDisplaySize = (size.x * size.y);
-                if (defaultDisplaySize > (uMaxWidth*uMaxHeight)) {
-                    size.set(uMaxWidth,uMaxHeight);
-                } else if (defaultDisplaySize >= (lMaxWidth*lMaxHeight)) {
-                    size.set(lMaxWidth,lMaxHeight);
+                if (defaultDisplaySize > (uMaxWidth * uMaxHeight)) {
+                    size.set(uMaxWidth, uMaxHeight);
+                } else if (defaultDisplaySize >= (lMaxWidth * lMaxHeight)) {
+                    size.set(lMaxWidth, lMaxHeight);
                 } else {
-                    Log.v(TAG,"No need to cap display size");
+                    Log.v(TAG, "No need to cap display size");
                 }
             } catch (Exception e) {
-                Log.e(TAG,"Invalid display properties");
+                Log.e(TAG, "Invalid display properties");
             }
         }
         return size;
     }
 
     public static Size getOptimalPreviewSize(Activity currentActivity,
-            List<Size> sizes, double targetRatio) {
+                                             List<Size> sizes, double targetRatio) {
 
         Point[] points = new Point[sizes.size()];
 
@@ -607,7 +595,7 @@ public class CameraUtil {
     }
 
     public static int getOptimalPreviewSize(Activity currentActivity,
-            Point[] sizes, double targetRatio) {
+                                            Point[] sizes, double targetRatio) {
         // Use a very small tolerance because we want an exact match.
         final double ASPECT_TOLERANCE = 0.01;
         if (sizes == null) return -1;
@@ -688,7 +676,6 @@ public class CameraUtil {
         return optimalSize;
     }
 
-
     // Returns the largest thumbnail size which matches the given aspect ratio.
     public static Size getOptimalJpegThumbnailSize(
             List<Size> sizes, double targetRatio) {
@@ -747,13 +734,9 @@ public class CameraUtil {
             Object arglist[] = new Object[0];
             Object retobj = sIsVoiceCapable.invoke(telephonyManager, arglist);
             return (Boolean) retobj;
-        } catch (java.lang.reflect.InvocationTargetException ite) {
+        } catch (java.lang.reflect.InvocationTargetException | NoSuchMethodException | IllegalAccessException ite) {
             // Failure, must be another device.
             // Assume that it is voice capable.
-        } catch (IllegalAccessException iae) {
-            // Failure, must be an other device.
-            // Assume that it is voice capable.
-        } catch (NoSuchMethodException nsme) {
         }
         return true;
     }
@@ -788,8 +771,6 @@ public class CameraUtil {
     private static boolean isBackCameraIntent(int intentCameraId) {
         return (intentCameraId == android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK);
     }
-
-    private static int sLocation[] = new int[2];
 
     // This method is not thread-safe.
     public static boolean pointInView(float x, float y, View v) {
@@ -847,7 +828,7 @@ public class CameraUtil {
     }
 
     public static void prepareMatrix(Matrix matrix, boolean mirror, int displayOrientation,
-            int viewWidth, int viewHeight) {
+                                     int viewWidth, int viewHeight) {
         // Need mirror for front camera.
         matrix.setScale(mirror ? -1 : 1, 1);
         // This is the value for android.hardware.Camera.setDisplayOrientation.
@@ -921,24 +902,24 @@ public class CameraUtil {
 
     public static Rect getFinalCropRect(Rect rect, float targetRatio) {
         Rect finalRect = new Rect(rect);
-        float rectRatio = (float) rect.width()/(float) rect.height();
+        float rectRatio = (float) rect.width() / (float) rect.height();
 
         // if ratios are different, adjust crop rect to fit ratio
         // if ratios are same, no need to adjust crop
         Log.d(TAG, "getFinalCropRect - rect: " + rect.toString());
         Log.d(TAG, "getFinalCropRect - ratios: " + rectRatio + ", " + targetRatio);
-        if(rectRatio > targetRatio) {
+        if (rectRatio > targetRatio) {
             // ratio indicates need for horizontal crop
             // add .5 to round up if necessary
-            int newWidth = (int)(((float)rect.height() * targetRatio) + .5f);
-            int newXoffset = (rect.width() - newWidth)/2 + rect.left;
+            int newWidth = (int) (((float) rect.height() * targetRatio) + .5f);
+            int newXoffset = (rect.width() - newWidth) / 2 + rect.left;
             finalRect.left = newXoffset;
             finalRect.right = newXoffset + newWidth;
-        } else if(rectRatio < targetRatio) {
+        } else if (rectRatio < targetRatio) {
             // ratio indicates need for vertical crop
             // add .5 to round up if necessary
-            int newHeight = (int)(((float)rect.width() / targetRatio) + .5f);
-            int newYoffset = (rect.height() - newHeight)/2 + rect.top;
+            int newHeight = (int) (((float) rect.width() / targetRatio) + .5f);
+            int newYoffset = (rect.height() - newHeight) / 2 + rect.top;
             finalRect.top = newYoffset;
             finalRect.bottom = newYoffset + newHeight;
         }
@@ -965,7 +946,8 @@ public class CameraUtil {
 
     /**
      * Down-samples a jpeg byte array.
-     * @param data a byte array of jpeg data
+     *
+     * @param data             a byte array of jpeg data
      * @param downSampleFactor down-sample factor
      * @return decoded and down-sampled bitmap
      */
@@ -1024,10 +1006,10 @@ public class CameraUtil {
             }
         }
         return false;
-   }
+    }
 
-   public static String getFilpModeString(int value){
-        switch(value){
+    public static String getFilpModeString(int value) {
+        switch (value) {
             case 0:
                 return CameraSettings.FLIP_MODE_OFF;
             case 1:
@@ -1040,6 +1022,7 @@ public class CameraUtil {
                 return null;
         }
     }
+
     /**
      * For still image capture, we need to get the right fps range such that the
      * camera can slow down the framerate to allow for less-noisy/dark
@@ -1047,7 +1030,7 @@ public class CameraUtil {
      *
      * @param params Camera's parameters.
      * @return null if no appropiate fps range can't be found. Otherwise, return
-     *         the right range.
+     * the right range.
      */
     public static int[] getPhotoPreviewFpsRange(Parameters params) {
         return getPhotoPreviewFpsRange(params.getSupportedPreviewFpsRange());
@@ -1105,64 +1088,14 @@ public class CameraUtil {
         List<Integer> frameRates = params.getSupportedPreviewFrameRates();
         if (frameRates != null && frameRates.size() > 0) {
             // The list is sorted. Return the last element.
-            return frameRates.get(frameRates.size() - 1).intValue();
+            return frameRates.get(frameRates.size() - 1);
         }
         return -1;
     }
 
-    private static class ImageFileNamer {
-        private final SimpleDateFormat mFormat;
-
-        private final int REFOCUS_DEPTHMAP_IDX = 5;
-        private final String REFOCUS_DEPTHMAP_SUFFIX = "DepthMap";
-        private final int REFOCUS_ALLFOCUS_IDX = 6;
-        private final String REFOCUS_ALLFOCUS_SUFFIX = "Allfocus";
-        private int mRefocusIdx = 0;
-
-        // The date (in milliseconds) used to generate the last name.
-        private long mLastDate;
-
-        // Number of names generated for the same second.
-        private int mSameSecondCount;
-
-        public ImageFileNamer(String format) {
-            mFormat = new SimpleDateFormat(format);
-        }
-
-        public String generateName(long dateTaken, boolean refocus) {
-            Date date = new Date(dateTaken);
-            String result = mFormat.format(date);
-
-            if (refocus) {
-                if (mRefocusIdx == REFOCUS_DEPTHMAP_IDX) {
-                    result += "_" + REFOCUS_DEPTHMAP_SUFFIX;
-                    mRefocusIdx++;
-                } else if (mRefocusIdx == REFOCUS_ALLFOCUS_IDX) {
-                    result += "_" + REFOCUS_ALLFOCUS_SUFFIX;
-                    mRefocusIdx = 0;
-                } else {
-                    result += "_" + mRefocusIdx;
-                    mRefocusIdx++;
-                }
-            } else {
-                // If the last name was generated for the same second,
-                // we append _1, _2, etc to the name.
-                if (dateTaken / 1000 == mLastDate / 1000) {
-                    mSameSecondCount++;
-                    result += "_" + mSameSecondCount;
-                } else {
-                    mLastDate = dateTaken;
-                    mSameSecondCount = 0;
-                }
-            }
-
-            return result;
-        }
-    }
-
     public static void playVideo(Activity activity, Uri uri, String title) {
         try {
-            boolean isSecureCamera = ((CameraActivity)activity).isSecureCamera();
+            boolean isSecureCamera = ((CameraActivity) activity).isSecureCamera();
             UsageStatistics.onEvent(UsageStatistics.COMPONENT_CAMERA,
                     UsageStatistics.ACTION_PLAY_VIDEO, null);
             if (!isSecureCamera) {
@@ -1187,7 +1120,7 @@ public class CameraUtil {
      * not be found, we use a geo intent as a fallback.
      *
      * @param activity the activity to use for launching the Maps intent.
-     * @param latLong a 2-element array containing {latitude/longitude}.
+     * @param latLong  a 2-element array containing {latitude/longitude}.
      */
     public static void showOnMap(Activity activity, double[] latLong) {
         try {
@@ -1230,11 +1163,11 @@ public class CameraUtil {
         StackTraceElement[] elems = Thread.currentThread().getStackTrace();
         // Ignore the first 3 elements.
         level = (level == 0 ? elems.length : Math.min(level + 3, elems.length));
-        String ret = new String();
+        StringBuilder ret = new StringBuilder();
         for (int i = 3; i < level; i++) {
-            ret = ret + "\t" + elems[i].toString() + '\n';
+            ret.append("\t").append(elems[i].toString()).append('\n');
         }
-        return ret;
+        return ret.toString();
     }
 
     public static boolean volumeKeyShutterDisable(Context context) {
@@ -1360,21 +1293,8 @@ public class CameraUtil {
         return ".3gp";
     }
 
-    /**
-     * Compares two {@code Size}s based on their areas.
-     */
-    public static class CompareSizesByArea implements Comparator<android.util.Size> {
-
-        @Override
-        public int compare(android.util.Size lhs, android.util.Size rhs) {
-            // We cast here to ensure the multiplications won't overflow
-            return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
-                    (long) rhs.getWidth() * rhs.getHeight());
-        }
-    }
-
     public static List<CaptureRequest> createHighSpeedRequestList(CaptureRequest request
-            ,int cameraId) throws CameraAccessException {
+            , int cameraId) throws CameraAccessException {
         if (request == null) {
             throw new IllegalArgumentException("Input capture request must not be null");
         }
@@ -1389,7 +1309,7 @@ public class CameraUtil {
         // the preview frame rate, should use maxBatch size for that high speed stream
         // configuration. We choose the former for now.
         int requestListSize = fpsRange.getUpper() / 30;
-        List<CaptureRequest> requestList = new ArrayList<CaptureRequest>();
+        List<CaptureRequest> requestList = new ArrayList<>();
 
         // Prepare the Request builders: need carry over the request controls.
         // First, create a request builder that will only include preview or recording target.
@@ -1480,5 +1400,68 @@ public class CameraUtil {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    private static class ImageFileNamer {
+        private final SimpleDateFormat mFormat;
+
+        private final int REFOCUS_DEPTHMAP_IDX = 5;
+        private final String REFOCUS_DEPTHMAP_SUFFIX = "DepthMap";
+        private final int REFOCUS_ALLFOCUS_IDX = 6;
+        private final String REFOCUS_ALLFOCUS_SUFFIX = "Allfocus";
+        private int mRefocusIdx = 0;
+
+        // The date (in milliseconds) used to generate the last name.
+        private long mLastDate;
+
+        // Number of names generated for the same second.
+        private int mSameSecondCount;
+
+        public ImageFileNamer(String format) {
+            mFormat = new SimpleDateFormat(format);
+        }
+
+        public String generateName(long dateTaken, boolean refocus) {
+            Date date = new Date(dateTaken);
+            String result = mFormat.format(date);
+
+            if (refocus) {
+                if (mRefocusIdx == REFOCUS_DEPTHMAP_IDX) {
+                    result += "_" + REFOCUS_DEPTHMAP_SUFFIX;
+                    mRefocusIdx++;
+                } else if (mRefocusIdx == REFOCUS_ALLFOCUS_IDX) {
+                    result += "_" + REFOCUS_ALLFOCUS_SUFFIX;
+                    mRefocusIdx = 0;
+                } else {
+                    result += "_" + mRefocusIdx;
+                    mRefocusIdx++;
+                }
+            } else {
+                // If the last name was generated for the same second,
+                // we append _1, _2, etc to the name.
+                if (dateTaken / 1000 == mLastDate / 1000) {
+                    mSameSecondCount++;
+                    result += "_" + mSameSecondCount;
+                } else {
+                    mLastDate = dateTaken;
+                    mSameSecondCount = 0;
+                }
+            }
+
+            return result;
+        }
+    }
+
+    /**
+     * Compares two {@code Size}s based on their areas.
+     */
+    public static class CompareSizesByArea implements Comparator<android.util.Size> {
+
+        @Override
+        public int compare(android.util.Size lhs, android.util.Size rhs) {
+            // We cast here to ensure the multiplications won't overflow
+            return Long.signum((long) lhs.getWidth() * lhs.getHeight() -
+                    (long) rhs.getWidth() * rhs.getHeight());
+        }
     }
 }

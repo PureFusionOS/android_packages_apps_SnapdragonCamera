@@ -24,12 +24,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,7 +42,12 @@ import org.omnirom.snap.R;
 public class OneUICameraControls extends RotatableLayout {
 
     private static final String TAG = "CAM_Controls";
-
+    private static final int WIDTH_GRID = 5;
+    private static final int HEIGHT_GRID = 7;
+    private static final int LOW_REMAINING_PHOTOS = 20;
+    private static final int HIGH_REMAINING_PHOTOS = 1000000;
+    private static int mTop = 0;
+    private static int mBottom = 0;
     private View mShutter;
     private View mVideoShutter;
     private View mExitBestPhotpMode;
@@ -62,25 +66,14 @@ public class OneUICameraControls extends RotatableLayout {
     private View mCancelButton;
     private ViewGroup mProModeLayout;
     private View mProModeCloseButton;
-
     private ArrowTextView mRefocusToast;
-
-    private static final int WIDTH_GRID = 5;
-    private static final int HEIGHT_GRID = 7;
     private View[] mViews;
     private boolean mHideRemainingPhoto = false;
     private LinearLayout mRemainingPhotos;
     private TextView mRemainingPhotosText;
     private int mCurrentRemaining = -1;
     private int mOrientation;
-
-    private static int mTop = 0;
-    private static int mBottom = 0;
-
     private Paint mPaint;
-
-    private static final int LOW_REMAINING_PHOTOS = 20;
-    private static final int HIGH_REMAINING_PHOTOS = 1000000;
     private int mWidth;
     private int mHeight;
     private boolean mVisible;
@@ -129,12 +122,12 @@ public class OneUICameraControls extends RotatableLayout {
         this(context, null);
     }
 
-    public void setIntentMode(int mode) {
-        mIntentMode = mode;
-    }
-
     public int getIntentMode() {
         return mIntentMode;
+    }
+
+    public void setIntentMode(int mode) {
+        mIntentMode = mode;
     }
 
     @Override
@@ -150,7 +143,7 @@ public class OneUICameraControls extends RotatableLayout {
         mMakeupSeekBarHighText = findViewById(R.id.makeup_high_text);
         mMakeupSeekBar = findViewById(R.id.makeup_seekbar);
         mMakeupSeekBarLayout = findViewById(R.id.makeup_seekbar_layout);
-        ((SeekBar)mMakeupSeekBar).setMax(100);
+        ((SeekBar) mMakeupSeekBar).setMax(100);
         mFlashButton = findViewById(R.id.flash_button);
         mMute = findViewById(R.id.mute_button);
         mPreview = findViewById(R.id.preview_thumb);
@@ -183,56 +176,44 @@ public class OneUICameraControls extends RotatableLayout {
         mWhiteBalanceRotateLayout = (RotateLayout) findViewById(R.id.white_balance_rotate_layout);
         mIsoRotateLayout = (RotateLayout) findViewById(R.id.iso_rotate_layout);
 
-        mExposureLayout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetProModeIcons();
-                int mode = mProMode.getMode();
-                if (mode == ProMode.EXPOSURE_MODE) {
-                    mProMode.setMode(ProMode.NO_MODE);
-                } else {
-                    mExposureIcon.setImageResource(R.drawable.icon_exposure_blue);
-                    mProMode.setMode(ProMode.EXPOSURE_MODE);
-                }
+        mExposureLayout.setOnClickListener(v -> {
+            resetProModeIcons();
+            int mode = mProMode.getMode();
+            if (mode == ProMode.EXPOSURE_MODE) {
+                mProMode.setMode(ProMode.NO_MODE);
+            } else {
+                mExposureIcon.setImageResource(R.drawable.icon_exposure_blue);
+                mProMode.setMode(ProMode.EXPOSURE_MODE);
             }
         });
-        mManualLayout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetProModeIcons();
-                int mode = mProMode.getMode();
-                if (mode == ProMode.MANUAL_MODE) {
-                    mProMode.setMode(ProMode.NO_MODE);
-                } else {
-                    mManualIcon.setImageResource(R.drawable.icon_manual_blue);
-                    mProMode.setMode(ProMode.MANUAL_MODE);
-                }
+        mManualLayout.setOnClickListener(v -> {
+            resetProModeIcons();
+            int mode = mProMode.getMode();
+            if (mode == ProMode.MANUAL_MODE) {
+                mProMode.setMode(ProMode.NO_MODE);
+            } else {
+                mManualIcon.setImageResource(R.drawable.icon_manual_blue);
+                mProMode.setMode(ProMode.MANUAL_MODE);
             }
         });
-        mWhiteBalanceLayout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetProModeIcons();
-                int mode = mProMode.getMode();
-                if (mode == ProMode.WHITE_BALANCE_MODE) {
-                    mProMode.setMode(ProMode.NO_MODE);
-                } else {
-                    mWhiteBalanceIcon.setImageResource(R.drawable.icon_white_balance_blue);
-                    mProMode.setMode(ProMode.WHITE_BALANCE_MODE);
-                }
+        mWhiteBalanceLayout.setOnClickListener(v -> {
+            resetProModeIcons();
+            int mode = mProMode.getMode();
+            if (mode == ProMode.WHITE_BALANCE_MODE) {
+                mProMode.setMode(ProMode.NO_MODE);
+            } else {
+                mWhiteBalanceIcon.setImageResource(R.drawable.icon_white_balance_blue);
+                mProMode.setMode(ProMode.WHITE_BALANCE_MODE);
             }
         });
-        mIsoLayout.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                resetProModeIcons();
-                int mode = mProMode.getMode();
-                if (mode == ProMode.ISO_MODE) {
-                    mProMode.setMode(ProMode.NO_MODE);
-                } else {
-                    mIsoIcon.setImageResource(R.drawable.icon_iso_blue);
-                    mProMode.setMode(ProMode.ISO_MODE);
-                }
+        mIsoLayout.setOnClickListener(v -> {
+            resetProModeIcons();
+            int mode = mProMode.getMode();
+            if (mode == ProMode.ISO_MODE) {
+                mProMode.setMode(ProMode.NO_MODE);
+            } else {
+                mIsoIcon.setImageResource(R.drawable.icon_iso_blue);
+                mProMode.setMode(ProMode.ISO_MODE);
             }
         });
 
@@ -245,21 +226,21 @@ public class OneUICameraControls extends RotatableLayout {
                 R.dimen.one_ui_bottom_large);
         mBottomSmallSize = getResources().getDimensionPixelSize(
                 R.dimen.one_ui_bottom_small);
-        if(!BeautificationFilter.isSupportedStatic()) {
+        if (!BeautificationFilter.isSupportedStatic()) {
             mTsMakeupSwitcher.setEnabled(false);
         }
     }
 
     @Override
-    public void onSizeChanged(int w, int h, int oldw, int oldh){
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
 
         mWidth = w;
         mHeight = h;
-        if(mMakeupSeekBar != null) {
-            mMakeupSeekBar.setMinimumWidth(mWidth/2);
+        if (mMakeupSeekBar != null) {
+            mMakeupSeekBar.setMinimumWidth(mWidth / 2);
         }
-        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mWidth/ 4,mWidth/4);
+        ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(mWidth / 4, mWidth / 4);
         mExposureLayout.setLayoutParams(lp);
         mManualLayout.setLayoutParams(lp);
         mWhiteBalanceLayout.setLayoutParams(lp);
@@ -311,7 +292,7 @@ public class OneUICameraControls extends RotatableLayout {
     }
 
     private void setLocation(View v, boolean top, float idx) {
-        if(v == null) {
+        if (v == null) {
             return;
         }
         int w = v.getMeasuredWidth();
@@ -326,7 +307,7 @@ public class OneUICameraControls extends RotatableLayout {
     }
 
     private void setLocationCustomBottom(View v, float x, float y) {
-        if(v == null) {
+        if (v == null) {
             return;
         }
         int w = v.getMeasuredWidth();
@@ -346,9 +327,9 @@ public class OneUICameraControls extends RotatableLayout {
             setLocation(mTsMakeupSwitcher, true, 3);
             setLocation(mFlashButton, true, 4);
             setLocation(mPauseButton, false, 3.15f);
-            setLocation(mShutter, false , 0.85f);
+            setLocation(mShutter, false, 0.85f);
             setLocation(mVideoShutter, false, 2);
-            setLocation(mExitBestPhotpMode ,false, 4);
+            setLocation(mExitBestPhotpMode, false, 4);
         } else {
             setLocation(mFrontBackSwitcher, true, 2);
             setLocation(mTsMakeupSwitcher, true, 3);
@@ -364,7 +345,7 @@ public class OneUICameraControls extends RotatableLayout {
                 setLocation(mPreview, false, 0);
                 setLocation(mVideoShutter, false, 3.15f);
             }
-            setLocation(mExitBestPhotpMode ,false, 4);
+            setLocation(mExitBestPhotpMode, false, 4);
         }
         setLocationCustomBottom(mMakeupSeekBarLayout, 0, 1);
         setLocation(mProModeCloseButton, false, 4);
@@ -373,7 +354,7 @@ public class OneUICameraControls extends RotatableLayout {
     }
 
     private void setBottomButtionSize(View view, int width, int height) {
-        FrameLayout.LayoutParams layout = (FrameLayout.LayoutParams)view.getLayoutParams();
+        FrameLayout.LayoutParams layout = (FrameLayout.LayoutParams) view.getLayoutParams();
         layout.height = height;
         layout.width = width;
         view.setLayoutParams(layout);
@@ -520,49 +501,6 @@ public class OneUICameraControls extends RotatableLayout {
         layoutRemaingPhotos();
     }
 
-    private class ArrowTextView extends TextView {
-        private static final int TEXT_SIZE = 14;
-        private static final int PADDING_SIZE = 18;
-        private static final int BACKGROUND = 0x80000000;
-
-        private Paint mPaint;
-        private Path mPath;
-
-        public ArrowTextView(Context context) {
-            super(context);
-
-            setText(context.getString(R.string.refocus_toast));
-            setBackgroundColor(BACKGROUND);
-            setVisibility(View.GONE);
-            setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
-            setTextSize(TEXT_SIZE);
-            setPadding(PADDING_SIZE, PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
-
-            mPaint = new Paint();
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setColor(BACKGROUND);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            if (mPath != null) {
-                canvas.drawPath(mPath, mPaint);
-            }
-        }
-
-        public void setArrow(float x1, float y1, float x2, float y2, float x3, float y3) {
-            mPath = new Path();
-            mPath.reset();
-            mPath.moveTo(x1, y1);
-            mPath.lineTo(x2, y2);
-            mPath.lineTo(x3, y3);
-            mPath.lineTo(x1, y1);
-        }
-    }
-
     public void setProMode(boolean promode) {
         mProModeOn = promode;
         initializeProMode(mProModeOn);
@@ -603,6 +541,49 @@ public class OneUICameraControls extends RotatableLayout {
             case ProMode.ISO_MODE:
                 mIsoText.setText(value);
                 break;
+        }
+    }
+
+    private class ArrowTextView extends TextView {
+        private static final int TEXT_SIZE = 14;
+        private static final int PADDING_SIZE = 18;
+        private static final int BACKGROUND = 0x80000000;
+
+        private Paint mPaint;
+        private Path mPath;
+
+        public ArrowTextView(Context context) {
+            super(context);
+
+            setText(context.getString(R.string.refocus_toast));
+            setBackgroundColor(BACKGROUND);
+            setVisibility(View.GONE);
+            setLayoutParams(new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT));
+            setTextSize(TEXT_SIZE);
+            setPadding(PADDING_SIZE, PADDING_SIZE, PADDING_SIZE, PADDING_SIZE);
+
+            mPaint = new Paint();
+            mPaint.setStyle(Paint.Style.FILL);
+            mPaint.setColor(BACKGROUND);
+        }
+
+        @Override
+        protected void onDraw(Canvas canvas) {
+            super.onDraw(canvas);
+            if (mPath != null) {
+                canvas.drawPath(mPath, mPaint);
+            }
+        }
+
+        public void setArrow(float x1, float y1, float x2, float y2, float x3, float y3) {
+            mPath = new Path();
+            mPath.reset();
+            mPath.moveTo(x1, y1);
+            mPath.lineTo(x2, y2);
+            mPath.lineTo(x3, y3);
+            mPath.lineTo(x1, y1);
         }
     }
 }

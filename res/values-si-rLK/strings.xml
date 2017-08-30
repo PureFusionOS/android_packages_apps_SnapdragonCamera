@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,17 +13,16 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="8338864393568040722">"කැමරාව"</string>
     <string name="details_ms" msgid="4368407634456462224">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="681695897098326459">"%1$d:%2$02d:%3$02d"</string>
     <string name="set_image" msgid="3011821258780340803">"ලෙස පින්තූරය සකසන්න"</string>
     <string name="delete" msgid="7258764001896874869">"මකන්න"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="2984228592820245170">"තෝරගත් අයිතමය මකන්නද?"</item>
-    <item quantity="other" msgid="882035505847338991">"තෝරාගත් අයිතම මකන්නද?"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="2984228592820245170" quantity="one">"තෝරගත් අයිතමය මකන්නද?"</item>
+        <item msgid="882035505847338991" quantity="other">"තෝරාගත් අයිතම මකන්නද?"</item>
+    </plurals>
     <string name="share" msgid="319799706929863109">"බෙදාගන්න"</string>
     <string name="share_panorama" msgid="7488525470543070168">"පරිදර්ශනය බෙදා ගන්න"</string>
     <string name="share_as_photo" msgid="8960831195285082544">"ඡායාරූපය ලෙස බෙදා ගන්න"</string>
@@ -32,21 +30,21 @@
     <string name="undo" msgid="7561810819827468379">"අස් කරන්න"</string>
     <string name="details" msgid="3581943734736871564">"විස්තර"</string>
     <string name="close" msgid="7196876073399885123">"වසන්න"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="629802015400399691">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="one" msgid="4283105620980058761">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="other" msgid="6433812272993337098">"%1$d තෝරා ගන්නා ලදි"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="7322496523426352621">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="one" msgid="3571296348626418242">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="other" msgid="3103452138866993468">"%1$d තෝරා ගන්නා ලදි"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="3312206920893882756">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="one" msgid="7749557015923438739">"%1$d තෝරා ගන්නා ලදි"</item>
-    <item quantity="other" msgid="3562299676983425193">"%1$d තෝරා ගන්නා ලදි"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="629802015400399691" quantity="zero">"%1$d තෝරා ගන්නා ලදි"</item>
+        <item msgid="4283105620980058761" quantity="one">"%1$d තෝරා ගන්නා ලදි"</item>
+        <item msgid="6433812272993337098" quantity="other">"%1$d තෝරා ගන්නා ලදි"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="7322496523426352621" quantity="zero">"%1$d තෝරා ගන්නා ලදි"</item>
+        <item msgid="3571296348626418242" quantity="one">"%1$d තෝරා ගන්නා ලදි"</item>
+        <item msgid="3103452138866993468" quantity="other">"%1$d තෝරා ගන්නා ලදි"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="3312206920893882756" quantity="zero">"%1$d තෝරා ගන්නා ලදි"</item>
+        <item msgid="7749557015923438739" quantity="one">"%1$d තෝරා ගන්නා ලදි"</item>
+        <item msgid="3562299676983425193" quantity="other">"%1$d තෝරා ගන්නා ලදි"</item>
+    </plurals>
     <string name="show_on_map" msgid="1986264085815015696">"සිතියම මත පෙන්වන්න"</string>
     <string name="rotate_left" msgid="6719855780237705569">"වමට කරකවන්න"</string>
     <string name="rotate_right" msgid="8558343437940821771">"දකුණට හරවන්න"</string>
@@ -87,10 +85,10 @@
     <string name="camera_error_title" msgid="434116066686973315">"කැමරා දෝෂය"</string>
     <string name="cannot_connect_camera" msgid="3323690925318631453">"කැමරාව වෙත සම්බන්ධ කළ නොහැක."</string>
     <string name="camera_disabled" msgid="4927328535752421596">"ආරක්ෂණ ප්‍රතිපත්ති නිසා කැමරාව අබල කර ඇත."</string>
-    <string name="wait" msgid="2081747495953883435">"කරුණාකර රැඳී සිටින්න..."</string>
-    <string name="no_storage" product="default" msgid="5694411578108472132">"කැමරාව භාවිතා කිරීමට පෙර SD කාඩ් පතක් ඇතුලු කරන්න."</string>
-    <string name="preparing_sd" product="default" msgid="5062635071578247325">"SD කාඩ්පත පිළියෙළ කෙරේ…"</string>
-    <string name="access_sd_fail" product="default" msgid="7705342436207795167">"SD කාඩ් පතට ප්‍රවේශ විය නොහැක."</string>
+    <string name="wait" msgid="2081747495953883435">"කරුණාකර රැඳී සිටින්න…"</string>
+    <string name="no_storage" msgid="5694411578108472132" product="default">"කැමරාව භාවිතා කිරීමට පෙර SD කාඩ් පතක් ඇතුලු කරන්න."</string>
+    <string name="preparing_sd" msgid="5062635071578247325" product="default">"SD කාඩ්පත පිළියෙළ කෙරේ…"</string>
+    <string name="access_sd_fail" msgid="7705342436207795167" product="default">"SD කාඩ් පතට ප්‍රවේශ විය නොහැක."</string>
     <string name="time_lapse_title" msgid="264021984782348139">"කාලය ඉකුත්වීමේ පටිගත කිරීම"</string>
     <string name="pref_camera_id_title" msgid="8027686978170301915">"කැමරාව තෝරන්න"</string>
     <string name="pref_camera_id_entry_back" msgid="8034690205259224353">"ආපසු"</string>
@@ -98,10 +96,10 @@
     <string name="pref_camera_recordlocation_title" msgid="9032205520216091730">"ආචය ස්ථානය"</string>
     <string name="pref_camera_location_label" msgid="725236612912086608">"ස්ථානය"</string>
     <string name="pref_camera_timer_title" msgid="6917581164323911874">"ආපස්සට ගණන් කිරීමේ කාල ගණකය"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="8868342573738742056">"තත්පර 1"</item>
-    <item quantity="other" msgid="3053084895126759755">"තත්පර %d"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="8868342573738742056" quantity="one">"තත්පර 1"</item>
+        <item msgid="3053084895126759755" quantity="other">"තත්පර %d"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (6748128807889344413) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="8640712080164781141">"ආපස්සට ගණන් කිරීමේ බීප් නාදය"</string>
@@ -167,7 +165,7 @@
     <string name="pref_camera_id_label_back" msgid="6322318969185513097">"ඉදිරිපස කැමරාව"</string>
     <string name="pref_camera_id_label_front" msgid="3244743091065982114">"පිටුපස කැමරාව"</string>
     <string name="dialog_ok" msgid="8097436389338241320">"හරි"</string>
-    <string name="spaceIsLow_content" product="default" msgid="9172166257752848178">"ඔබගේ SD කාඩ් පතේ ඉඩ අවසන් වෙමින් පවතී. ගුණත්ව සැකසීම් වෙනස් කරන්න හෝ සමහර පින්තුරය හෝ වෙනත් ගොනු මකන්න."</string>
+    <string name="spaceIsLow_content" msgid="9172166257752848178" product="default">"ඔබගේ SD කාඩ් පතේ ඉඩ අවසන් වෙමින් පවතී. ගුණත්ව සැකසීම් වෙනස් කරන්න හෝ සමහර පින්තුරය හෝ වෙනත් ගොනු මකන්න."</string>
     <string name="video_reach_size_limit" msgid="3243731908069056095">"ප්‍රමාණයේ සීමාව ලඟාවී ඇත."</string>
     <string name="pano_too_fast_prompt" msgid="992490587329437459">"ඉතා වේගවත්"</string>
     <string name="pano_dialog_prepare_preview" msgid="7116632064591648365">"පරිදර්ශනය පිළියෙල වේ"</string>

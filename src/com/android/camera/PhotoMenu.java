@@ -16,76 +16,62 @@
 
 package com.android.camera;
 
-import java.util.HashSet;
-import java.util.Locale;
-
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.hardware.Camera.Parameters;
 import android.graphics.Rect;
+import android.hardware.Camera.Parameters;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.widget.ListView;
-import android.widget.Toast;
-import android.widget.TextView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.camera.CameraPreference.OnPreferenceChangedListener;
 import com.android.camera.TsMakeupManager.MakeupLevelListener;
 import com.android.camera.app.CameraApp;
 import com.android.camera.ui.CameraControls;
 import com.android.camera.ui.CountdownTimerPopup;
-import com.android.camera.ui.ListSubMenu;
 import com.android.camera.ui.ListMenu;
-import com.android.camera.ui.ModuleSwitcher;
+import com.android.camera.ui.ListSubMenu;
 import com.android.camera.ui.RotateLayout;
-import com.android.camera.ui.RotateImageView;
 import com.android.camera.ui.RotateTextToast;
-import org.omnirom.snap.R;
-import android.widget.HorizontalScrollView;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.Display;
 import com.android.camera.util.CameraUtil;
+
+import org.omnirom.snap.R;
+
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PhotoMenu extends MenuController
         implements ListMenu.Listener,
         CountdownTimerPopup.Listener,
         ListSubMenu.Listener {
-    private static String TAG = "PhotoMenu";
-
-    private final String mSettingOff;
-    private final String mSettingOn;
-
-    private String[] mOtherKeys1;
-    private String[] mOtherKeys2;
-    private ListMenu mListMenu;
-    private View mPreviewMenu;
     private static final int POPUP_NONE = 0;
     private static final int POPUP_FIRST_LEVEL = 1;
     private static final int POPUP_SECOND_LEVEL = 2;
     private static final int POPUP_IN_ANIMATION_SLIDE = 3;
     private static final int POPUP_IN_ANIMATION_FADE = 4;
-    private static final int POPUP_IN_MAKEUP    = 5;
+    private static final int POPUP_IN_MAKEUP = 5;
     private static final int PREVIEW_MENU_NONE = 0;
     private static final int PREVIEW_MENU_IN_ANIMATION = 1;
     private static final int PREVIEW_MENU_ON = 2;
@@ -93,6 +79,16 @@ public class PhotoMenu extends MenuController
     private static final int MODE_FILTER = 1;
     private static final int MODE_MAKEUP = 2;
     private static final int DEVELOPER_MENU_TOUCH_COUNT = 10;
+    private static final int ANIMATION_DURATION = 300;
+    private static final int CLICK_THRESHOLD = 200;
+    private static final int MAKEUP_MESSAGE_ID = 0;
+    private static String TAG = "PhotoMenu";
+    private final String mSettingOff;
+    private final String mSettingOn;
+    private String[] mOtherKeys1;
+    private String[] mOtherKeys2;
+    private ListMenu mListMenu;
+    private View mPreviewMenu;
     private int mSceneStatus;
     private View mHdrSwitcher;
     private View mTsMakeupSwitcher;
@@ -111,14 +107,11 @@ public class PhotoMenu extends MenuController
     private boolean mIsTNREnabled = false;
     private boolean mIsCDSUpdated = false;
     private int privateCounter = 0;
-    private static final int ANIMATION_DURATION = 300;
-    private static final int CLICK_THRESHOLD = 200;
     private int previewMenuSize;
     private TsMakeupManager mTsMakeupManager;
     private MakeupLevelListener mMakeupListener;
     private MakeupHandler mHandler = new MakeupHandler();
-    private static final int MAKEUP_MESSAGE_ID = 0;
-    private HashSet<View> mWasVisibleSet = new HashSet<View>();
+    private HashSet<View> mWasVisibleSet = new HashSet<>();
 
     public PhotoMenu(CameraActivity activity, PhotoUI ui, MakeupLevelListener makeupListener) {
         super(activity);
@@ -137,6 +130,16 @@ public class PhotoMenu extends MenuController
         mPreviewThumbnail = ui.getRootView().findViewById(R.id.preview_thumb);
     }
 
+    // Return true if the preference has the specified key but not the value.
+    private static boolean notSame(ListPreference pref, String key, String value) {
+        return (key.equals(pref.getKey()) && !value.equals(pref.getValue()));
+    }
+
+    // Return true if the preference has the specified key and the value.
+    private static boolean same(ListPreference pref, String key, String value) {
+        return (key.equals(pref.getKey()) && value.equals(pref.getValue()));
+    }
+
     public void initialize(PreferenceGroup group) {
         super.initialize(group);
         mListSubMenu = null;
@@ -147,12 +150,12 @@ public class PhotoMenu extends MenuController
         Locale locale = res.getConfiguration().locale;
         // The order is from left to right in the menu.
 
-        if(TsMakeupManager.HAS_TS_MAKEUP) {
-            if(mTsMakeupManager != null) {
+        if (TsMakeupManager.HAS_TS_MAKEUP) {
+            if (mTsMakeupManager != null) {
                 mTsMakeupManager.removeAllViews();
                 mTsMakeupManager = null;
             }
-            if(mTsMakeupManager == null) {
+            if (mTsMakeupManager == null) {
                 mTsMakeupManager = new TsMakeupManager(mActivity, this, mUI, mPreferenceGroup, mTsMakeupSwitcher);
                 mTsMakeupManager.setMakeupLevelListener(mMakeupListener);
             }
@@ -160,14 +163,14 @@ public class PhotoMenu extends MenuController
 
         initSceneModeButton(mSceneModeSwitcher);
         initFilterModeButton(mFilterModeSwitcher);
-        if(TsMakeupManager.HAS_TS_MAKEUP) {
+        if (TsMakeupManager.HAS_TS_MAKEUP) {
             initMakeupModeButton(mTsMakeupSwitcher);
         } else {
             mHdrSwitcher.setVisibility(View.INVISIBLE);
         }
 
         mFrontBackSwitcher.setVisibility(View.INVISIBLE);
-        if(!TsMakeupManager.HAS_TS_MAKEUP) {
+        if (!TsMakeupManager.HAS_TS_MAKEUP) {
             // HDR.
             if (group.findPreference(CameraSettings.KEY_CAMERA_HDR) != null) {
                 mHdrSwitcher.setVisibility(View.VISIBLE);
@@ -177,7 +180,7 @@ public class PhotoMenu extends MenuController
             }
         }
 
-        mOtherKeys1 = new String[] {
+        mOtherKeys1 = new String[]{
                 CameraSettings.KEY_SELFIE_FLASH,
                 CameraSettings.KEY_FLASH_MODE,
                 CameraSettings.KEY_RECORD_LOCATION,
@@ -197,7 +200,7 @@ public class PhotoMenu extends MenuController
                 CameraSettings.KEY_GRID
         };
 
-        mOtherKeys2 = new String[] {
+        mOtherKeys2 = new String[]{
                 CameraSettings.KEY_SELFIE_FLASH,
                 CameraSettings.KEY_FLASH_MODE,
                 CameraSettings.KEY_RECORD_LOCATION,
@@ -248,18 +251,6 @@ public class PhotoMenu extends MenuController
         initSwitchItem(CameraSettings.KEY_CAMERA_ID, mFrontBackSwitcher);
     }
 
-    protected class MakeupHandler extends Handler {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MAKEUP_MESSAGE_ID:
-                    mTsMakeupManager.showMakeupView();
-                    mUI.adjustOrientation();
-                    break;
-            }
-        }
-    }
-
     @Override
     // Hit when an item in a popup gets selected
     public void onListPrefChanged(ListPreference pref) {
@@ -268,7 +259,7 @@ public class PhotoMenu extends MenuController
     }
 
     public boolean handleBackKey() {
-        if(TsMakeupManager.HAS_TS_MAKEUP && mTsMakeupManager.isShowMakeup()) {
+        if (TsMakeupManager.HAS_TS_MAKEUP && mTsMakeupManager.isShowMakeup()) {
             mTsMakeupManager.dismissMakeupUI();
             closeMakeupMode(true);
             mTsMakeupManager.resetMakeupUIStatus();
@@ -286,7 +277,7 @@ public class PhotoMenu extends MenuController
             animateSlideOut(mListMenu, 1);
         } else if (mPopupStatus == POPUP_SECOND_LEVEL) {
             animateFadeOut(mListSubMenu, 2);
-            ((ListMenu) mListMenu).resetHighlight();
+            mListMenu.resetHighlight();
         }
         return true;
     }
@@ -301,7 +292,7 @@ public class PhotoMenu extends MenuController
 
     public void tryToCloseSubList() {
         if (mListMenu != null)
-            ((ListMenu) mListMenu).resetHighlight();
+            mListMenu.resetHighlight();
 
         if (mPopupStatus == POPUP_SECOND_LEVEL) {
             mUI.dismissLevel2();
@@ -333,8 +324,7 @@ public class PhotoMenu extends MenuController
                     initializePopup();
                     mPopupStatus = POPUP_NONE;
                     mUI.cleanupListview();
-                }
-                else if (level == 2) {
+                } else if (level == 2) {
                     mUI.dismissLevel2();
                     mPopupStatus = POPUP_FIRST_LEVEL;
                 }
@@ -347,8 +337,7 @@ public class PhotoMenu extends MenuController
                     initializePopup();
                     mPopupStatus = POPUP_NONE;
                     mUI.cleanupListview();
-                }
-                else if (level == 2) {
+                } else if (level == 2) {
                     mUI.dismissLevel2();
                     mPopupStatus = POPUP_FIRST_LEVEL;
                 }
@@ -501,7 +490,7 @@ public class PhotoMenu extends MenuController
     }
 
     public void animateSlideOutPreviewMenu() {
-        if(TsMakeupManager.HAS_TS_MAKEUP && mTsMakeupManager.isShowMakeup()) {
+        if (TsMakeupManager.HAS_TS_MAKEUP && mTsMakeupManager.isShowMakeup()) {
             mPreviewMenuStatus = PREVIEW_MENU_NONE;
             mTsMakeupManager.dismissMakeupUI();
             closeMakeupMode(true);
@@ -583,7 +572,7 @@ public class PhotoMenu extends MenuController
         mUI.getPreviewMenuLayout().getChildAt(0).getHitRect(rec);
         if (View.LAYOUT_DIRECTION_RTL == TextUtils
                 .getLayoutDirectionFromLocale(Locale.getDefault())) {
-            rec.left = mUI.getRootView().getWidth() - (rec.right-rec.left);
+            rec.left = mUI.getRootView().getWidth() - (rec.right - rec.left);
             rec.right = mUI.getRootView().getWidth();
         }
         rec.top += (int) mUI.getPreviewMenuLayout().getY();
@@ -642,7 +631,7 @@ public class PhotoMenu extends MenuController
                 }
             } else if (tnr != null) {
                 mListMenu.setPreferenceEnabled(CameraSettings.KEY_CDS_MODE, true);
-                if (mIsTNREnabled && mPrevSavedCDS != cds) {
+                if (mIsTNREnabled && !Objects.equals(mPrevSavedCDS, cds)) {
                     mListMenu.overrideSettings(CameraSettings.KEY_CDS_MODE, mPrevSavedCDS);
                     mIsTNREnabled = false;
                     mIsCDSUpdated = false;
@@ -737,7 +726,7 @@ public class PhotoMenu extends MenuController
             popup1.setPreferenceEnabled(CameraSettings.KEY_ADVANCED_FEATURES, false);
             popup1.setPreferenceEnabled(CameraSettings.KEY_INSTANT_CAPTURE, false);
 
-            if(!TsMakeupManager.HAS_TS_MAKEUP) {
+            if (!TsMakeupManager.HAS_TS_MAKEUP) {
                 if (mHdrSwitcher.getVisibility() == View.VISIBLE) {
                     buttonSetEnabled(mHdrSwitcher, true);
                 }
@@ -760,13 +749,13 @@ public class PhotoMenu extends MenuController
                 popup1.setPreferenceEnabled(CameraSettings.KEY_SCENE_MODE, false);
                 popup1.setPreferenceEnabled(CameraSettings.KEY_INSTANT_CAPTURE, false);
                 setPreference(CameraSettings.KEY_CAMERA_HDR, mSettingOff);
-                if(!TsMakeupManager.HAS_TS_MAKEUP) {
+                if (!TsMakeupManager.HAS_TS_MAKEUP) {
                     if (mHdrSwitcher.getVisibility() == View.VISIBLE) {
                         buttonSetEnabled(mHdrSwitcher, false);
                     }
                 }
             } else {
-                if(!TsMakeupManager.HAS_TS_MAKEUP) {
+                if (!TsMakeupManager.HAS_TS_MAKEUP) {
                     if (mHdrSwitcher.getVisibility() == View.VISIBLE) {
                         buttonSetEnabled(mHdrSwitcher, true);
                     }
@@ -794,7 +783,7 @@ public class PhotoMenu extends MenuController
             changeFilterModeControlIcon("none");
         } else if (same(scenePref, CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_AUTO)
                 && (same(hdrPref, CameraSettings.KEY_CAMERA_HDR, mSettingOff)
-                    || !hdrPref.getKey().equals(CameraSettings.KEY_CAMERA_HDR))) {
+                || !hdrPref.getKey().equals(CameraSettings.KEY_CAMERA_HDR))) {
             //mFilterModeSwitcher can be enabled only when scene mode is set to auto
             // and HDR is set to off,
             buttonSetEnabled(mFilterModeSwitcher, true);
@@ -822,36 +811,33 @@ public class PhotoMenu extends MenuController
         switcher.setVisibility(View.VISIBLE);
         mPreferences.add(pref);
         mPreferenceMap.put(pref, switcher);
-        switcher.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IconListPreference pref = (IconListPreference) mPreferenceGroup
-                        .findPreference(prefKey);
-                if (pref == null)
-                    return;
-                if (prefKey.equals(CameraSettings.KEY_CAMERA_ID)) {
-                    // Hide the camera control while switching the camera.
-                    // The camera control will be added back when
-                    // onCameraPickerClicked is completed
-                    mUI.hideUI();
-                }
-                int index = pref.findIndexOfValue(pref.getValue());
-                CharSequence[] values = pref.getEntryValues();
-                index = (index + 1) % values.length;
-                pref.setValueIndex(index);
-                int iconListLength = ((IconListPreference) pref).getLargeIconIds().length;
-                ((ImageView) v).setImageResource(
-                        ((IconListPreference) pref).getLargeIconIds()[index % iconListLength]);
-                if (prefKey.equals(CameraSettings.KEY_CAMERA_ID))
-                    mListener.onCameraPickerClicked(index);
-                reloadPreference(pref);
-                onSettingChanged(pref);
+        switcher.setOnClickListener(v -> {
+            IconListPreference pref1 = (IconListPreference) mPreferenceGroup
+                    .findPreference(prefKey);
+            if (pref1 == null)
+                return;
+            if (prefKey.equals(CameraSettings.KEY_CAMERA_ID)) {
+                // Hide the camera control while switching the camera.
+                // The camera control will be added back when
+                // onCameraPickerClicked is completed
+                mUI.hideUI();
             }
+            int index1 = pref1.findIndexOfValue(pref1.getValue());
+            CharSequence[] values = pref1.getEntryValues();
+            index1 = (index1 + 1) % values.length;
+            pref1.setValueIndex(index1);
+            int iconListLength = pref1.getLargeIconIds().length;
+            ((ImageView) v).setImageResource(
+                    pref1.getLargeIconIds()[index1 % iconListLength]);
+            if (prefKey.equals(CameraSettings.KEY_CAMERA_ID))
+                mListener.onCameraPickerClicked(index1);
+            reloadPreference(pref1);
+            onSettingChanged(pref1);
         });
     }
 
     public void initMakeupModeButton(View button) {
-        if(!TsMakeupManager.HAS_TS_MAKEUP) {
+        if (!TsMakeupManager.HAS_TS_MAKEUP) {
             return;
         }
         button.setVisibility(View.INVISIBLE);
@@ -878,23 +864,20 @@ public class PhotoMenu extends MenuController
         String makeupOn = pref.getValue();
         Log.d(TAG, "PhotoMenu.initMakeupModeButton():current init makeupOn is " + makeupOn);
 
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ListPreference faceDetectPref = mPreferenceGroup.findPreference(CameraSettings.KEY_FACE_DETECTION);
-                String faceDetection = (faceDetectPref != null) ? faceDetectPref.getValue() : null;
-                Log.d(TAG, "initMakeupModeButton().onClick(): faceDetection is " + faceDetection);
-                if ((faceDetection != null) && Parameters.FACE_DETECTION_OFF.equals(faceDetection)) {
-                    showAlertDialog(faceDetectPref);
-                } else {
-                    toggleMakeupSettings();
-                }
+        button.setOnClickListener(v -> {
+            ListPreference faceDetectPref = mPreferenceGroup.findPreference(CameraSettings.KEY_FACE_DETECTION);
+            String faceDetection = (faceDetectPref != null) ? faceDetectPref.getValue() : null;
+            Log.d(TAG, "initMakeupModeButton().onClick(): faceDetection is " + faceDetection);
+            if ((faceDetection != null) && Parameters.FACE_DETECTION_OFF.equals(faceDetection)) {
+                showAlertDialog(faceDetectPref);
+            } else {
+                toggleMakeupSettings();
             }
         });
     }
 
     private void initMakeupMenu() {
-        if(!TsMakeupManager.HAS_TS_MAKEUP) {
+        if (!TsMakeupManager.HAS_TS_MAKEUP) {
             return;
         }
         mPopupStatus = POPUP_NONE;
@@ -905,27 +888,21 @@ public class PhotoMenu extends MenuController
     }
 
     private void showAlertDialog(final ListPreference faceDetectPref) {
-        if(mActivity.isFinishing()) {
+        if (mActivity.isFinishing()) {
             return;
         }
         new AlertDialog.Builder(mActivity)
-            .setIcon(android.R.drawable.ic_dialog_alert)
-            .setMessage(R.string.text_tsmakeup_alert_msg)
-            .setPositiveButton(R.string.text_tsmakeup_alert_continue, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setMessage(R.string.text_tsmakeup_alert_msg)
+                .setPositiveButton(R.string.text_tsmakeup_alert_continue, (dialog, which) -> {
                     toggleMakeupSettings();
 
                     faceDetectPref.setValue(Parameters.FACE_DETECTION_ON);
                     onSettingChanged(faceDetectPref);
-                }
-            })
-            .setNegativeButton(R.string.text_tsmakeup_alert_quit, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            })
-            .show();
+                })
+                .setNegativeButton(R.string.text_tsmakeup_alert_quit, (dialog, which) -> {
+                })
+                .show();
     }
 
     private void toggleMakeupSettings() {
@@ -934,8 +911,8 @@ public class PhotoMenu extends MenuController
     }
 
     private void closeMakeup() {
-        if(TsMakeupManager.HAS_TS_MAKEUP) {
-            if(mTsMakeupManager.isShowMakeup()) {
+        if (TsMakeupManager.HAS_TS_MAKEUP) {
+            if (mTsMakeupManager.isShowMakeup()) {
                 mTsMakeupManager.hideMakeupUI();
                 closeMakeupMode(false);
                 mPreviewMenuStatus = PREVIEW_MENU_NONE;
@@ -953,16 +930,13 @@ public class PhotoMenu extends MenuController
             return;
         updateSceneModeIcon(pref);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addSceneMode();
-                ViewGroup menuLayout = mUI.getPreviewMenuLayout();
-                if (menuLayout != null) {
-                    View view = menuLayout.getChildAt(0);
-                    mUI.adjustOrientation();
-                    animateSlideIn(view, previewMenuSize, false);
-                }
+        button.setOnClickListener(v -> {
+            addSceneMode();
+            ViewGroup menuLayout = mUI.getPreviewMenuLayout();
+            if (menuLayout != null) {
+                View view = menuLayout.getChildAt(0);
+                mUI.adjustOrientation();
+                animateSlideIn(view, previewMenuSize, false);
             }
         });
     }
@@ -1082,18 +1056,18 @@ public class PhotoMenu extends MenuController
             layout.addView(layout2);
 
             // ASD only available when developer options are enabled.
-            if(entryValues[i].equals("asd")) {
-                layout2.setVisibility(mActivity.isDeveloperMenuEnabled()?View.VISIBLE:View.GONE);
-            } else if(entryValues[i].equals("hdr")) {
+            if (entryValues[i].equals("asd")) {
+                layout2.setVisibility(mActivity.isDeveloperMenuEnabled() ? View.VISIBLE : View.GONE);
+            } else if (entryValues[i].equals("hdr")) {
                 ListPreference autoHdrPref = mPreferenceGroup.findPreference(CameraSettings.KEY_AUTO_HDR);
                 if (autoHdrPref != null && autoHdrPref.getValue().equalsIgnoreCase("enable")) {
                     layout2.setVisibility(View.GONE);
                 }
-            } else if(CameraApp.mIsLowMemoryDevice &&
+            } else if (CameraApp.mIsLowMemoryDevice &&
                     (entryValues[i].equals(mActivity.getResources().getString(R.string.pref_camera_advanced_feature_value_refocus_on))
                             ||
-                     entryValues[i].equals(mActivity.getResources().getString(R.string.pref_camera_advanced_feature_value_optizoom_on)))) {
-                    layout2.setVisibility(View.GONE);
+                            entryValues[i].equals(mActivity.getResources().getString(R.string.pref_camera_advanced_feature_value_optizoom_on)))) {
+                layout2.setVisibility(View.GONE);
             }
         }
         previewMenuLayout.addView(basic);
@@ -1116,18 +1090,15 @@ public class PhotoMenu extends MenuController
             return;
         changeFilterModeControlIcon(pref.getValue());
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeMakeup();
+        button.setOnClickListener(v -> {
+            closeMakeup();
 
-                addFilterMode();
-                ViewGroup menuLayout = mUI.getPreviewMenuLayout();
-                if (menuLayout != null) {
-                    View view = mUI.getPreviewMenuLayout().getChildAt(0);
-                    mUI.adjustOrientation();
-                    animateSlideIn(view, previewMenuSize, false);
-                }
+            addFilterMode();
+            ViewGroup menuLayout = mUI.getPreviewMenuLayout();
+            if (menuLayout != null) {
+                View view = mUI.getPreviewMenuLayout().getChildAt(0);
+                mUI.adjustOrientation();
+                animateSlideIn(view, previewMenuSize, false);
             }
         });
     }
@@ -1235,8 +1206,8 @@ public class PhotoMenu extends MenuController
     }
 
     private void changeFilterModeControlIcon(String value) {
-        if(!value.equals("")) {
-            if(value.equalsIgnoreCase("none")) {
+        if (!value.equals("")) {
+            if (value.equalsIgnoreCase("none")) {
                 value = "Off";
             } else {
                 value = "On";
@@ -1246,7 +1217,7 @@ public class PhotoMenu extends MenuController
             pref.setValue(value);
             int index = pref.getCurrentIndex();
             ImageView iv = (ImageView) mFilterModeSwitcher;
-            iv.setImageResource(((IconListPreference) pref).getLargeIconIds()[index]);
+            iv.setImageResource(pref.getLargeIconIds()[index]);
         }
     }
 
@@ -1254,8 +1225,8 @@ public class PhotoMenu extends MenuController
         if (isMenuBeingShown() || CameraControls.isAnimating()) {
             return;
         }
-        if(TsMakeupManager.HAS_TS_MAKEUP) {
-            if(mTsMakeupManager.isShowMakeup()) {
+        if (TsMakeupManager.HAS_TS_MAKEUP) {
+            if (mTsMakeupManager.isShowMakeup()) {
                 mTsMakeupManager.dismissMakeupUI();
                 closeMakeupMode(false);
                 mPreviewMenuStatus = PREVIEW_MENU_NONE;
@@ -1359,16 +1330,6 @@ public class PhotoMenu extends MenuController
             animateSlideOut(mListMenu, 1);
     }
 
-    // Return true if the preference has the specified key but not the value.
-    private static boolean notSame(ListPreference pref, String key, String value) {
-        return (key.equals(pref.getKey()) && !value.equals(pref.getValue()));
-    }
-
-    // Return true if the preference has the specified key and the value.
-    private static boolean same(ListPreference pref, String key, String value) {
-        return (key.equals(pref.getKey()) && value.equals(pref.getValue()));
-    }
-
     public void setPreference(String key, String value) {
         ListPreference pref = mPreferenceGroup.findPreference(key);
         if (pref != null && !value.equals(pref.getValue())) {
@@ -1408,17 +1369,17 @@ public class PhotoMenu extends MenuController
                 setPreference(CameraSettings.KEY_SCENE_MODE, Parameters.SCENE_MODE_HDR);
             }
             updateSceneModeIcon((IconListPreference) scenePref);
-        } else if (notSame(pref,CameraSettings.KEY_AE_BRACKET_HDR,"Off")) {
+        } else if (notSame(pref, CameraSettings.KEY_AE_BRACKET_HDR, "Off")) {
             RotateTextToast.makeText(mActivity,
-                           R.string.flash_aebracket_message,Toast.LENGTH_SHORT).show();
-            setPreference(CameraSettings.KEY_FLASH_MODE,Parameters.FLASH_MODE_OFF);
-        } else if (notSame(pref,CameraSettings.KEY_FLASH_MODE,"Off")) {
+                    R.string.flash_aebracket_message, Toast.LENGTH_SHORT).show();
+            setPreference(CameraSettings.KEY_FLASH_MODE, Parameters.FLASH_MODE_OFF);
+        } else if (notSame(pref, CameraSettings.KEY_FLASH_MODE, "Off")) {
             ListPreference aePref =
-                      mPreferenceGroup.findPreference(CameraSettings.KEY_AE_BRACKET_HDR);
+                    mPreferenceGroup.findPreference(CameraSettings.KEY_AE_BRACKET_HDR);
             if (aePref != null) {
-                if (notSame(aePref,CameraSettings.KEY_AE_BRACKET_HDR,"Off")) {
-                   RotateTextToast.makeText(mActivity,
-                                  R.string.flash_aebracket_message,Toast.LENGTH_SHORT).show();
+                if (notSame(aePref, CameraSettings.KEY_AE_BRACKET_HDR, "Off")) {
+                    RotateTextToast.makeText(mActivity,
+                            R.string.flash_aebracket_message, Toast.LENGTH_SHORT).show();
                 }
             }
         } else if (notSame(pref, CameraSettings.KEY_LONGSHOT, mSettingOff)) {
@@ -1437,7 +1398,7 @@ public class PhotoMenu extends MenuController
                 mActivity.getString(R.string.pref_camera_advanced_feature_default))) {
             ListPreference longshotPref =
                     mPreferenceGroup.findPreference(CameraSettings.KEY_LONGSHOT);
-            if (longshotPref != null ) {
+            if (longshotPref != null) {
                 if (notSame(longshotPref, CameraSettings.KEY_LONGSHOT, mSettingOff)) {
                     RotateTextToast.makeText(mActivity, R.string.advance_feature_enable_msg,
                             Toast.LENGTH_LONG).show();
@@ -1487,7 +1448,7 @@ public class PhotoMenu extends MenuController
         String stillMoreOn = mActivity.getString(R.string.
                 pref_camera_advanced_feature_value_stillmore_on);
         if (same(pref, CameraSettings.KEY_ADVANCED_FEATURES, stillMoreOn)) {
-           setPreference(CameraSettings.KEY_FLASH_MODE, Parameters.FLASH_MODE_OFF);
+            setPreference(CameraSettings.KEY_FLASH_MODE, Parameters.FLASH_MODE_OFF);
         }
 
         ListPreference autoHdrPref = mPreferenceGroup.findPreference(CameraSettings.KEY_AUTO_HDR);
@@ -1535,17 +1496,29 @@ public class PhotoMenu extends MenuController
         }
         mSceneModeSwitcher.setVisibility(status);
         mFilterModeSwitcher.setVisibility(status);
-        if(status == View.INVISIBLE) {
-            if(mCameraSwitcher.getVisibility() == View.VISIBLE) {
+        if (status == View.INVISIBLE) {
+            if (mCameraSwitcher.getVisibility() == View.VISIBLE) {
                 mWasVisibleSet.add(mCameraSwitcher);
             }
             mCameraSwitcher.setVisibility(status);
         } else {
-            if(mWasVisibleSet.contains(mCameraSwitcher)) {
+            if (mWasVisibleSet.contains(mCameraSwitcher)) {
                 mCameraSwitcher.setVisibility(status);
                 mWasVisibleSet.remove(mCameraSwitcher);
             }
         }
         mPreviewThumbnail.setVisibility(status);
+    }
+
+    protected class MakeupHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MAKEUP_MESSAGE_ID:
+                    mTsMakeupManager.showMakeupView();
+                    mUI.adjustOrientation();
+                    break;
+            }
+        }
     }
 }

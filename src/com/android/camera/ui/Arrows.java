@@ -48,7 +48,7 @@ public class Arrows extends View {
 
     public Arrows(Context context, AttributeSet attrs) {
         super(context, attrs);
-        mPaths = new ArrayList<Path>();
+        mPaths = new ArrayList<>();
         mPaint = new Paint();
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setColor(ARROW_COLOR);
@@ -59,7 +59,7 @@ public class Arrows extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mPaths != null) {
-            for(int i=0; i < mPaths.size(); i++) {
+            for (int i = 0; i < mPaths.size(); i++) {
                 canvas.drawPath(mPaths.get(i), mPaint);
             }
         }
@@ -69,21 +69,20 @@ public class Arrows extends View {
         Path path = new Path();
         path.reset();
         path.moveTo(x[0], y[0]);
-        for(int i=1; i < x.length; i++) {
-            if(i == x.length-1) {
+        for (int i = 1; i < x.length; i++) {
+            if (i == x.length - 1) {
                 path.lineTo(x[i], y[i]);
 
                 double setha = Math.toDegrees(Math.atan2(y[i] - y[i - 1], x[i] - x[i - 1]));
                 setha = (setha + ARROW_END_DEGREE + 360) % 360;
-                path.lineTo(x[i]-(float)(ARROW_END_LENGTH*Math.cos(Math.toRadians(setha))),
-                            y[i]-(float)(ARROW_END_LENGTH*Math.sin(Math.toRadians(setha))));
+                path.lineTo(x[i] - (float) (ARROW_END_LENGTH * Math.cos(Math.toRadians(setha))),
+                        y[i] - (float) (ARROW_END_LENGTH * Math.sin(Math.toRadians(setha))));
                 path.lineTo(x[i], y[i]);
-                setha = (setha - ARROW_END_DEGREE*2 + 360) % 360;
-                path.lineTo(x[i]-(float)(ARROW_END_LENGTH*Math.cos(Math.toRadians(setha))),
-                            y[i]-(float)(ARROW_END_LENGTH*Math.sin(Math.toRadians(setha))));
-            }
-            else
-                path.quadTo(x[i],y[i], x[i+1], y[i+1]);
+                setha = (setha - ARROW_END_DEGREE * 2 + 360) % 360;
+                path.lineTo(x[i] - (float) (ARROW_END_LENGTH * Math.cos(Math.toRadians(setha))),
+                        y[i] - (float) (ARROW_END_LENGTH * Math.sin(Math.toRadians(setha))));
+            } else
+                path.quadTo(x[i], y[i], x[i + 1], y[i + 1]);
         }
         mPaths.add(path);
         invalidate();

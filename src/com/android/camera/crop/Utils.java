@@ -35,13 +35,23 @@ public class Utils {
 
     private static final long POLY64REV = 0x95AC9329AC4BC9B5L;
     private static final long INITIALCRC = 0xFFFFFFFFFFFFFFFFL;
-
-    private static long[] sCrcTable = new long[256];
-
     private static final boolean IS_DEBUG_BUILD =
             Build.TYPE.equals("eng") || Build.TYPE.equals("userdebug");
-
     private static final String MASK_STRING = "********************************";
+    private static long[] sCrcTable = new long[256];
+
+    static {
+        // http://bioinf.cs.ucl.ac.uk/downloads/crc64/crc64.c
+        long part;
+        for (int i = 0; i < 256; i++) {
+            part = i;
+            for (int j = 0; j < 8; j++) {
+                long x = ((int) part & 1) != 0 ? POLY64REV : 0;
+                part = (part >> 1) ^ x;
+            }
+            sCrcTable[i] = part;
+        }
+    }
 
     // Throws AssertionError if the input is false.
     public static void assertTrue(boolean cond) {
@@ -69,7 +79,7 @@ public class Utils {
     // Returns true if two input Object are both null or equal
     // to each other.
     public static boolean equals(Object a, Object b) {
-        return (a == b) || (a == null ? false : a.equals(b));
+        return (a == b) || (a != null && a.equals(b));
     }
 
     // Returns the next power of two.
@@ -139,23 +149,10 @@ public class Utils {
         return crc64Long(getBytes(in));
     }
 
-    static {
-        // http://bioinf.cs.ucl.ac.uk/downloads/crc64/crc64.c
-        long part;
-        for (int i = 0; i < 256; i++) {
-            part = i;
-            for (int j = 0; j < 8; j++) {
-                long x = ((int) part & 1) != 0 ? POLY64REV : 0;
-                part = (part >> 1) ^ x;
-            }
-            sCrcTable[i] = part;
-        }
-    }
-
     public static final long crc64Long(byte[] buffer) {
         long crc = INITIALCRC;
-        for (int k = 0, n = buffer.length; k < n; ++k) {
-            crc = sCrcTable[(((int) crc) ^ buffer[k]) & 0xff] ^ (crc >> 8);
+        for (byte aBuffer : buffer) {
+            crc = sCrcTable[(((int) crc) ^ aBuffer) & 0xff] ^ (crc >> 8);
         }
         return crc;
     }
@@ -286,12 +283,23 @@ public class Utils {
         for (int i = 0, len = s.length(); i < len; ++i) {
             char c = s.charAt(i);
             switch (c) {
-                case '<':  sb.append("&lt;"); break;
-                case '>':  sb.append("&gt;"); break;
-                case '\"': sb.append("&quot;"); break;
-                case '\'': sb.append("&#039;"); break;
-                case '&':  sb.append("&amp;"); break;
-                default: sb.append(c);
+                case '<':
+                    sb.append("&lt;");
+                    break;
+                case '>':
+                    sb.append("&gt;");
+                    break;
+                case '\"':
+                    sb.append("&quot;");
+                    break;
+                case '\'':
+                    sb.append("&#039;");
+                    break;
+                case '&':
+                    sb.append("&amp;");
+                    break;
+                default:
+                    sb.append(c);
             }
         }
         return sb.toString();

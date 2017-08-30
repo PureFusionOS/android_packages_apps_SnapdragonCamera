@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import java.util.Locale;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.media.AudioManager;
@@ -34,21 +32,23 @@ import android.widget.TextView;
 
 import org.omnirom.snap.R;
 
+import java.util.Locale;
+
 public class CountDownView extends FrameLayout {
 
     private static final String TAG = "CAM_CountDownView";
     private static final int SET_TIMER_TEXT = 1;
+    private static SoundPool mSoundPool;
+    private static int mBeepTwice;
+    private static int mBeepOnce;
+    private final Handler mHandler = new MainHandler();
     private TextView mRemainingSecondsView;
     private TextView mCountDownTitle = null;
     private Context mContext;
     private int mRemainingSecs = 0;
     private OnCountDownFinishedListener mListener;
     private Animation mCountDownAnim;
-    private static SoundPool mSoundPool;
-    private static int mBeepTwice;
-    private static int mBeepOnce;
     private boolean mPlaySound;
-    private final Handler mHandler = new MainHandler();
 
     public CountDownView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -69,11 +69,9 @@ public class CountDownView extends FrameLayout {
 
     public boolean isCountingDown() {
         return mRemainingSecs > 0;
-    };
-
-    public interface OnCountDownFinishedListener {
-        public void onCountDownFinished();
     }
+
+    ;
 
     private void remainingSecondsChanged(int newVal) {
         mRemainingSecs = newVal;
@@ -119,7 +117,6 @@ public class CountDownView extends FrameLayout {
         mCountDownTitle.setLayoutParams(lp);
     }
 
-
     public void setCountDownFinishedListener(OnCountDownFinishedListener listener) {
         mListener = listener;
     }
@@ -142,22 +139,13 @@ public class CountDownView extends FrameLayout {
         }
     }
 
-    private class MainHandler extends Handler {
-        @Override
-        public void handleMessage(Message message) {
-            if (message.what == SET_TIMER_TEXT) {
-                remainingSecondsChanged(mRemainingSecs -1);
-            }
-        }
-    }
-
     public void setOrientation(int orientation) {
         mRemainingSecondsView.setRotation(-orientation);
         mCountDownTitle.setRotation(-orientation);
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = mCountDownTitle.getMeasuredHeight();
         if (height == 0) {
-            measure(MeasureSpec.UNSPECIFIED,MeasureSpec.UNSPECIFIED);
+            measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
             height = mCountDownTitle.getMeasuredHeight();
         }
         int dx = 0, dy = 0;
@@ -176,5 +164,18 @@ public class CountDownView extends FrameLayout {
         }
         mCountDownTitle.setTranslationX(dx);
         mCountDownTitle.setTranslationY(dy);
+    }
+
+    public interface OnCountDownFinishedListener {
+        public void onCountDownFinished();
+    }
+
+    private class MainHandler extends Handler {
+        @Override
+        public void handleMessage(Message message) {
+            if (message.what == SET_TIMER_TEXT) {
+                remainingSecondsChanged(mRemainingSecs - 1);
+            }
+        }
     }
 }

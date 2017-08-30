@@ -18,16 +18,18 @@ package com.android.camera;
 
 import android.util.Log;
 import android.widget.Toast;
+
 import com.android.camera.ui.RotateTextToast;
+
 import org.omnirom.snap.R;
 
 public class CameraErrorCallback
         implements android.hardware.Camera.ErrorCallback {
     private static final String TAG = "CameraErrorCallback";
-    public CameraActivity mActivity = null;
     //custom error code for thermal shutdown. This should be in sync
     //with HAL.
     private static final int THERMAL_SHUTDOWN = 50;
+    public CameraActivity mActivity = null;
 
     public void setActivity(CameraActivity activity) {
         mActivity = activity;
@@ -53,11 +55,9 @@ public class CameraErrorCallback
                     resId = R.string.camera_unknown_error;
                     break;
             }
-            mActivity.runOnUiThread(new Runnable() {
-                public void run() {
-                     RotateTextToast.makeText(mActivity, resId, Toast.LENGTH_LONG).show();
-                     mActivity.finish();
-                }
+            mActivity.runOnUiThread(() -> {
+                RotateTextToast.makeText(mActivity, resId, Toast.LENGTH_LONG).show();
+                mActivity.finish();
             });
         } else {
             throw new RuntimeException("Unknown error");

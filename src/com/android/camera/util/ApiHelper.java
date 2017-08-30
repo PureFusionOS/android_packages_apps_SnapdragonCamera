@@ -57,7 +57,7 @@ public class ApiHelper {
             Build.VERSION.SDK_INT > Build.VERSION_CODES.M;
 
     public static int getIntFieldIfExists(Class<?> klass, String fieldName,
-            Class<?> obj, int defaultVal) {
+                                          Class<?> obj, int defaultVal) {
         try {
             Field f = klass.getDeclaredField(fieldName);
             return f.getInt(obj);

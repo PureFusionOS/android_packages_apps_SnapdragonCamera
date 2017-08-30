@@ -30,8 +30,6 @@ package com.android.camera.util;
 
 import android.graphics.Point;
 import android.os.SystemProperties;
-import android.text.TextUtils;
-import android.util.Log;
 
 public class PersistUtil {
 
@@ -111,17 +109,17 @@ public class PersistUtil {
         return PERSIST_CAMERA_DEBUG;
     }
 
-    public static float getStillmoreBrColor(){
+    public static float getStillmoreBrColor() {
         float brColor = Float.parseFloat(PERSIST_CAMERA_STILLMORE_BRCOLR);
         return brColor = (brColor < 0 || brColor > 1) ? 0.5f : brColor;
     }
 
-    public static float getStillmoreBrIntensity(){
+    public static float getStillmoreBrIntensity() {
         float brIntensity = Float.parseFloat(PERSIST_CAMERA_STILLMORE_BRINTENSITY);
         return brIntensity = (brIntensity < 0 || brIntensity > 1) ? 0.6f : brIntensity;
     }
 
-    public static float getStillmoreSmoothingIntensity(){
+    public static float getStillmoreSmoothingIntensity() {
         float smoothingIntensity = Float.parseFloat(PERSIST_CAMERA_STILLMORE_SMOOTHINGINTENSITY);
         return smoothingIntensity = (smoothingIntensity < 0 || smoothingIntensity > 1) ?
                 0f : smoothingIntensity;

@@ -49,12 +49,16 @@ public class ListMenu extends ListView
     private int mHighlighted = -1;
     private Listener mListener;
     private SettingsManager mSettingsManager;
-    private ArrayList<ListPreference> mListItem = new ArrayList<ListPreference>();
+    private ArrayList<ListPreference> mListItem = new ArrayList<>();
 
     // Keep track of which setting items are disabled
     // e.g. White balance will be disabled when scene mode is set to non-auto
     private boolean[] mEnabled;
     private boolean mForCamera2 = false;
+
+    public ListMenu(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
     @Override
     public void onListPrefChanged(ListPreference pref) {
@@ -67,73 +71,6 @@ public class ListMenu extends ListView
         }
     }
 
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
-
-        public void onPreferenceClicked(ListPreference pref);
-
-        public void onPreferenceClicked(ListPreference pref, int y);
-
-        public void onListMenuTouched();
-    }
-
-    static public interface SettingsListener {
-        // notify SettingsManager
-        public void onSettingChanged(ListPreference pref);
-    }
-
-    private class MoreSettingAdapter extends ArrayAdapter<ListPreference> {
-        LayoutInflater mInflater;
-        String mOnString;
-        String mOffString;
-
-        MoreSettingAdapter() {
-            super(ListMenu.this.getContext(), 0, mListItem);
-            Context context = getContext();
-            mInflater = LayoutInflater.from(context);
-            mOnString = context.getString(R.string.setting_on);
-            mOffString = context.getString(R.string.setting_off);
-        }
-
-        private int getSettingLayoutId(ListPreference pref) {
-            return R.layout.list_menu_item;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            ListPreference pref = mListItem.get(position);
-            int viewLayoutId = getSettingLayoutId(pref);
-            ListMenuItem view = (ListMenuItem) convertView;
-
-            view = (ListMenuItem)
-                    mInflater.inflate(viewLayoutId, parent, false);
-
-            view.initialize(pref); // no init for restore one
-            view.setSettingChangedListener(ListMenu.this);
-            if (position >= 0 && position < mEnabled.length) {
-                view.setEnabled(mEnabled[position]);
-                if (mForCamera2 && !mEnabled[position]) {
-                    view.overrideSettings(mSettingsManager.getValue(pref.getKey()));
-                }
-            } else {
-                Log.w(TAG, "Invalid input: enabled list length, " + mEnabled.length
-                        + " position " + position);
-            }
-            if (position == mHighlighted)
-                view.setBackgroundColor(getContext().getResources()
-                        .getColor(R.color.setting_color));
-            return view;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            if (position >= 0 && position < mEnabled.length) {
-                return mEnabled[position];
-            }
-            return true;
-        }
-    }
-
     public void setSettingsManager(SettingsManager settingsManager) {
         mSettingsManager = settingsManager;
     }
@@ -142,17 +79,13 @@ public class ListMenu extends ListView
         mListener = listener;
     }
 
-    public ListMenu(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
     public void initializeForCamera2(String[] keys) {
         mForCamera2 = true;
         PreferenceGroup group = mSettingsManager.getPreferenceGroup();
         List<String> disabledList = mSettingsManager.getDisabledList();
         // Prepare the setting items.
-        for (int i = 0; i < keys.length; ++i) {
-            ListPreference pref = group.findPreference(keys[i]);
+        for (String key : keys) {
+            ListPreference pref = group.findPreference(key);
             if (pref != null)
                 mListItem.add(pref);
         }
@@ -167,15 +100,15 @@ public class ListMenu extends ListView
             mEnabled[i] = true;
         }
 
-        for (String s: disabledList) {
+        for (String s : disabledList) {
             setPreferenceEnabled(s, false);
         }
     }
 
     public void initialize(PreferenceGroup group, String[] keys) {
         // Prepare the setting items.
-        for (int i = 0; i < keys.length; ++i) {
-            ListPreference pref = group.findPreference(keys[i]);
+        for (String key : keys) {
+            ListPreference pref = group.findPreference(key);
             if (pref != null)
                 mListItem.add(pref);
         }
@@ -260,7 +193,7 @@ public class ListMenu extends ListView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position,
-            long id) {
+                            long id) {
         if (mListener != null) {
             resetHighlight();
             ListPreference pref = mListItem.get(position);
@@ -280,6 +213,70 @@ public class ListMenu extends ListView
                         (ListMenuItem) getChildAt(i);
                 listMenuItem.reloadPreference();
             }
+        }
+    }
+
+    static public interface Listener {
+        public void onSettingChanged(ListPreference pref);
+
+        public void onPreferenceClicked(ListPreference pref);
+
+        public void onPreferenceClicked(ListPreference pref, int y);
+
+        public void onListMenuTouched();
+    }
+
+    static public interface SettingsListener {
+        // notify SettingsManager
+        public void onSettingChanged(ListPreference pref);
+    }
+
+    private class MoreSettingAdapter extends ArrayAdapter<ListPreference> {
+        LayoutInflater mInflater;
+        String mOnString;
+        String mOffString;
+
+        MoreSettingAdapter() {
+            super(ListMenu.this.getContext(), 0, mListItem);
+            Context context = getContext();
+            mInflater = LayoutInflater.from(context);
+            mOnString = context.getString(R.string.setting_on);
+            mOffString = context.getString(R.string.setting_off);
+        }
+
+        private int getSettingLayoutId(ListPreference pref) {
+            return R.layout.list_menu_item;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ListPreference pref = mListItem.get(position);
+            int viewLayoutId = getSettingLayoutId(pref);
+            ListMenuItem view = (ListMenuItem) convertView;
+
+            view = (ListMenuItem)
+                    mInflater.inflate(viewLayoutId, parent, false);
+
+            view.initialize(pref); // no init for restore one
+            view.setSettingChangedListener(ListMenu.this);
+            if (position >= 0 && position < mEnabled.length) {
+                view.setEnabled(mEnabled[position]);
+                if (mForCamera2 && !mEnabled[position]) {
+                    view.overrideSettings(mSettingsManager.getValue(pref.getKey()));
+                }
+            } else {
+                Log.w(TAG, "Invalid input: enabled list length, " + mEnabled.length
+                        + " position " + position);
+            }
+            if (position == mHighlighted)
+                view.setBackgroundColor(getContext().getResources()
+                        .getColor(R.color.setting_color));
+            return view;
+        }
+
+        @Override
+        public boolean isEnabled(int position) {
+            return !(position >= 0 && position < mEnabled.length) || mEnabled[position];
         }
     }
 }

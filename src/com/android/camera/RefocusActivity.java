@@ -28,20 +28,15 @@
  */
 package com.android.camera;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import android.animation.Animator;
 import android.animation.Keyframe;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -51,7 +46,6 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
@@ -59,36 +53,38 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.android.camera.exif.ExifInterface;
-
 import com.android.camera.util.CameraUtil;
+
 import org.omnirom.snap.R;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
 public class RefocusActivity extends Activity {
+    public static final int MAP_ROTATED = 1;
     private static final String TAG = "RefocusActivity";
     private static final String[] NAMES = {
-        "00", "01", "02", "03", "04", "AllFocusImage"
+            "00", "01", "02", "03", "04", "AllFocusImage"
     };
-
     private Uri mUri;
-
     private ImageView mImageView;
     private int mWidth;
     private int mHeight;
     private Indicator mIndicator;
     private boolean mSecureCamera;
     private View mAllInFocusView;
-
     private DepthMap mDepthMap;
     private int mCurrentImage = -1;
     private int mRequestedImage = -1;
     private LoadImageTask mLoadImageTask;
     private boolean mMapRotated = false;
     private int mOrientation = 0;
-    public static final int MAP_ROTATED = 1;
     private String mFilesPath;
 
     @Override
@@ -97,12 +93,7 @@ public class RefocusActivity extends Activity {
         Intent intent = getIntent();
         mUri = intent.getData();
         String action = intent.getAction();
-        if (CameraUtil.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE.equals(action)
-                || CameraUtil.ACTION_IMAGE_CAPTURE_SECURE.equals(action)) {
-            mSecureCamera = true;
-        } else {
-            mSecureCamera = intent.getBooleanExtra(CameraUtil.SECURE_CAMERA_EXTRA, false);
-        }
+        mSecureCamera = CameraUtil.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE.equals(action) || CameraUtil.ACTION_IMAGE_CAPTURE_SECURE.equals(action) || intent.getBooleanExtra(CameraUtil.SECURE_CAMERA_EXTRA, false);
 
         if (mSecureCamera) {
             // Change the window flags so that secure camera can show when locked
@@ -111,73 +102,55 @@ public class RefocusActivity extends Activity {
             params.flags |= WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED;
             win.setAttributes(params);
         }
-        mFilesPath = getFilesDir()+"";
-        if(intent.getFlags() == MAP_ROTATED || mSecureCamera) {
+        mFilesPath = getFilesDir() + "";
+        if (intent.getFlags() == MAP_ROTATED || mSecureCamera) {
             mMapRotated = true;
-            mFilesPath = getFilesDir()+"/Ubifocus";
+            mFilesPath = getFilesDir() + "/Ubifocus";
         }
 
-        new Thread(new Runnable() {
-            public void run() {
-                mDepthMap = new DepthMap(mFilesPath + "/DepthMapImage.y");
-            }
-        }).start();
+        new Thread(() -> mDepthMap = new DepthMap(mFilesPath + "/DepthMapImage.y")).start();
 
 
         setContentView(R.layout.refocus_editor);
         mIndicator = (Indicator) findViewById(R.id.refocus_indicator);
 
         mImageView = (ImageView) findViewById(R.id.refocus_image);
-        mImageView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_UP:
-                        float x = event.getX();
-                        float y = event.getY();
-                        int w = v.getWidth();
-                        int h = v.getHeight();
-                        mIndicator.startAnimation(x + mImageView.getLeft(),
-                                y + mImageView.getTop());
-                        if (mDepthMap != null) {
-                            int depth = mDepthMap.getDepth(x / (float) w, y / (float) h);
-                            setCurrentImage(depth);
-                            mAllInFocusView.setBackground(getDrawable(
-                                    R.drawable.refocus_button_disable));
-                        }
-                        break;
-                }
-                return true;
+        mImageView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    float x = event.getX();
+                    float y = event.getY();
+                    int w = v.getWidth();
+                    int h = v.getHeight();
+                    mIndicator.startAnimation(x + mImageView.getLeft(),
+                            y + mImageView.getTop());
+                    if (mDepthMap != null) {
+                        int depth = mDepthMap.getDepth(x / (float) w, y / (float) h);
+                        setCurrentImage(depth);
+                        mAllInFocusView.setBackground(getDrawable(
+                                R.drawable.refocus_button_disable));
+                    }
+                    break;
             }
+            return true;
         });
 
         mAllInFocusView = findViewById(R.id.refocus_all);
-        mAllInFocusView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                allInFocus();
-            }
+        mAllInFocusView.setOnClickListener(v -> allInFocus());
+
+        findViewById(R.id.refocus_cancel).setOnClickListener(v -> {
+            setResult(RESULT_CANCELED, new Intent());
+            finish();
         });
 
-        findViewById(R.id.refocus_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                setResult(RESULT_CANCELED, new Intent());
+        findViewById(R.id.refocus_done).setOnClickListener(v -> {
+            if (mRequestedImage != NAMES.length - 1) {
+                new SaveImageTask().execute(mFilesPath + "/" + NAMES[mRequestedImage]
+                        + ".jpg");
+            } else {
                 finish();
             }
-        });
-
-        findViewById(R.id.refocus_done).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View v) {
-                if (mRequestedImage != NAMES.length - 1) {
-                    new SaveImageTask().execute(mFilesPath + "/" + NAMES[mRequestedImage]
-                            + ".jpg");
-                } else {
-                    finish();
-                }
-                setResult(RESULT_OK, new Intent());
-            }
+            setResult(RESULT_OK, new Intent());
         });
 
         Display display = getWindowManager().getDefaultDisplay();
@@ -206,172 +179,6 @@ public class RefocusActivity extends Activity {
     private void allInFocus() {
         setCurrentImage(NAMES.length - 1);
         mAllInFocusView.setBackground(getDrawable(R.drawable.refocus_button_enable));
-    }
-
-    private class SaveImageTask extends AsyncTask<String, Void, Void> {
-        protected Void doInBackground(String... path) {
-            try {
-                OutputStream out = getContentResolver().openOutputStream(mUri);
-                FileInputStream in = new FileInputStream(path[0]);
-                byte[] buf = new byte[4096];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                in.close();
-                out.close();
-            } catch (Exception e) {
-            }
-            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mUri);
-            sendBroadcast(intent);
-            return null;
-        }
-
-        protected void onPostExecute(Void v) {
-            finish();
-        }
-    }
-
-    private class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
-        protected Bitmap doInBackground(String... path) {
-            final BitmapFactory.Options o = new BitmapFactory.Options();
-            int height;
-            int width;
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeFile(path[0], o);
-            ExifInterface exif = new ExifInterface();
-            mOrientation = 0;
-            try {
-                exif.readExif(path[0]);
-                mOrientation = Exif.getOrientation(exif);
-            } catch (IOException e) {
-            }
-            int h = o.outHeight;
-            int w = o.outWidth;
-            int screenOrientation = RefocusActivity.this.getResources().getConfiguration()
-                    .orientation;
-            if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-                height = mWidth;
-                width = mHeight;
-            } else {
-                height = mHeight;
-                width = mWidth;
-            }
-            int sample = 1;
-            if (h > height || w > width) {
-                while (h / sample / 2 > height && w / sample / 2 > width) {
-                    sample *= 2;
-                }
-            }
-            Log.d(TAG, "sample =  " + sample);
-            Log.d(TAG, "h = " + h + "  height = " + height);
-            Log.d(TAG, "w = " + w + "  width = " + width);
-            o.inJustDecodeBounds = false;
-            o.inSampleSize = sample;
-            Bitmap bitmap = BitmapFactory.decodeFile(path[0], o);
-            if (mOrientation != 0) {
-                Matrix matrix = new Matrix();
-                matrix.setRotate(mOrientation);
-                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
-                        bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-            }
-            return bitmap;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            mImageView.setImageBitmap(result);
-        }
-    }
-
-    private class DepthMap {
-        private byte[] mData;
-        private int mWidth;
-        private int mHeight;
-        private boolean mFail = true;
-        private static final int W_SIZE = 61;
-
-        public DepthMap(final String path) {
-            File file = new File(path);
-            try {
-                FileInputStream stream = new FileInputStream(file);
-                mData = new byte[(int) file.length()];
-                stream.read(mData);
-                stream.close();
-            } catch (Exception e) {
-                mData = new byte[0];
-            }
-
-            int length = (int) mData.length;
-            if (length > 25) {
-                mFail = (mData[length - 25] != 0);
-                mWidth = readInteger(length - 24);
-                mHeight = readInteger(length - 20);
-            }
-            if (mWidth * mHeight + 25 > length) {
-                mFail = true;
-            }
-        }
-
-        public int getDepth(float x, float y) {
-            if (mFail || x > 1.0f || y > 1.0f) {
-                return NAMES.length - 1;
-            }
-
-            int newX = (int) (x * mWidth);
-            int newY = (int) (y * mHeight);
-            if(mMapRotated) {
-                if(mOrientation == 0) {
-                    newX = (int) (x * mWidth);
-                    newY = (int) (y * mHeight);
-                } if(mOrientation == 90) {
-                    newX = (int) ((y) * mWidth);
-                    newY = (int) ((1 - x) * mHeight);
-                } else if (mOrientation == 180) {
-                    newX = (int) ((1-x) * mWidth);
-                    newY = (int) ((1-y) * mHeight);
-                } else if (mOrientation == 270) {
-                    newX = (int) ((1-y) * mWidth);
-                    newY = (int) ((x) * mHeight);
-                }
-            }
-
-            int[] hist = new int[256];
-            for (int i = 0; i < 256; i++) {
-                hist[i] = 0;
-            }
-
-            int colStart = Math.max(newX - W_SIZE / 2, 0);
-            int colEnd = Math.min(colStart + W_SIZE, mWidth);
-            int rowStart = Math.max(newY - W_SIZE / 2, 0);
-            int rowEnd = Math.min(rowStart + W_SIZE, mHeight);
-
-            for (int col = colStart; col < colEnd; col++) {
-                for (int row = rowStart; row < rowEnd; row++) {
-                    int level = mData[row * mWidth + col];
-                    hist[level]++;
-                }
-            }
-
-            int depth = NAMES.length - 1;
-            int maxCount = 0;
-            for (int i = 0; i < 256; i++) {
-                int count = hist[i];
-                if (count != 0 && (maxCount == 0 || count > maxCount)) {
-                    maxCount = count;
-                    depth = i;
-                }
-            }
-            return depth;
-        }
-
-        private int readInteger(int offset) {
-            int result = mData[offset] & 0xff;
-            for (int i = 1; i < 4; ++i) {
-                result <<= 8;
-                result += mData[offset + i] & 0xff;
-            }
-            return result;
-        }
     }
 
     public static class Indicator extends FrameLayout {
@@ -432,12 +239,7 @@ public class RefocusActivity extends Activity {
 
             mAnimator.setDuration(720);
             mAnimator.removeAllUpdateListeners();
-            mAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    invalidate();
-                }
-            });
+            mAnimator.addUpdateListener(animation -> invalidate());
             mAnimator.removeAllListeners();
             mAnimator.addListener(new Animator.AnimatorListener() {
                 @Override
@@ -460,6 +262,173 @@ public class RefocusActivity extends Activity {
                 }
             });
             mAnimator.start();
+        }
+    }
+
+    private class SaveImageTask extends AsyncTask<String, Void, Void> {
+        protected Void doInBackground(String... path) {
+            try {
+                OutputStream out = getContentResolver().openOutputStream(mUri);
+                FileInputStream in = new FileInputStream(path[0]);
+                byte[] buf = new byte[4096];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                in.close();
+                out.close();
+            } catch (Exception ignored) {
+            }
+            Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, mUri);
+            sendBroadcast(intent);
+            return null;
+        }
+
+        protected void onPostExecute(Void v) {
+            finish();
+        }
+    }
+
+    private class LoadImageTask extends AsyncTask<String, Void, Bitmap> {
+        protected Bitmap doInBackground(String... path) {
+            final BitmapFactory.Options o = new BitmapFactory.Options();
+            int height;
+            int width;
+            o.inJustDecodeBounds = true;
+            BitmapFactory.decodeFile(path[0], o);
+            ExifInterface exif = new ExifInterface();
+            mOrientation = 0;
+            try {
+                exif.readExif(path[0]);
+                mOrientation = Exif.getOrientation(exif);
+            } catch (IOException ignored) {
+            }
+            int h = o.outHeight;
+            int w = o.outWidth;
+            int screenOrientation = RefocusActivity.this.getResources().getConfiguration()
+                    .orientation;
+            if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
+                height = mWidth;
+                width = mHeight;
+            } else {
+                height = mHeight;
+                width = mWidth;
+            }
+            int sample = 1;
+            if (h > height || w > width) {
+                while (h / sample / 2 > height && w / sample / 2 > width) {
+                    sample *= 2;
+                }
+            }
+            Log.d(TAG, "sample =  " + sample);
+            Log.d(TAG, "h = " + h + "  height = " + height);
+            Log.d(TAG, "w = " + w + "  width = " + width);
+            o.inJustDecodeBounds = false;
+            o.inSampleSize = sample;
+            Bitmap bitmap = BitmapFactory.decodeFile(path[0], o);
+            if (mOrientation != 0) {
+                Matrix matrix = new Matrix();
+                matrix.setRotate(mOrientation);
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                        bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+            }
+            return bitmap;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            mImageView.setImageBitmap(result);
+        }
+    }
+
+    private class DepthMap {
+        private static final int W_SIZE = 61;
+        private byte[] mData;
+        private int mWidth;
+        private int mHeight;
+        private boolean mFail = true;
+
+        public DepthMap(final String path) {
+            File file = new File(path);
+            try {
+                FileInputStream stream = new FileInputStream(file);
+                mData = new byte[(int) file.length()];
+                stream.read(mData);
+                stream.close();
+            } catch (Exception e) {
+                mData = new byte[0];
+            }
+
+            int length = mData.length;
+            if (length > 25) {
+                mFail = (mData[length - 25] != 0);
+                mWidth = readInteger(length - 24);
+                mHeight = readInteger(length - 20);
+            }
+            if (mWidth * mHeight + 25 > length) {
+                mFail = true;
+            }
+        }
+
+        public int getDepth(float x, float y) {
+            if (mFail || x > 1.0f || y > 1.0f) {
+                return NAMES.length - 1;
+            }
+
+            int newX = (int) (x * mWidth);
+            int newY = (int) (y * mHeight);
+            if (mMapRotated) {
+                if (mOrientation == 0) {
+                    newX = (int) (x * mWidth);
+                    newY = (int) (y * mHeight);
+                }
+                if (mOrientation == 90) {
+                    newX = (int) ((y) * mWidth);
+                    newY = (int) ((1 - x) * mHeight);
+                } else if (mOrientation == 180) {
+                    newX = (int) ((1 - x) * mWidth);
+                    newY = (int) ((1 - y) * mHeight);
+                } else if (mOrientation == 270) {
+                    newX = (int) ((1 - y) * mWidth);
+                    newY = (int) ((x) * mHeight);
+                }
+            }
+
+            int[] hist = new int[256];
+            for (int i = 0; i < 256; i++) {
+                hist[i] = 0;
+            }
+
+            int colStart = Math.max(newX - W_SIZE / 2, 0);
+            int colEnd = Math.min(colStart + W_SIZE, mWidth);
+            int rowStart = Math.max(newY - W_SIZE / 2, 0);
+            int rowEnd = Math.min(rowStart + W_SIZE, mHeight);
+
+            for (int col = colStart; col < colEnd; col++) {
+                for (int row = rowStart; row < rowEnd; row++) {
+                    int level = mData[row * mWidth + col];
+                    hist[level]++;
+                }
+            }
+
+            int depth = NAMES.length - 1;
+            int maxCount = 0;
+            for (int i = 0; i < 256; i++) {
+                int count = hist[i];
+                if (count != 0 && (maxCount == 0 || count > maxCount)) {
+                    maxCount = count;
+                    depth = i;
+                }
+            }
+            return depth;
+        }
+
+        private int readInteger(int offset) {
+            int result = mData[offset] & 0xff;
+            for (int i = 1; i < 4; ++i) {
+                result <<= 8;
+                result += mData[offset + i] & 0xff;
+            }
+            return result;
         }
     }
 }

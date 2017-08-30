@@ -3,15 +3,15 @@
     <objectAnimator
         android:duration="@integer/shutter_animation_duration"
         android:propertyName="scaleX"
-        android:repeatMode="reverse"
         android:repeatCount="1"
+        android:repeatMode="reverse"
         android:valueFrom="1"
         android:valueTo="0.5" />
     <objectAnimator
         android:duration="@integer/shutter_animation_duration"
         android:propertyName="scaleY"
-        android:repeatMode="reverse"
         android:repeatCount="1"
+        android:repeatMode="reverse"
         android:valueFrom="1"
         android:valueTo="0.5" />
 </set>

@@ -31,9 +31,7 @@ package com.android.camera.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.android.camera.SettingsManager;
 
@@ -72,22 +70,19 @@ public class FlashToggleButton extends RotateImageView {
         }
 
         update();
-        this.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int[] icons;
-                String key;
-                if (mIsVideoFlash) {
-                    icons = videoFlashIcon;
-                    key = SettingsManager.KEY_VIDEO_FLASH_MODE;
-                } else {
-                    icons = cameraFlashIcon;
-                    key = SettingsManager.KEY_FLASH_MODE;
-                }
-                mIndex = (mIndex + 1) % icons.length;
-                mSettingsManager.setValueIndex(key, mIndex);
-                update();
+        this.setOnClickListener(v -> {
+            int[] icons;
+            String key1;
+            if (mIsVideoFlash) {
+                icons = videoFlashIcon;
+                key1 = SettingsManager.KEY_VIDEO_FLASH_MODE;
+            } else {
+                icons = cameraFlashIcon;
+                key1 = SettingsManager.KEY_FLASH_MODE;
             }
+            mIndex = (mIndex + 1) % icons.length;
+            mSettingsManager.setValueIndex(key1, mIndex);
+            update();
         });
     }
 

@@ -33,16 +33,13 @@ import com.android.camera.ui.ZoomRenderer;
 public class PreviewGestures
         implements ScaleGestureDetector.OnScaleGestureListener {
 
-    private static final String TAG = "CAM_gestures";
-
-    private static final int MODE_NONE = 0;
-    private static final int MODE_ZOOM = 2;
-
     public static final int DIR_UP = 0;
     public static final int DIR_DOWN = 1;
     public static final int DIR_LEFT = 2;
     public static final int DIR_RIGHT = 3;
-
+    private static final String TAG = "CAM_gestures";
+    private static final int MODE_NONE = 0;
+    private static final int MODE_ZOOM = 2;
     private SingleTapListener mTapListener;
     private RenderOverlay mOverlay;
     private PieRenderer mPie;
@@ -64,7 +61,7 @@ public class PreviewGestures
 
     private GestureDetector.SimpleOnGestureListener mGestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
-        public void onLongPress (MotionEvent e) {
+        public void onLongPress(MotionEvent e) {
             // Open pie
             if (!mZoomOnly && mPie != null && !mPie.showsItems()) {
                 openPie();
@@ -72,7 +69,7 @@ public class PreviewGestures
         }
 
         @Override
-        public boolean onSingleTapUp (MotionEvent e) {
+        public boolean onSingleTapUp(MotionEvent e) {
             // Tap to focus when pie is not open
             if (mPie == null || !mPie.showsItems()) {
                 mTapListener.onSingleTapUp(null, (int) e.getX(), (int) e.getY());
@@ -82,7 +79,7 @@ public class PreviewGestures
         }
 
         @Override
-        public boolean onScroll (MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             if (e1 == null) {
                 // e1 can be null if for some cases.
                 return false;
@@ -120,10 +117,6 @@ public class PreviewGestures
         }
     };
 
-    public interface SingleTapListener {
-        public void onSingleTapUp(View v, int x, int y);
-    }
-
     public PreviewGestures(CameraActivity ctx, SingleTapListener tapListener,
                            ZoomRenderer zoom, PieRenderer pie, TrackingFocusRenderer trackingfocus) {
         mTapListener = tapListener;
@@ -140,10 +133,6 @@ public class PreviewGestures
         mOverlay = overlay;
     }
 
-    public void setEnabled(boolean enabled) {
-        mEnabled = enabled;
-    }
-
     public void setZoomEnabled(boolean enable) {
         mZoomEnabled = enable;
     }
@@ -156,24 +145,28 @@ public class PreviewGestures
         return mEnabled;
     }
 
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
+    }
+
     public void setCaptureUI(CaptureUI ui) {
         mCaptureUI = ui;
-    }
-
-    public void setPhotoMenu(PhotoMenu menu) {
-        mPhotoMenu = menu;
-    }
-
-    public void setVideoMenu(VideoMenu menu) {
-        mVideoMenu = menu;
     }
 
     public PhotoMenu getPhotoMenu() {
         return mPhotoMenu;
     }
 
+    public void setPhotoMenu(PhotoMenu menu) {
+        mPhotoMenu = menu;
+    }
+
     public VideoMenu getVideoMenu() {
         return mVideoMenu;
+    }
+
+    public void setVideoMenu(VideoMenu menu) {
+        mVideoMenu = menu;
     }
 
     public boolean dispatchTouch(MotionEvent m) {
@@ -300,8 +293,7 @@ public class PreviewGestures
         if (mPie == null || !mPie.isOpen()) {
             mMode = MODE_ZOOM;
             mGestureDetector.onTouchEvent(makeCancelEvent(mCurrent));
-            if (!mZoomEnabled) return false;
-            return mZoom.onScaleBegin(detector);
+            return mZoomEnabled && mZoom.onScaleBegin(detector);
         }
         return false;
     }
@@ -309,6 +301,10 @@ public class PreviewGestures
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
         mZoom.onScaleEnd(detector);
+    }
+
+    public interface SingleTapListener {
+        public void onSingleTapUp(View v, int x, int y);
     }
 }
 

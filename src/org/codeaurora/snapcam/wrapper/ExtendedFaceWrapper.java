@@ -29,24 +29,25 @@
 
 package org.codeaurora.snapcam.wrapper;
 
-import java.lang.reflect.Method;
-
 import android.hardware.Camera.Face;
 import android.os.Bundle;
 
-public class ExtendedFaceWrapper{
+import java.lang.reflect.Method;
+
+public class ExtendedFaceWrapper {
     private final static String CLASS_NAME = "org.codeaurora.camera.ExtendedFace";
     private static Class<?> mExtendFaceClass;
     public Face mFace;
-    public ExtendedFaceWrapper(Face face){
+
+    public ExtendedFaceWrapper(Face face) {
         mFace = face;
     }
 
     public static boolean isExtendedFaceInstance(Object object) {
-        if ( mExtendFaceClass == null ){
+        if (mExtendFaceClass == null) {
             try {
                 mExtendFaceClass = Class.forName(CLASS_NAME);
-            }catch (Exception exception){
+            } catch (Exception exception) {
                 exception.printStackTrace();
                 return false;
             }
@@ -55,71 +56,71 @@ public class ExtendedFaceWrapper{
     }
 
     public int getSmileDegree() {
-        return  (int)invokeMethod("getSmileDegree");
+        return (int) invokeMethod("getSmileDegree");
     }
 
     public int getSmileScore() {
-        return (int)invokeMethod("getSmileScore");
+        return (int) invokeMethod("getSmileScore");
     }
 
     public int getBlinkDetected() {
-        return (int)invokeMethod("getBlinkDetected");
+        return (int) invokeMethod("getBlinkDetected");
     }
 
 
     public int getFaceRecognized() {
-        return (int)invokeMethod("getFaceRecognized");
+        return (int) invokeMethod("getFaceRecognized");
     }
 
     public int getGazeAngle() {
-        return (int)invokeMethod("getGazeAngle");
+        return (int) invokeMethod("getGazeAngle");
     }
 
     public int getUpDownDirection() {
-        return (int)invokeMethod("getUpDownDirection");
+        return (int) invokeMethod("getUpDownDirection");
     }
 
     public int getLeftRightDirection() {
-        return (int)invokeMethod("getLeftRightDirection");
+        return (int) invokeMethod("getLeftRightDirection");
     }
 
 
     public int getRollDirection() {
-        return (int)invokeMethod("getRollDirection");
+        return (int) invokeMethod("getRollDirection");
     }
 
     public int getLeftEyeBlinkDegree() {
-        return (int)invokeMethod("getLeftEyeBlinkDegree");
+        return (int) invokeMethod("getLeftEyeBlinkDegree");
     }
 
 
     public int getRightEyeBlinkDegree() {
-        return (int)invokeMethod("getRightEyeBlinkDegree");
+        return (int) invokeMethod("getRightEyeBlinkDegree");
     }
 
 
     public int getLeftRightGazeDegree() {
-        return (int)invokeMethod("getLeftRightGazeDegree");
+        return (int) invokeMethod("getLeftRightGazeDegree");
     }
 
 
     public int getTopBottomGazeDegree() {
-        return (int)invokeMethod("getTopBottomGazeDegree");
+        return (int) invokeMethod("getTopBottomGazeDegree");
     }
 
     public Bundle getExtendedFaceInfo() {
-        return (Bundle)invokeMethod("getExtendedFaceInfo");
+        return (Bundle) invokeMethod("getExtendedFaceInfo");
     }
 
-    private Object invokeMethod(String name){
+    private Object invokeMethod(String name) {
         Object result = null;
         try {
-            if ( mExtendFaceClass == null ){
+            if (mExtendFaceClass == null) {
                 mExtendFaceClass = Class.forName(CLASS_NAME);
             }
             Method method = mExtendFaceClass.getDeclaredMethod(name);
             result = method.invoke(mFace);
-        }catch(Exception exception){
+        } catch (Exception exception) {
             exception.printStackTrace();
         }
         return result;

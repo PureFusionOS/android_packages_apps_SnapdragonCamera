@@ -19,7 +19,6 @@ package com.android.camera.data;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.view.View;
@@ -121,7 +120,7 @@ public class SimpleViewData implements LocalData {
 
     @Override
     public View getView(Activity activity, int width, int height, int placeHolderResourceId,
-            LocalDataAdapter adapter, boolean inFullScreen) {
+                        LocalDataAdapter adapter, boolean inFullScreen) {
         return mView;
     }
 
@@ -178,7 +177,7 @@ public class SimpleViewData implements LocalData {
 
     @Override
     public boolean rotate90Degrees(Context context, LocalDataAdapter adapter,
-            int currentDataId, boolean clockwise) {
+                                   int currentDataId, boolean clockwise) {
         // We don't support rotation for SimpleViewData.
         Log.w(TAG, "Unexpected call in rotate90Degrees()");
         return false;

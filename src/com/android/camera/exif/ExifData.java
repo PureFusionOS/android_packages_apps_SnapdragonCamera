@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,9 +45,9 @@ class ExifData {
     };
 
     private final IfdData[] mIfdDatas = new IfdData[IfdId.TYPE_IFD_COUNT];
-    private byte[] mThumbnail;
-    private ArrayList<byte[]> mStripBytes = new ArrayList<byte[]>();
     private final ByteOrder mByteOrder;
+    private byte[] mThumbnail;
+    private ArrayList<byte[]> mStripBytes = new ArrayList<>();
 
     ExifData(ByteOrder order) {
         mByteOrder = order;
@@ -253,14 +254,12 @@ class ExifData {
      * are none.
      */
     protected List<ExifTag> getAllTags() {
-        ArrayList<ExifTag> ret = new ArrayList<ExifTag>();
+        ArrayList<ExifTag> ret = new ArrayList<>();
         for (IfdData d : mIfdDatas) {
             if (d != null) {
                 ExifTag[] tags = d.getAllTags();
                 if (tags != null) {
-                    for (ExifTag t : tags) {
-                        ret.add(t);
-                    }
+                    Collections.addAll(ret, tags);
                 }
             }
         }
@@ -283,10 +282,8 @@ class ExifData {
         if (tags == null) {
             return null;
         }
-        ArrayList<ExifTag> ret = new ArrayList<ExifTag>(tags.length);
-        for (ExifTag t : tags) {
-            ret.add(t);
-        }
+        ArrayList<ExifTag> ret = new ArrayList<>(tags.length);
+        Collections.addAll(ret, tags);
         if (ret.size() == 0) {
             return null;
         }
@@ -298,7 +295,7 @@ class ExifData {
      * are none.
      */
     protected List<ExifTag> getAllTagsForTagId(short tag) {
-        ArrayList<ExifTag> ret = new ArrayList<ExifTag>();
+        ArrayList<ExifTag> ret = new ArrayList<>();
         for (IfdData d : mIfdDatas) {
             if (d != null) {
                 ExifTag t = d.getTag(tag);

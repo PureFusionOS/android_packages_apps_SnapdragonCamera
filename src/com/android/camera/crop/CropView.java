@@ -71,11 +71,6 @@ public class CropView extends View {
     private int mTouchTolerance = 40;
     private float mDashOnLength = 20;
     private float mDashOffLength = 10;
-
-    private enum Mode {
-        NONE, MOVE
-    }
-
     private Mode mState = Mode.NONE;
 
     public CropView(Context context) {
@@ -102,9 +97,9 @@ public class CropView extends View {
         mMargin = (int) rsc.getDimension(R.dimen.preview_margin);
         mMinSideSize = (int) rsc.getDimension(R.dimen.crop_min_side);
         mTouchTolerance = (int) rsc.getDimension(R.dimen.crop_touch_tolerance);
-        mOverlayShadowColor = (int) rsc.getColor(R.color.crop_shadow_color);
-        mOverlayWPShadowColor = (int) rsc.getColor(R.color.crop_shadow_wp_color);
-        mWPMarkerColor = (int) rsc.getColor(R.color.crop_wp_markers);
+        mOverlayShadowColor = rsc.getColor(R.color.crop_shadow_color);
+        mOverlayWPShadowColor = rsc.getColor(R.color.crop_shadow_wp_color);
+        mWPMarkerColor = rsc.getColor(R.color.crop_wp_markers);
         mDashOnLength = rsc.getDimension(R.dimen.wp_selector_dash_length);
         mDashOffLength = rsc.getDimension(R.dimen.wp_selector_off_length);
     }
@@ -373,5 +368,9 @@ public class CropView extends View {
                     mScreenCropBounds, mCropObj.isFixedAspect(), decode(mCropObj.getSelectState(), mRotation));
         }
 
+    }
+
+    private enum Mode {
+        NONE, MOVE
     }
 }

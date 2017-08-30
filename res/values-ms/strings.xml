@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--  Copyright (C) 2007 The Android Open Source Project
+<?xml version="1.0" encoding="UTF-8"?><!--  Copyright (C) 2007 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,20 +13,19 @@
      limitations under the License.
  -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="1928079047368929634">"Galeri"</string>
     <string name="gadget_title" msgid="259405922673466798">"Bingkai gambar"</string>
     <string name="details_ms" msgid="940634969189855292">"%1$02d:%2$02d"</string>
     <string name="details_hms" msgid="3215779248094151255">"%1$d:%2$02d:%3$02d"</string>
     <string name="movie_view_label" msgid="3526526872644898229">"Pemain video"</string>
-    <string name="loading_video" msgid="4013492720121891585">"Memuatkan video..."</string>
-    <string name="loading_image" msgid="1200894415793838191">"Memuatkan imej..."</string>
+    <string name="loading_video" msgid="4013492720121891585">"Memuatkan video…"</string>
+    <string name="loading_image" msgid="1200894415793838191">"Memuatkan imej…"</string>
     <string name="loading_account" msgid="928195413034552034">"Memuatkan akaun…"</string>
     <string name="resume_playing_title" msgid="8996677350649355013">"Sambung semula video"</string>
     <string name="resume_playing_message" msgid="5184414518126703481">"Sambung semula proses main dari %s ?"</string>
     <string name="resume_playing_resume" msgid="3847915469173852416">"Sambung semula proses main"</string>
-    <string name="loading" msgid="7038208555304563571">"Memuatkan..."</string>
+    <string name="loading" msgid="7038208555304563571">"Memuatkan…"</string>
     <string name="fail_to_load" msgid="8394392853646664505">"Tidak dapat memuatkan"</string>
     <string name="fail_to_load_image" msgid="6155388718549782425">"Tidak dapat memuatkan imej"</string>
     <string name="no_thumbnail" msgid="284723185546429750">"Tiada lakaran kenit"</string>
@@ -35,7 +33,7 @@
     <string name="crop_save_text" msgid="152200178986698300">"OK"</string>
     <string name="ok" msgid="5296833083983263293">"OK"</string>
     <string name="multiface_crop_help" msgid="2554690102655855657">"Sentuh muka untuk bermula."</string>
-    <string name="saving_image" msgid="7270334453636349407">"Menyimpan gambar..."</string>
+    <string name="saving_image" msgid="7270334453636349407">"Menyimpan gambar…"</string>
     <string name="filtershow_saving_image" msgid="6659463980581993016">"Menyimpan gambar ke <xliff:g id="ALBUM_NAME">%1$s</xliff:g> …"</string>
     <string name="save_error" msgid="6857408774183654970">"Tidak dapat menyimpan imej yang dipangkas."</string>
     <string name="crop_label" msgid="521114301871349328">"Pangkas gambar"</string>
@@ -49,10 +47,10 @@
     <string name="wallpaper" msgid="140165383777262070">"Menetapkan kertas dinding…"</string>
     <string name="camera_setas_wallpaper" msgid="797463183863414289">"Kertas dinding"</string>
     <string name="delete" msgid="2839695998251824487">"Padam"</string>
-  <plurals name="delete_selection">
-    <item quantity="one" msgid="6453379735401083732">"Padam item yang dipilih?"</item>
-    <item quantity="other" msgid="5874316486520635333">"Padam item yang dipilih?"</item>
-  </plurals>
+    <plurals name="delete_selection">
+        <item msgid="6453379735401083732" quantity="one">"Padam item yang dipilih?"</item>
+        <item msgid="5874316486520635333" quantity="other">"Padam item yang dipilih?"</item>
+    </plurals>
     <string name="confirm" msgid="8646870096527848520">"Sahkan"</string>
     <string name="cancel" msgid="3637516880917356226">"Batal"</string>
     <string name="share" msgid="3619042788254195341">"Kongsi"</string>
@@ -67,28 +65,28 @@
     <string name="details_title" msgid="2611396603977441273">"%1$d dari %2$d item:"</string>
     <string name="close" msgid="5585646033158453043">"Tutup"</string>
     <string name="switch_to_camera" msgid="7280111806675169992">"Bertukar kepada kamera"</string>
-  <plurals name="number_of_items_selected">
-    <item quantity="zero" msgid="2142579311530586258">"%1$d dipilih"</item>
-    <item quantity="one" msgid="2478365152745637768">"%1$d dipilih"</item>
-    <item quantity="other" msgid="754722656147810487">"%1$d dipilih"</item>
-  </plurals>
-  <plurals name="number_of_albums_selected">
-    <item quantity="zero" msgid="749292746814788132">"%1$d dipilih"</item>
-    <item quantity="one" msgid="6184377003099987825">"%1$d dipilih"</item>
-    <item quantity="other" msgid="53105607141906130">"%1$d dipilih"</item>
-  </plurals>
-  <plurals name="number_of_groups_selected">
-    <item quantity="zero" msgid="3466388370310869238">"%1$d dipilih"</item>
-    <item quantity="one" msgid="5030162638216034260">"%1$d dipilih"</item>
-    <item quantity="other" msgid="3512041363942842738">"%1$d dipilih"</item>
-  </plurals>
+    <plurals name="number_of_items_selected">
+        <item msgid="2142579311530586258" quantity="zero">"%1$d dipilih"</item>
+        <item msgid="2478365152745637768" quantity="one">"%1$d dipilih"</item>
+        <item msgid="754722656147810487" quantity="other">"%1$d dipilih"</item>
+    </plurals>
+    <plurals name="number_of_albums_selected">
+        <item msgid="749292746814788132" quantity="zero">"%1$d dipilih"</item>
+        <item msgid="6184377003099987825" quantity="one">"%1$d dipilih"</item>
+        <item msgid="53105607141906130" quantity="other">"%1$d dipilih"</item>
+    </plurals>
+    <plurals name="number_of_groups_selected">
+        <item msgid="3466388370310869238" quantity="zero">"%1$d dipilih"</item>
+        <item msgid="5030162638216034260" quantity="one">"%1$d dipilih"</item>
+        <item msgid="3512041363942842738" quantity="other">"%1$d dipilih"</item>
+    </plurals>
     <string name="show_on_map" msgid="6157544221201750980">"Tunjukkan pada peta"</string>
     <string name="rotate_left" msgid="5888273317282539839">"Putar ke kiri"</string>
     <string name="rotate_right" msgid="6776325835923384839">"Putar ke kanan"</string>
     <string name="no_such_item" msgid="5315144556325243400">"Tidak dapat mencari item."</string>
     <string name="edit" msgid="1502273844748580847">"Edit"</string>
     <string name="process_caching_requests" msgid="8722939570307386071">"Memproses permintaan cache"</string>
-    <string name="caching_label" msgid="4521059045896269095">"Mengcache..."</string>
+    <string name="caching_label" msgid="4521059045896269095">"Mengcache…"</string>
     <string name="crop_action" msgid="3427470284074377001">"Pangkas"</string>
     <string name="trim_action" msgid="703098114452883524">"Pangkas"</string>
     <string name="mute_action" msgid="5296241754753306251">"Redam"</string>
@@ -153,10 +151,10 @@
     <string name="ffx_x_process" msgid="4779398678661811765">"Proses X"</string>
     <string name="ffx_washout" msgid="4594160692176642735">"Latte"</string>
     <string name="ffx_washout_color" msgid="8034075742195795219">"Litho"</string>
-  <plurals name="make_albums_available_offline">
-    <item quantity="one" msgid="2171596356101611086">"Menjadikan album tersedia di luar talian."</item>
-    <item quantity="other" msgid="4948604338155959389">"Menjadikan album tersedia di luar talian."</item>
-  </plurals>
+    <plurals name="make_albums_available_offline">
+        <item msgid="2171596356101611086" quantity="one">"Menjadikan album tersedia di luar talian."</item>
+        <item msgid="4948604338155959389" quantity="other">"Menjadikan album tersedia di luar talian."</item>
+    </plurals>
     <string name="try_to_set_local_album_available_offline" msgid="2184754031896160755">"Item ini disimpan pada peranti dan tersedia di luar talian."</string>
     <string name="set_label_all_albums" msgid="4581863582996336783">"Semua album"</string>
     <string name="set_label_local_albums" msgid="6698133661656266702">"Album setempat"</string>
@@ -203,15 +201,15 @@
     <string name="trim_too_short" msgid="751593965620665326">"Tidak boleh mencantas: video sasaran terlalu pendek"</string>
     <string name="pano_progress_text" msgid="1586851614586678464">"Menghasilkan panorama"</string>
     <string name="save" msgid="613976532235060516">"Simpan"</string>
-    <string name="ingest_scanning" msgid="1062957108473988971">"Mengimbas kandungan..."</string>
-  <plurals name="ingest_number_of_items_scanned">
-    <item quantity="zero" msgid="2623289390474007396">"%1$d item diimbas"</item>
-    <item quantity="one" msgid="4340019444460561648">"%1$d item diimbas"</item>
-    <item quantity="other" msgid="3138021473860555499">"%1$d item diimbas"</item>
-  </plurals>
-    <string name="ingest_sorting" msgid="1028652103472581918">"Mengisih..."</string>
+    <string name="ingest_scanning" msgid="1062957108473988971">"Mengimbas kandungan…"</string>
+    <plurals name="ingest_number_of_items_scanned">
+        <item msgid="2623289390474007396" quantity="zero">"%1$d item diimbas"</item>
+        <item msgid="4340019444460561648" quantity="one">"%1$d item diimbas"</item>
+        <item msgid="3138021473860555499" quantity="other">"%1$d item diimbas"</item>
+    </plurals>
+    <string name="ingest_sorting" msgid="1028652103472581918">"Mengisih…"</string>
     <string name="ingest_scanning_done" msgid="8911916277034483430">"Pengimbasan selesai"</string>
-    <string name="ingest_importing" msgid="7456633398378527611">"Mengimport..."</string>
+    <string name="ingest_importing" msgid="7456633398378527611">"Mengimport…"</string>
     <string name="ingest_empty_device" msgid="2010470482779872622">"Tiada kandungan tersedia untuk diimport pada peranti ini."</string>
     <string name="ingest_no_device" msgid="3054128223131382122">"Tiada peranti MTP disambungkan"</string>
     <string name="camera_error_title" msgid="6484667504938477337">"Ralat kamera"</string>
@@ -219,13 +217,13 @@
     <string name="camera_disabled" msgid="8923911090533439312">"Kamera telah dilumpuhkan kerana dasar keselamatan."</string>
     <string name="camera_label" msgid="6346560772074764302">"Kamera"</string>
     <string name="video_camera_label" msgid="2899292505526427293">"Kamkorder"</string>
-    <string name="wait" msgid="8600187532323801552">"Sila tunggu..."</string>
-    <string name="no_storage" product="nosdcard" msgid="7335975356349008814">"Lekapkan storan USB sebelum menggunakan kamera."</string>
-    <string name="no_storage" product="default" msgid="5137703033746873624">"Masukkan kad SD sebelum menggunakan kamera."</string>
-    <string name="preparing_sd" product="nosdcard" msgid="6104019983528341353">"Menyediakan storan USB..."</string>
-    <string name="preparing_sd" product="default" msgid="2914969119574812666">"Menyediakan kad SD..."</string>
-    <string name="access_sd_fail" product="nosdcard" msgid="8147993984037859354">"Tidak dapat mengakses storan USB."</string>
-    <string name="access_sd_fail" product="default" msgid="1584968646870054352">"Tidak dapat mengakses kad SD."</string>
+    <string name="wait" msgid="8600187532323801552">"Sila tunggu…"</string>
+    <string name="no_storage" msgid="7335975356349008814" product="nosdcard">"Lekapkan storan USB sebelum menggunakan kamera."</string>
+    <string name="no_storage" msgid="5137703033746873624" product="default">"Masukkan kad SD sebelum menggunakan kamera."</string>
+    <string name="preparing_sd" msgid="6104019983528341353" product="nosdcard">"Menyediakan storan USB…"</string>
+    <string name="preparing_sd" msgid="2914969119574812666" product="default">"Menyediakan kad SD…"</string>
+    <string name="access_sd_fail" msgid="8147993984037859354" product="nosdcard">"Tidak dapat mengakses storan USB."</string>
+    <string name="access_sd_fail" msgid="1584968646870054352" product="default">"Tidak dapat mengakses kad SD."</string>
     <string name="review_cancel" msgid="8188009385853399254">"BATAL"</string>
     <string name="review_ok" msgid="1156261588693116433">"SELESAI"</string>
     <string name="time_lapse_title" msgid="4360632427760662691">"Rakaman selang masa"</string>
@@ -234,10 +232,10 @@
     <string name="pref_camera_id_entry_front" msgid="5668958706828733669">"Depan"</string>
     <string name="pref_camera_recordlocation_title" msgid="371208839215448917">"Lokasi stor"</string>
     <string name="pref_camera_timer_title" msgid="3105232208281893389">"Pemasa hitung detik"</string>
-  <plurals name="pref_camera_timer_entry">
-    <item quantity="one" msgid="1654523400981245448">"1 saat"</item>
-    <item quantity="other" msgid="6455381617076792481">"%d saat"</item>
-  </plurals>
+    <plurals name="pref_camera_timer_entry">
+        <item msgid="1654523400981245448" quantity="one">"1 saat"</item>
+        <item msgid="6455381617076792481" quantity="other">"%d saat"</item>
+    </plurals>
     <!-- no translation found for pref_camera_timer_sound_default (7066624532144402253) -->
     <skip />
     <string name="pref_camera_timer_sound_title" msgid="2469008631966169105">"Bip utk htg dtk"</string>
@@ -284,8 +282,8 @@
     <!-- no translation found for pref_camera_hdr_default (1336869406134365882) -->
     <skip />
     <string name="dialog_ok" msgid="6263301364153382152">"OK"</string>
-    <string name="spaceIsLow_content" product="nosdcard" msgid="4401325203349203177">"Storan USB anda kehabisan ruang. Tukar tetapan mutu atau padamkan beberapa imej atau fail lain."</string>
-    <string name="spaceIsLow_content" product="default" msgid="1732882643101247179">"Kad SD anda kehabisan ruang. Tukar tetapan mutu atau padamkan beberapa imej atau fail lain."</string>
+    <string name="spaceIsLow_content" msgid="4401325203349203177" product="nosdcard">"Storan USB anda kehabisan ruang. Tukar tetapan mutu atau padamkan beberapa imej atau fail lain."</string>
+    <string name="spaceIsLow_content" msgid="1732882643101247179" product="default">"Kad SD anda kehabisan ruang. Tukar tetapan mutu atau padamkan beberapa imej atau fail lain."</string>
     <string name="video_reach_size_limit" msgid="6179877322015552390">"Had saiz dicapai."</string>
     <string name="pano_too_fast_prompt" msgid="2823839093291374709">"Trlalu cepat"</string>
     <string name="pano_dialog_prepare_preview" msgid="4788441554128083543">"Menyediakan panorama"</string>
@@ -392,8 +390,8 @@
     <string name="menu_search" msgid="7580008232297437190">"Cari"</string>
     <string name="tab_photos" msgid="9110813680630313419">"Foto"</string>
     <string name="tab_albums" msgid="8079449907770685691">"Album"</string>
-  <plurals name="number_of_photos">
-    <item quantity="one" msgid="6949174783125614798">"%1$d foto"</item>
-    <item quantity="other" msgid="3813306834113858135">"%1$d foto"</item>
-  </plurals>
+    <plurals name="number_of_photos">
+        <item msgid="6949174783125614798" quantity="one">"%1$d foto"</item>
+        <item msgid="3813306834113858135" quantity="other">"%1$d foto"</item>
+    </plurals>
 </resources>

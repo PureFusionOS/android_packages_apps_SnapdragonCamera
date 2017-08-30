@@ -45,7 +45,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
-import com.android.camera.PhotoModule;
+
 import com.android.camera.CameraManager.CameraProxy;
 import com.android.camera.app.OrientationManager;
 import com.android.camera.data.LocalData;
@@ -53,6 +53,7 @@ import com.android.camera.exif.ExifInterface;
 import com.android.camera.ui.RotateTextToast;
 import com.android.camera.util.CameraUtil;
 import com.android.camera.util.UsageStatistics;
+
 import org.omnirom.snap.R;
 
 import java.io.ByteArrayOutputStream;
@@ -71,34 +72,27 @@ public class WideAnglePanoramaModule
     public static final int DEFAULT_SWEEP_ANGLE = 160;
     public static final int DEFAULT_BLEND_MODE = Mosaic.BLENDTYPE_HORIZONTAL;
     public static final int DEFAULT_CAPTURE_PIXELS = 960 * 720;
-
+    public static final int CAPTURE_STATE_VIEWFINDER = 0;
+    public static final int CAPTURE_STATE_MOSAIC = 1;
     private static final int MSG_LOW_RES_FINAL_MOSAIC_READY = 1;
     private static final int MSG_GENERATE_FINAL_MOSAIC_ERROR = 2;
     private static final int MSG_END_DIALOG_RESET_TO_PREVIEW = 3;
     private static final int MSG_CLEAR_SCREEN_DELAY = 4;
     private static final int MSG_RESET_TO_PREVIEW = 5;
-
     private static final int SCREEN_DELAY = 2 * 60 * 1000;
-
     @SuppressWarnings("unused")
     private static final String TAG = "CAM_WidePanoModule";
     private static final int PREVIEW_STOPPED = 0;
     private static final int PREVIEW_ACTIVE = 1;
-    public static final int CAPTURE_STATE_VIEWFINDER = 0;
-    public static final int CAPTURE_STATE_MOSAIC = 1;
-
     // The unit of speed is degrees per frame.
     private static final float PANNING_SPEED_THRESHOLD = 2.5f;
     private static final boolean DEBUG = false;
-
+    private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
     private ContentResolver mContentResolver;
     private WideAnglePanoramaUI mUI;
-
     private MosaicPreviewRenderer mMosaicPreviewRenderer;
     private Object mRendererLock = new Object();
     private Object mWaitObject = new Object();
-    private final CameraErrorCallback mErrorCallback = new CameraErrorCallback();
-
     private String mPreparePreviewString;
     private String mDialogTitle;
     private String mDialogOkString;
@@ -115,7 +109,7 @@ public class WideAnglePanoramaModule
     private PowerManager.WakeLock mPartialWakeLock;
     private MosaicFrameProcessor mMosaicFrameProcessor;
     private boolean mMosaicFrameProcessorInitialized;
-    private AsyncTask <Void, Void, Void> mWaitProcessorTask;
+    private AsyncTask<Void, Void, Void> mWaitProcessorTask;
     private long mTimeTaken;
     private Handler mMainHandler;
     private SurfaceTexture mCameraTexture;
@@ -156,6 +150,14 @@ public class WideAnglePanoramaModule
 
     private boolean mDirectionChanged = false;
 
+    private static void writeLocation(Location location, ExifInterface exif) {
+        if (location == null) {
+            return;
+        }
+        exif.addGpsTags(location.getLatitude(), location.getLongitude());
+        exif.setTag(exif.buildTag(ExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider()));
+    }
+
     @Override
     public void onPreviewUIReady() {
         configMosaicPreview();
@@ -164,57 +166,6 @@ public class WideAnglePanoramaModule
     @Override
     public void onPreviewUIDestroyed() {
 
-    }
-
-    private class MosaicJpeg {
-        public MosaicJpeg(byte[] data, int width, int height) {
-            this.data = data;
-            this.width = width;
-            this.height = height;
-            this.isValid = true;
-        }
-
-        public MosaicJpeg() {
-            this.data = null;
-            this.width = 0;
-            this.height = 0;
-            this.isValid = false;
-        }
-
-        public final byte[] data;
-        public final int width;
-        public final int height;
-        public final boolean isValid;
-    }
-
-    private class PanoOrientationEventListener extends OrientationEventListener {
-        public PanoOrientationEventListener(Context context) {
-            super(context);
-        }
-
-        @Override
-        public void onOrientationChanged(int orientation) {
-            // We keep the last known orientation. So if the user first orient
-            // the camera then point the camera to floor or sky, we still have
-            // the correct orientation.
-            if (orientation == ORIENTATION_UNKNOWN) return;
-            orientation = (orientation - mOrientationOffset + 360) % 360;
-            int oldOrientation = mDeviceOrientation;
-            mDeviceOrientation = CameraUtil.roundOrientation(orientation, mDeviceOrientation);
-            // When the screen is unlocked, display rotation may change. Always
-            // calculate the up-to-date orientationCompensation.
-            int orientationCompensation = mDeviceOrientation
-                    + CameraUtil.getDisplayRotation(mActivity) % 360;
-            if (mOrientationCompensation != orientationCompensation) {
-                mOrientationCompensation = orientationCompensation;
-            }
-            if (oldOrientation != mDeviceOrientation
-                    && oldOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
-                mPreviewLayoutChanged = true;
-                if (!mOrientationLocked)
-                    mUI.setOrientation(mDeviceOrientation, true);
-            }
-        }
     }
 
     private int getPreferredCameraId(ComboPreferences preferences) {
@@ -238,54 +189,48 @@ public class WideAnglePanoramaModule
         mCaptureState = CAPTURE_STATE_VIEWFINDER;
         mUI = new WideAnglePanoramaUI(mActivity, this, (ViewGroup) mRootView);
         mUI.setCaptureProgressOnDirectionChangeListener(
-                new PanoProgressBar.OnDirectionChangeListener() {
-                    @Override
-                    public void onDirectionChange(int direction) {
-                        if (mDirectionChanged) {
-                            stopCapture(false);
-                            return;
-                        }
-                        if (mCaptureState == CAPTURE_STATE_MOSAIC) {
-                            mUI.showDirectionIndicators(direction);
-                        }
-                        if (direction != PanoProgressBar.DIRECTION_NONE) {
-                            mDirectionChanged = true;
-                        }
+                direction -> {
+                    if (mDirectionChanged) {
+                        stopCapture(false);
+                        return;
+                    }
+                    if (mCaptureState == CAPTURE_STATE_MOSAIC) {
+                        mUI.showDirectionIndicators(direction);
+                    }
+                    if (direction != PanoProgressBar.DIRECTION_NONE) {
+                        mDirectionChanged = true;
                     }
                 });
 
         mContentResolver = mActivity.getContentResolver();
         // This runs in UI thread.
-        mOnFrameAvailableRunnable = new Runnable() {
-            @Override
-            public void run() {
-                // Frames might still be available after the activity is paused.
-                // If we call onFrameAvailable after pausing, the GL thread will crash.
-                if (mPaused) return;
+        mOnFrameAvailableRunnable = () -> {
+            // Frames might still be available after the activity is paused.
+            // If we call onFrameAvailable after pausing, the GL thread will crash.
+            if (mPaused) return;
 
-                MosaicPreviewRenderer renderer = null;
-                synchronized (mRendererLock) {
-                    if (mMosaicPreviewRenderer == null) {
-                        return;
-                    }
-                    renderer = mMosaicPreviewRenderer;
+            MosaicPreviewRenderer renderer = null;
+            synchronized (mRendererLock) {
+                if (mMosaicPreviewRenderer == null) {
+                    return;
                 }
-                if (mRootView.getVisibility() != View.VISIBLE) {
-                    renderer.showPreviewFrameSync();
-                    mRootView.setVisibility(View.VISIBLE);
-                } else {
-                    if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
-                        if (mPreviewLayoutChanged) {
-                            boolean isLandscape = (mDeviceOrientation / 90) % 2 == 1;
-                            renderer.previewReset(mPreviewUIWidth, mPreviewUIHeight,
-                                    isLandscape, mDeviceOrientation);
-                            mPreviewLayoutChanged = false;
-                        }
-                        renderer.showPreviewFrame();
-                    } else {
-                        renderer.alignFrameSync();
-                        mMosaicFrameProcessor.processFrame();
+                renderer = mMosaicPreviewRenderer;
+            }
+            if (mRootView.getVisibility() != View.VISIBLE) {
+                renderer.showPreviewFrameSync();
+                mRootView.setVisibility(View.VISIBLE);
+            } else {
+                if (mCaptureState == CAPTURE_STATE_VIEWFINDER) {
+                    if (mPreviewLayoutChanged) {
+                        boolean isLandscape = (mDeviceOrientation / 90) % 2 == 1;
+                        renderer.previewReset(mPreviewUIWidth, mPreviewUIHeight,
+                                isLandscape, mDeviceOrientation);
+                        mPreviewLayoutChanged = false;
                     }
+                    renderer.showPreviewFrame();
+                } else {
+                    renderer.alignFrameSync();
+                    mMosaicFrameProcessor.processFrame();
                 }
             }
         };
@@ -329,12 +274,7 @@ public class WideAnglePanoramaModule
                         } else {
                             mUI.showAlertDialog(
                                     mDialogTitle, mDialogPanoramaFailedString,
-                                    mDialogOkString, new Runnable() {
-                                @Override
-                                public void run() {
-                                    resetToPreviewIfPossible();
-                                }
-                            });
+                                    mDialogOkString, () -> resetToPreviewIfPossible());
                         }
                         clearMosaicFrameProcessorIfNeeded();
                         break;
@@ -422,7 +362,7 @@ public class WideAnglePanoramaModule
     }
 
     private boolean findBestPreviewSize(List<Size> supportedSizes, boolean need4To3,
-            boolean needSmaller) {
+                                        boolean needSmaller) {
         int pixelsDiff = DEFAULT_CAPTURE_PIXELS;
         boolean hasFound = false;
         for (Size size : supportedSizes) {
@@ -457,7 +397,7 @@ public class WideAnglePanoramaModule
             }
         }
         Log.d(TAG, "camera preview h = "
-                    + mCameraPreviewHeight + " , w = " + mCameraPreviewWidth);
+                + mCameraPreviewHeight + " , w = " + mCameraPreviewWidth);
         parameters.setPreviewSize(mCameraPreviewWidth, mCameraPreviewHeight);
 
         List<int[]> frameRates = parameters.getSupportedPreviewFpsRange();
@@ -473,13 +413,13 @@ public class WideAnglePanoramaModule
         } else {
             // Use the default focus mode and log a message
             Log.w(TAG, "Cannot set the focus mode to " + mTargetFocusMode +
-                  " becuase the mode is not supported.");
+                    " becuase the mode is not supported.");
         }
 
         parameters.set(CameraUtil.RECORDING_HINT, CameraUtil.FALSE);
 
         mHorizontalViewAngle = parameters.getHorizontalViewAngle();
-        mVerticalViewAngle =  parameters.getVerticalViewAngle();
+        mVerticalViewAngle = parameters.getVerticalViewAngle();
     }
 
     public int getPreviewBufSize() {
@@ -536,10 +476,10 @@ public class WideAnglePanoramaModule
     public void onPreviewUILayoutChange(int l, int t, int r, int b) {
         Log.d(TAG, "layout change: " + (r - l) + "/" + (b - t));
         boolean capturePending = false;
-        if (mCaptureState == CAPTURE_STATE_MOSAIC){
+        if (mCaptureState == CAPTURE_STATE_MOSAIC) {
             capturePending = true;
         }
-        int width = r -l;
+        int width = r - l;
         int height = b - t;
         if (mPreviewUIWidth != width || mPreviewUIHeight != height
                 || mCameraState != PREVIEW_ACTIVE) {
@@ -547,14 +487,11 @@ public class WideAnglePanoramaModule
             mPreviewUIHeight = b - t;
             configMosaicPreview();
         }
-        if (capturePending == true){
-            mMainHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (!mPaused){
-                        mMainHandler.removeMessages(MSG_RESET_TO_PREVIEW);
-                        startCapture();
-                    }
+        if (capturePending) {
+            mMainHandler.post(() -> {
+                if (!mPaused) {
+                    mMainHandler.removeMessages(MSG_RESET_TO_PREVIEW);
+                    startCapture();
                 }
             });
         }
@@ -580,29 +517,25 @@ public class WideAnglePanoramaModule
         parameters.setAutoWhiteBalanceLock(true);
         configureCamera(parameters);
 
-        mMosaicFrameProcessor.setProgressListener(new MosaicFrameProcessor.ProgressListener() {
-            @Override
-            public void onProgress(boolean isFinished, float panningRateX, float panningRateY,
-                    float progressX, float progressY) {
-                float accumulatedHorizontalAngle = progressX * mHorizontalViewAngle;
-                float accumulatedVerticalAngle = progressY * mVerticalViewAngle;
-                boolean isRotated = !(mDeviceOrientationAtCapture == mDeviceOrientation);
-                if (isFinished
-                        || (Math.abs(accumulatedHorizontalAngle) >= DEFAULT_SWEEP_ANGLE)
-                        || (Math.abs(accumulatedVerticalAngle) >= DEFAULT_SWEEP_ANGLE)
-                        || isRotated) {
-                    stopCapture(false);
-                } else {
-                    float panningRateXInDegree = panningRateX * mHorizontalViewAngle;
-                    float panningRateYInDegree = panningRateY * mVerticalViewAngle;
-                    if (mDeviceOrientation == 180 || mDeviceOrientation == 90) {
-                        accumulatedHorizontalAngle = -accumulatedHorizontalAngle;
-                        accumulatedVerticalAngle = -accumulatedVerticalAngle;
-                    }
-                    mUI.updateCaptureProgress(panningRateXInDegree, panningRateYInDegree,
-                            accumulatedHorizontalAngle, accumulatedVerticalAngle,
-                            PANNING_SPEED_THRESHOLD);
+        mMosaicFrameProcessor.setProgressListener((isFinished, panningRateX, panningRateY, progressX, progressY) -> {
+            float accumulatedHorizontalAngle = progressX * mHorizontalViewAngle;
+            float accumulatedVerticalAngle = progressY * mVerticalViewAngle;
+            boolean isRotated = !(mDeviceOrientationAtCapture == mDeviceOrientation);
+            if (isFinished
+                    || (Math.abs(accumulatedHorizontalAngle) >= DEFAULT_SWEEP_ANGLE)
+                    || (Math.abs(accumulatedVerticalAngle) >= DEFAULT_SWEEP_ANGLE)
+                    || isRotated) {
+                stopCapture(false);
+            } else {
+                float panningRateXInDegree = panningRateX * mHorizontalViewAngle;
+                float panningRateYInDegree = panningRateY * mVerticalViewAngle;
+                if (mDeviceOrientation == 180 || mDeviceOrientation == 90) {
+                    accumulatedHorizontalAngle = -accumulatedHorizontalAngle;
+                    accumulatedVerticalAngle = -accumulatedVerticalAngle;
                 }
+                mUI.updateCaptureProgress(panningRateXInDegree, panningRateYInDegree,
+                        accumulatedHorizontalAngle, accumulatedVerticalAngle,
+                        PANNING_SPEED_THRESHOLD);
             }
         });
 
@@ -671,7 +604,7 @@ public class WideAnglePanoramaModule
         switch (mCaptureState) {
             case CAPTURE_STATE_VIEWFINDER:
                 final long storageSpaceBytes = mActivity.getStorageSpaceBytes();
-                if(storageSpaceBytes <= Storage.LOW_STORAGE_THRESHOLD_BYTES) {
+                if (storageSpaceBytes <= Storage.LOW_STORAGE_THRESHOLD_BYTES) {
                     Log.w(TAG, "Low storage warning: " + storageSpaceBytes);
                     return;
                 }
@@ -705,12 +638,7 @@ public class WideAnglePanoramaModule
                         throw new RuntimeException("Panorama reportProgress failed", e);
                     }
                     // Update the progress bar
-                    mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mUI.updateSavingProgress(progress);
-                        }
-                    });
+                    mActivity.runOnUiThread(() -> mUI.updateSavingProgress(progress));
                 }
             }
         };
@@ -735,9 +663,11 @@ public class WideAnglePanoramaModule
         return orientation;
     }
 
-    /** The orientation of the camera image. The value is the angle that the camera
-     *  image needs to be rotated clockwise so it shows correctly on the display
-     *  in its natural orientation. It should be 0, 90, 180, or 270.*/
+    /**
+     * The orientation of the camera image. The value is the angle that the camera
+     * image needs to be rotated clockwise so it shows correctly on the display
+     * in its natural orientation. It should be 0, 90, 180, or 270.
+     */
     public int getCameraOrientation() {
         return mCameraOrientation;
     }
@@ -746,7 +676,7 @@ public class WideAnglePanoramaModule
         runBackgroundThread(new Thread() {
             @Override
             public void run() {
-                mPartialWakeLock.acquire();
+                mPartialWakeLock.acquire(10*60*1000L /*10 minutes*/);
                 MosaicJpeg jpeg;
                 try {
                     jpeg = generateFinalMosaic(true);
@@ -762,12 +692,9 @@ public class WideAnglePanoramaModule
                     int orientation = getCaptureOrientation();
                     final Uri uri = savePanorama(jpeg.data, jpeg.width, jpeg.height, orientation);
                     if (uri != null) {
-                        mActivity.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mUI.showFinalMosaic();
-                                mActivity.notifyNewMedia(uri);
-                            }
+                        mActivity.runOnUiThread(() -> {
+                            mUI.showFinalMosaic();
+                            mActivity.notifyNewMedia(uri);
                         });
                     }
                     mMainHandler.sendMessage(
@@ -833,7 +760,7 @@ public class WideAnglePanoramaModule
             String filename = PanoUtil.createName(
                     mActivity.getResources().getString(R.string.pano_file_name_format), mTimeTaken);
             String filepath = Storage.generateFilepath(filename,
-                              PhotoModule.PIXEL_FORMAT_JPEG);
+                    PhotoModule.PIXEL_FORMAT_JPEG);
 
             UsageStatistics.onEvent(UsageStatistics.COMPONENT_PANORAMA,
                     UsageStatistics.ACTION_CAPTURE_DONE, null, 0,
@@ -860,14 +787,6 @@ public class WideAnglePanoramaModule
                     jpegLength, filepath, width, height, LocalData.MIME_TYPE_JPEG);
         }
         return null;
-    }
-
-    private static void writeLocation(Location location, ExifInterface exif) {
-        if (location == null) {
-            return;
-        }
-        exif.addGpsTags(location.getLatitude(), location.getLongitude());
-        exif.setTag(exif.buildTag(ExifInterface.TAG_GPS_PROCESSING_METHOD, location.getProvider()));
     }
 
     private void clearMosaicFrameProcessorIfNeeded() {
@@ -910,11 +829,11 @@ public class WideAnglePanoramaModule
     @Override
     public void enableRecordingLocation(boolean enable) {
         String value = (enable ? RecordLocationPreference.VALUE_ON
-                        : RecordLocationPreference.VALUE_OFF);
+                : RecordLocationPreference.VALUE_OFF);
         if (mPreferences != null) {
             mPreferences.edit()
-                .putString(CameraSettings.KEY_RECORD_LOCATION, value)
-                .apply();
+                    .putString(CameraSettings.KEY_RECORD_LOCATION, value)
+                    .apply();
         }
 
         mLocationManager.recordLocation(enable);
@@ -1030,19 +949,14 @@ public class WideAnglePanoramaModule
         } else {
             // Camera must be initialized before MosaicFrameProcessor is
             // initialized. The preview size has to be decided by camera device.
-            if (! mMosaicFrameProcessorInitialized) {
+            if (!mMosaicFrameProcessorInitialized) {
                 initMosaicFrameProcessorIfNeeded();
             }
             Point size = mUI.getPreviewAreaSize();
             mPreviewUIWidth = size.x;
             mPreviewUIHeight = size.y;
             configMosaicPreview();
-            mMainHandler.post(new Runnable(){
-                @Override
-                public void run(){
-                    mActivity.updateStorageSpaceAndHint();
-                }
-            });
+            mMainHandler.post(() -> mActivity.updateStorageSpaceAndHint());
         }
         mUI.setSwitcherIndex();
         keepScreenOnAwhile();
@@ -1062,8 +976,8 @@ public class WideAnglePanoramaModule
      *
      * @param highRes flag to indicate whether we want to get a high-res version.
      * @return a MosaicJpeg with its isValid flag set to true if successful; null if the generation
-     *         process is cancelled; and a MosaicJpeg with its isValid flag set to false if there
-     *         is an error in generating the final mosaic.
+     * process is cancelled; and a MosaicJpeg with its isValid flag set to false if there
+     * is an error in generating the final mosaic.
      */
     public MosaicJpeg generateFinalMosaic(boolean highRes) {
         int mosaicReturnCode = mMosaicFrameProcessor.createMosaic(highRes);
@@ -1080,7 +994,7 @@ public class WideAnglePanoramaModule
         }
 
         int len = imageData.length - 8;
-        int width = (imageData[len + 0] << 24) + ((imageData[len + 1] & 0xFF) << 16)
+        int width = (imageData[len] << 24) + ((imageData[len + 1] & 0xFF) << 16)
                 + ((imageData[len + 2] & 0xFF) << 8) + (imageData[len + 3] & 0xFF);
         int height = (imageData[len + 4] << 24) + ((imageData[len + 5] & 0xFF) << 16)
                 + ((imageData[len + 6] & 0xFF) << 8) + (imageData[len + 7] & 0xFF);
@@ -1139,7 +1053,7 @@ public class WideAnglePanoramaModule
             mCameraDevice.setDisplayOrientation(0);
 
             if (mCameraTexture != null)
-            mCameraTexture.setOnFrameAvailableListener(this);
+                mCameraTexture.setOnFrameAvailableListener(this);
             mCameraDevice.setPreviewTexture(mCameraTexture);
         }
         mCameraDevice.startPreview();
@@ -1162,12 +1076,8 @@ public class WideAnglePanoramaModule
     public boolean onBackPressed() {
         // If panorama is generating low res or high res mosaic, ignore back
         // key. So the activity will not be destroyed.
-        if (mThreadRunning) return true;
+        return mThreadRunning || mUI.hideSwitcherPopup();
 
-        if (mUI.hideSwitcherPopup())
-            return true;
-
-        return false;
     }
 
     private void resetScreenOn() {
@@ -1186,37 +1096,6 @@ public class WideAnglePanoramaModule
         mActivity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    private class WaitProcessorTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            synchronized (mMosaicFrameProcessor) {
-                while (!isCancelled() && mMosaicFrameProcessor.isMosaicMemoryAllocated()) {
-                    try {
-                        mMosaicFrameProcessor.wait();
-                    } catch (Exception e) {
-                        // ignore
-                    }
-                }
-            }
-            mActivity.updateStorageSpace();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            mWaitProcessorTask = null;
-            mUI.dismissAllDialogs();
-            // TODO (shkong): mGLRootView.setVisibility(View.VISIBLE);
-            initMosaicFrameProcessorIfNeeded();
-            Point size = mUI.getPreviewAreaSize();
-            mPreviewUIWidth = size.x;
-            mPreviewUIHeight = size.y;
-            configMosaicPreview();
-            resetToPreviewIfPossible();
-            mActivity.updateStorageHint(mActivity.getStorageSpaceBytes());
-        }
-    }
-
     @Override
     public void cancelHighResStitching() {
         if (mPaused || mCameraTexture == null) return;
@@ -1228,7 +1107,8 @@ public class WideAnglePanoramaModule
     }
 
     @Override
-    public void onDestroy() {}
+    public void onDestroy() {
+    }
 
     @Override
     public void installIntentFilter() {
@@ -1237,7 +1117,6 @@ public class WideAnglePanoramaModule
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
     }
-
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -1273,5 +1152,85 @@ public class WideAnglePanoramaModule
     @Override
     public void onMediaSaveServiceConnected(MediaSaveService s) {
         // do nothing.
+    }
+
+    private class MosaicJpeg {
+        public final byte[] data;
+        public final int width;
+        public final int height;
+        public final boolean isValid;
+        public MosaicJpeg(byte[] data, int width, int height) {
+            this.data = data;
+            this.width = width;
+            this.height = height;
+            this.isValid = true;
+        }
+        public MosaicJpeg() {
+            this.data = null;
+            this.width = 0;
+            this.height = 0;
+            this.isValid = false;
+        }
+    }
+
+    private class PanoOrientationEventListener extends OrientationEventListener {
+        public PanoOrientationEventListener(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onOrientationChanged(int orientation) {
+            // We keep the last known orientation. So if the user first orient
+            // the camera then point the camera to floor or sky, we still have
+            // the correct orientation.
+            if (orientation == ORIENTATION_UNKNOWN) return;
+            orientation = (orientation - mOrientationOffset + 360) % 360;
+            int oldOrientation = mDeviceOrientation;
+            mDeviceOrientation = CameraUtil.roundOrientation(orientation, mDeviceOrientation);
+            // When the screen is unlocked, display rotation may change. Always
+            // calculate the up-to-date orientationCompensation.
+            int orientationCompensation = mDeviceOrientation
+                    + CameraUtil.getDisplayRotation(mActivity) % 360;
+            if (mOrientationCompensation != orientationCompensation) {
+                mOrientationCompensation = orientationCompensation;
+            }
+            if (oldOrientation != mDeviceOrientation
+                    && oldOrientation != OrientationEventListener.ORIENTATION_UNKNOWN) {
+                mPreviewLayoutChanged = true;
+                if (!mOrientationLocked)
+                    mUI.setOrientation(mDeviceOrientation, true);
+            }
+        }
+    }
+
+    private class WaitProcessorTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            synchronized (mMosaicFrameProcessor) {
+                while (!isCancelled() && mMosaicFrameProcessor.isMosaicMemoryAllocated()) {
+                    try {
+                        mMosaicFrameProcessor.wait();
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+            mActivity.updateStorageSpace();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mWaitProcessorTask = null;
+            mUI.dismissAllDialogs();
+            // TODO (shkong): mGLRootView.setVisibility(View.VISIBLE);
+            initMosaicFrameProcessorIfNeeded();
+            Point size = mUI.getPreviewAreaSize();
+            mPreviewUIWidth = size.x;
+            mPreviewUIHeight = size.y;
+            configMosaicPreview();
+            resetToPreviewIfPossible();
+            mActivity.updateStorageHint(mActivity.getStorageSpaceBytes());
+        }
     }
 }

@@ -144,7 +144,7 @@ public class Camera2FaceView extends FaceView {
             float rectHeight;
             float diameter;
             int extendFaceSize = 0;
-            extendFaceSize = mExFaces == null? 0 : mExFaces.length;
+            extendFaceSize = mExFaces == null ? 0 : mExFaces.length;
             for (int i = 0; i < mFaces.length; i++) {
                 if (mFaces[i].getScore() < 50) continue;
                 Rect faceBound = mFaces[i].getBounds();
@@ -155,11 +155,11 @@ public class Camera2FaceView extends FaceView {
                 mPaint.setColor(mColor);
                 mRect.offset(dx, dy);
 
-                rectHeight = mRect.bottom-mRect.top;
+                rectHeight = mRect.bottom - mRect.top;
                 rectWidth = mRect.right - mRect.left;
                 diameter = rectHeight > rectWidth ? rectWidth : rectHeight;
 
-                canvas.drawCircle(mRect.centerX(), mRect.centerY(), diameter/2, mPaint);
+                canvas.drawCircle(mRect.centerX(), mRect.centerY(), diameter / 2, mPaint);
 
                 if (i < extendFaceSize && mExFaces[i] != null) {
                     ExtendedFace exFace = mExFaces[i];
@@ -168,10 +168,10 @@ public class Camera2FaceView extends FaceView {
                     int delta_x = faceBound.width() / 12;
                     int delta_y = faceBound.height() / 12;
 
-                    delta_x = (int)(delta_x * mZoom);
-                    delta_y = (int)(delta_y * mZoom);
+                    delta_x = (int) (delta_x * mZoom);
+                    delta_y = (int) (delta_y * mZoom);
 
-                    Log.e(TAG, "blink: (" + exFace.getLeyeBlink()+ ", " +
+                    Log.e(TAG, "blink: (" + exFace.getLeyeBlink() + ", " +
                             exFace.getReyeBlink() + ")");
                     if (face.getLeftEyePosition() != null) {
                         if ((mDisplayRotation == 0) ||
@@ -187,10 +187,10 @@ public class Camera2FaceView extends FaceView {
                             point[3] = face.getLeftEyePosition().y;
                         }
                         bsgcTranslateMatrix.mapPoints(point);
-                        mMatrix.mapPoints (point);
+                        mMatrix.mapPoints(point);
                         if (exFace.getLeyeBlink() >= blink_threshold) {
-                            canvas.drawLine(point[0]+ dx, point[1]+ dy,
-                                    point[2]+ dx, point[3]+ dy, mPaint);
+                            canvas.drawLine(point[0] + dx, point[1] + dy,
+                                    point[2] + dx, point[3] + dy, mPaint);
                         }
                     }
                     if (face.getRightEyePosition() != null) {
@@ -207,16 +207,16 @@ public class Camera2FaceView extends FaceView {
                             point[3] = face.getRightEyePosition().y;
                         }
                         bsgcTranslateMatrix.mapPoints(point);
-                        mMatrix.mapPoints (point);
+                        mMatrix.mapPoints(point);
                         if (exFace.getReyeBlink() >= blink_threshold) {
                             //Add offset to the points if the rect has an offset
                             canvas.drawLine(point[0] + dx, point[1] + dy,
-                                    point[2] +dx, point[3] +dy, mPaint);
+                                    point[2] + dx, point[3] + dy, mPaint);
                         }
                     }
 
                     if (exFace.getLeftrightGaze() != 0
-                            || exFace.getTopbottomGaze() != 0 ) {
+                            || exFace.getTopbottomGaze() != 0) {
 
                         double length =
                                 Math.sqrt((face.getLeftEyePosition().x - face.getRightEyePosition().x) *
@@ -226,22 +226,22 @@ public class Camera2FaceView extends FaceView {
                         double nGazeYaw = -exFace.getLeftrightGaze();
                         double nGazePitch = -exFace.getTopbottomGaze();
                         float gazeRollX =
-                                (float)((-Math.sin(nGazeYaw/180.0*Math.PI) *
-                                        Math.cos(-exFace.getRollDirection()/
-                                                180.0*Math.PI) +
-                                        Math.sin(nGazePitch/180.0*Math.PI) *
-                                                Math.cos(nGazeYaw/180.0*Math.PI) *
-                                                Math.sin(-exFace.getRollDirection()/
-                                                        180.0*Math.PI)) *
+                                (float) ((-Math.sin(nGazeYaw / 180.0 * Math.PI) *
+                                        Math.cos(-exFace.getRollDirection() /
+                                                180.0 * Math.PI) +
+                                        Math.sin(nGazePitch / 180.0 * Math.PI) *
+                                                Math.cos(nGazeYaw / 180.0 * Math.PI) *
+                                                Math.sin(-exFace.getRollDirection() /
+                                                        180.0 * Math.PI)) *
                                         (-length) + 0.5);
                         float gazeRollY =
-                                (float)((Math.sin(-nGazeYaw/180.0*Math.PI) *
-                                        Math.sin(-exFace.getRollDirection()/
-                                                180.0*Math.PI)-
-                                        Math.sin(nGazePitch/180.0*Math.PI) *
-                                                Math.cos(nGazeYaw/180.0*Math.PI) *
-                                                Math.cos(-exFace.getRollDirection()/
-                                                        180.0*Math.PI)) *
+                                (float) ((Math.sin(-nGazeYaw / 180.0 * Math.PI) *
+                                        Math.sin(-exFace.getRollDirection() /
+                                                180.0 * Math.PI) -
+                                        Math.sin(nGazePitch / 180.0 * Math.PI) *
+                                                Math.cos(nGazeYaw / 180.0 * Math.PI) *
+                                                Math.cos(-exFace.getRollDirection() /
+                                                        180.0 * Math.PI)) *
                                         (-length) + 0.5);
 
                         if (exFace.getLeyeBlink() < blink_threshold) {
@@ -258,9 +258,9 @@ public class Camera2FaceView extends FaceView {
                                 point[3] = face.getLeftEyePosition().y + gazeRollX;
                             }
                             bsgcTranslateMatrix.mapPoints(point);
-                            mMatrix.mapPoints (point);
-                            canvas.drawLine(point[0] +dx, point[1] + dy,
-                                    point[2] + dx, point[3] +dy, mPaint);
+                            mMatrix.mapPoints(point);
+                            canvas.drawLine(point[0] + dx, point[1] + dy,
+                                    point[2] + dx, point[3] + dy, mPaint);
                         }
 
                         if (exFace.getReyeBlink() < blink_threshold) {
@@ -277,7 +277,7 @@ public class Camera2FaceView extends FaceView {
                                 point[3] = face.getRightEyePosition().y + gazeRollX;
                             }
                             bsgcTranslateMatrix.mapPoints(point);
-                            mMatrix.mapPoints (point);
+                            mMatrix.mapPoints(point);
                             canvas.drawLine(point[0] + dx, point[1] + dy,
                                     point[2] + dx, point[3] + dy, mPaint);
                         }
@@ -302,18 +302,18 @@ public class Camera2FaceView extends FaceView {
                         } else if (exFace.getSmileDegree() <
                                 smile_threashold_small_smile) {
                             int rotation_mouth = 360 - mDisplayRotation;
-                            mRect.set(face.getMouthPosition().x-delta_x,
-                                    face.getMouthPosition().y-delta_y, face.getMouthPosition().x+delta_x,
-                                    face.getMouthPosition().y+delta_y);
+                            mRect.set(face.getMouthPosition().x - delta_x,
+                                    face.getMouthPosition().y - delta_y, face.getMouthPosition().x + delta_x,
+                                    face.getMouthPosition().y + delta_y);
                             bsgcTranslateMatrix.mapRect(mRect);
                             mMatrix.mapRect(mRect);
                             mRect.offset(dx, dy);
                             canvas.drawArc(mRect, rotation_mouth,
                                     180, true, mPaint);
                         } else {
-                            mRect.set(face.getMouthPosition().x-delta_x,
-                                    face.getMouthPosition().y-delta_y, face.getMouthPosition().x+delta_x,
-                                    face.getMouthPosition().y+delta_y);
+                            mRect.set(face.getMouthPosition().x - delta_x,
+                                    face.getMouthPosition().y - delta_y, face.getMouthPosition().x + delta_x,
+                                    face.getMouthPosition().y + delta_y);
                             bsgcTranslateMatrix.mapRect(mRect);
                             mMatrix.mapRect(mRect);
                             mRect.offset(dx, dy);

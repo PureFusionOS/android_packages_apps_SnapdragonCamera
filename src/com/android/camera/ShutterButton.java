@@ -20,7 +20,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.android.camera.ui.RotateVectorView;
 
@@ -31,33 +30,8 @@ import com.android.camera.ui.RotateVectorView;
  */
 public class ShutterButton extends RotateVectorView {
 
-    private class LongClickListener implements View.OnLongClickListener {
-         public boolean onLongClick(View v) {
-             if ( null != mListener ) {
-                 mListener.onShutterButtonLongClick();
-                 return true;
-             }
-             return false;
-         }
-    }
-
     private boolean mTouchEnabled = true;
     private LongClickListener mLongClick = new LongClickListener();
-
-    /**
-     * A callback to be invoked when a ShutterButton's pressed state changes.
-     */
-    public interface OnShutterButtonListener {
-        /**
-         * Called when a ShutterButton has been pressed.
-         *
-         * @param pressed The ShutterButton that was pressed.
-         */
-        void onShutterButtonFocus(boolean pressed);
-        void onShutterButtonClick();
-        void onShutterButtonLongClick();
-    }
-
     private OnShutterButtonListener mListener;
     private boolean mOldPressed;
 
@@ -72,11 +46,7 @@ public class ShutterButton extends RotateVectorView {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent m) {
-        if (mTouchEnabled) {
-            return super.dispatchTouchEvent(m);
-        } else {
-            return false;
-        }
+        return mTouchEnabled && super.dispatchTouchEvent(m);
     }
 
     public void enableTouch(boolean enable) {
@@ -116,12 +86,7 @@ public class ShutterButton extends RotateVectorView {
                 // after the optional click notification, so our client always
                 // sees events in this sequence:
                 //     pressed(true), optional click, pressed(false)
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        callShutterButtonFocus(pressed);
-                    }
-                });
+                post(() -> callShutterButtonFocus(pressed));
             } else {
                 callShutterButtonFocus(pressed);
             }
@@ -142,5 +107,31 @@ public class ShutterButton extends RotateVectorView {
             mListener.onShutterButtonClick();
         }
         return result;
+    }
+
+    /**
+     * A callback to be invoked when a ShutterButton's pressed state changes.
+     */
+    public interface OnShutterButtonListener {
+        /**
+         * Called when a ShutterButton has been pressed.
+         *
+         * @param pressed The ShutterButton that was pressed.
+         */
+        void onShutterButtonFocus(boolean pressed);
+
+        void onShutterButtonClick();
+
+        void onShutterButtonLongClick();
+    }
+
+    private class LongClickListener implements View.OnLongClickListener {
+        public boolean onLongClick(View v) {
+            if (null != mListener) {
+                mListener.onShutterButtonLongClick();
+                return true;
+            }
+            return false;
+        }
     }
 }

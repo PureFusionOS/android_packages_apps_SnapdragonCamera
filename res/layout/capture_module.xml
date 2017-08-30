@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2016, The Linux Foundation. All rights reserved.
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (c) 2016, The Linux Foundation. All rights reserved.
      Not a Contribution.
 
      Copyright (C) 2013 The Android Open Source Project
@@ -24,25 +23,28 @@
  layout. -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center">
+
     <include layout="@layout/selfie_flash_view" />
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical|center_horizontal">
+
         <com.android.camera.ui.AutoFitSurfaceView
             android:id="@+id/mdp_preview_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center" />
+
         <com.android.camera.ui.AutoFitSurfaceView
+            android:id="@+id/mdp_preview_content_mono"
             android:layout_width="300dp"
             android:layout_height="300dp"
-	    android:id="@+id/mdp_preview_content_mono"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </FrameLayout>
 
     <View
@@ -59,35 +61,39 @@
             android:id="@+id/face_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"/>
+            android:visibility="gone" />
+
         <com.android.camera.Camera2GraphView
             android:id="@+id/graph_view_r"
-            android:visibility="gone"
             android:layout_width="100dip"
             android:layout_height="100dip"
+            android:layout_marginLeft="10dip"
             android:layout_marginTop="70dip"
-            android:layout_marginLeft="10dip" />
+            android:visibility="gone" />
+
         <com.android.camera.Camera2GraphView
             android:id="@+id/graph_view_gr"
-            android:visibility="gone"
             android:layout_width="100dip"
             android:layout_height="100dip"
+            android:layout_marginLeft="120dip"
             android:layout_marginTop="70dip"
-            android:layout_marginLeft="120dip" />
+            android:visibility="gone" />
+
         <com.android.camera.Camera2GraphView
             android:id="@+id/graph_view_gb"
-            android:visibility="gone"
             android:layout_width="100dip"
             android:layout_height="100dip"
+            android:layout_marginLeft="230dip"
             android:layout_marginTop="70dip"
-            android:layout_marginLeft="230dip" />
+            android:visibility="gone" />
+
         <com.android.camera.Camera2GraphView
             android:id="@+id/graph_view_b"
-            android:visibility="gone"
             android:layout_width="100dip"
             android:layout_height="100dip"
+            android:layout_marginLeft="10dip"
             android:layout_marginTop="180dip"
-            android:layout_marginLeft="10dip" />
+            android:visibility="gone" />
     </FrameLayout>
 
     <com.android.camera.ui.RenderOverlay
@@ -99,23 +105,22 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <com.android.camera.ui.RotateLayout
             android:id="@+id/recording_time_rect"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:visibility="gone"
             android:layout_marginLeft="24dp"
-            android:layout_marginTop="80dp">
+            android:layout_marginTop="80dp"
+            android:visibility="gone">
+
             <include
                 android:id="@+id/labels"
-                layout="@layout/viewfinder_labels_video"/>
+                layout="@layout/viewfinder_labels_video" />
         </com.android.camera.ui.RotateLayout>
     </FrameLayout>
 
-    <include
-        layout="@layout/scene_mode_label"/>
+    <include layout="@layout/scene_mode_label" />
 
     <include
         style="@style/CameraControls"
@@ -129,53 +134,57 @@
 
     <FrameLayout
         android:id="@+id/preview_of_intent"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@android:color/black"
         android:visibility="gone">
+
         <com.android.camera.ui.RotateImageView
             android:id="@+id/preview_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/black"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter" />
 
         <ImageView
             android:id="@+id/preview_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@drawable/ic_gallery_play_big"
-            android:visibility="gone"
-            android:layout_gravity="center" />
+            android:visibility="gone" />
 
-        <com.android.camera.ui.RotatableLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <com.android.camera.ui.RotatableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             style="@style/CameraControls"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="2dip">
-            <com.android.camera.ui.RotateImageView android:id="@+id/preview_btn_done"
+
+            <com.android.camera.ui.RotateImageView
+                android:id="@+id/preview_btn_done"
                 style="@style/ReviewControlIcon"
-                android:contentDescription="@string/accessibility_review_ok"
-                android:scaleType="center"
                 android:layout_gravity="right|bottom"
                 android:background="@drawable/bg_pressed"
+                android:contentDescription="@string/accessibility_review_ok"
+                android:scaleType="center"
                 android:src="@drawable/ic_menu_done_holo_light" />
 
-            <com.android.camera.ui.RotateImageView android:id="@+id/preview_btn_retake"
+            <com.android.camera.ui.RotateImageView
+                android:id="@+id/preview_btn_retake"
                 style="@style/ReviewControlIcon"
-                android:contentDescription="@string/accessibility_review_retake"
                 android:layout_gravity="bottom|center_horizontal"
-                android:scaleType="center"
-                android:focusable="true"
                 android:background="@drawable/bg_pressed"
+                android:contentDescription="@string/accessibility_review_retake"
+                android:focusable="true"
+                android:scaleType="center"
                 android:src="@drawable/ic_btn_shutter_retake" />
 
-            <com.android.camera.ui.RotateImageView android:id="@+id/preview_btn_cancel"
+            <com.android.camera.ui.RotateImageView
+                android:id="@+id/preview_btn_cancel"
                 style="@style/ReviewControlIcon"
-                android:contentDescription="@string/accessibility_review_cancel"
-                android:scaleType="center"
                 android:layout_gravity="left|bottom"
                 android:background="@drawable/bg_pressed"
+                android:contentDescription="@string/accessibility_review_cancel"
+                android:scaleType="center"
                 android:src="@drawable/ic_menu_cancel_holo_light" />
         </com.android.camera.ui.RotatableLayout>
     </FrameLayout>

@@ -29,10 +29,11 @@ import org.omnirom.snap.R;
  */
 public class ProgressRenderer {
 
-    public static interface VisibilityListener {
-        public void onHidden();
-    }
-
+    /**
+     * After we reach 100%, keep on painting the progress for another x milliseconds
+     * before hiding it.
+     */
+    private static final int SHOW_PROGRESS_X_ADDITIONAL_MS = 100;
     private final int mProgressRadius;
     private final Paint mProgressBasePaint;
     private final Paint mProgressPaint;
@@ -41,14 +42,9 @@ public class ProgressRenderer {
     private int mProgressAngleDegrees = 270;
     private boolean mVisible = false;
     private VisibilityListener mVisibilityListener;
-
     /**
-     * After we reach 100%, keep on painting the progress for another x milliseconds
-     * before hiding it.
+     * When to hide the progress indicator.
      */
-    private static final int SHOW_PROGRESS_X_ADDITIONAL_MS = 100;
-
-    /** When to hide the progress indicator. */
     private long mTimeToHide = 0;
 
     public ProgressRenderer(Context context) {
@@ -57,6 +53,16 @@ public class ProgressRenderer {
                 R.dimen.pie_progress_width);
         mProgressBasePaint = createProgressPaint(pieProgressWidth, 0.2f);
         mProgressPaint = createProgressPaint(pieProgressWidth, 1.0f);
+    }
+
+    private static Paint createProgressPaint(int width, float alpha) {
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        // 20% alpha.
+        paint.setColor(Color.argb((int) (alpha * 255), 255, 255, 255));
+        paint.setStrokeWidth(width);
+        paint.setStyle(Paint.Style.STROKE);
+        return paint;
     }
 
     /**
@@ -115,13 +121,7 @@ public class ProgressRenderer {
         return mVisible;
     }
 
-    private static Paint createProgressPaint(int width, float alpha) {
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        // 20% alpha.
-        paint.setColor(Color.argb((int) (alpha * 255), 255, 255, 255));
-        paint.setStrokeWidth(width);
-        paint.setStyle(Paint.Style.STROKE);
-        return paint;
+    public static interface VisibilityListener {
+        public void onHidden();
     }
 }

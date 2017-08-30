@@ -20,38 +20,34 @@ import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.SharedPreferences;
 import android.graphics.Rect;
-import android.preference.PreferenceManager;
-import android.util.Log;
+import android.text.TextUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.camera.ui.CameraControls;
-import com.android.camera.ui.ListSubMenu;
 import com.android.camera.ui.ListMenu;
-import com.android.camera.ui.TimeIntervalPopup;
-import com.android.camera.ui.RotateImageView;
-import com.android.camera.ui.RotateTextToast;
-import org.omnirom.snap.R;
-import android.widget.HorizontalScrollView;
-import android.widget.Toast;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.Display;
+import com.android.camera.ui.ListSubMenu;
 import com.android.camera.ui.RotateLayout;
+import com.android.camera.ui.RotateTextToast;
+import com.android.camera.ui.TimeIntervalPopup;
 import com.android.camera.util.CameraUtil;
-import android.text.TextUtils;
+
+import org.omnirom.snap.R;
+
 import java.util.Locale;
 
 public class VideoMenu extends MenuController
@@ -59,15 +55,6 @@ public class VideoMenu extends MenuController
         ListSubMenu.Listener,
         TimeIntervalPopup.Listener {
 
-    private static String TAG = "VideoMenu";
-
-    private VideoUI mUI;
-    private String[] mOtherKeys1;
-    private String[] mOtherKeys2;
-
-    private ListMenu mListMenu;
-    private ListSubMenu mListSubMenu;
-    private View mPreviewMenu;
     private static final int POPUP_NONE = 0;
     private static final int POPUP_FIRST_LEVEL = 1;
     private static final int POPUP_SECOND_LEVEL = 2;
@@ -77,6 +64,17 @@ public class VideoMenu extends MenuController
     private static final int PREVIEW_MENU_IN_ANIMATION = 1;
     private static final int PREVIEW_MENU_ON = 2;
     private static final int MODE_FILTER = 1;
+    private static final int ANIMATION_DURATION = 300;
+    private static final int CLICK_THRESHOLD = 200;
+    private static final boolean PERSIST_4K_NO_LIMIT =
+            android.os.SystemProperties.getBoolean("persist.camcorder.4k.nolimit", false);
+    private static String TAG = "VideoMenu";
+    private VideoUI mUI;
+    private String[] mOtherKeys1;
+    private String[] mOtherKeys2;
+    private ListMenu mListMenu;
+    private ListSubMenu mListSubMenu;
+    private View mPreviewMenu;
     private int mSceneStatus;
     private View mFrontBackSwitcher;
     private View mFilterModeSwitcher;
@@ -86,12 +84,7 @@ public class VideoMenu extends MenuController
     private String mPrevSavedVideoCDS;
     private boolean mIsVideoTNREnabled = false;
     private boolean mIsVideoCDSUpdated = false;
-    private static final int ANIMATION_DURATION = 300;
-    private static final int CLICK_THRESHOLD = 200;
     private int previewMenuSize;
-
-    private static final boolean PERSIST_4K_NO_LIMIT =
-            android.os.SystemProperties.getBoolean("persist.camcorder.4k.nolimit", false);
 
     public VideoMenu(CameraActivity activity, VideoUI ui) {
         super(activity);
@@ -99,6 +92,11 @@ public class VideoMenu extends MenuController
         mActivity = activity;
         mFrontBackSwitcher = ui.getRootView().findViewById(R.id.front_back_switcher);
         mFilterModeSwitcher = ui.getRootView().findViewById(R.id.filter_mode_switcher);
+    }
+
+    // Return true if the preference has the specified key but not the value.
+    private static boolean notSame(ListPreference pref, String key, String value) {
+        return (key.equals(pref.getKey()) && !value.equals(pref.getValue()));
     }
 
     public void initialize(PreferenceGroup group) {
@@ -109,7 +107,7 @@ public class VideoMenu extends MenuController
         mPreviewMenuStatus = POPUP_NONE;
         initFilterModeButton(mFilterModeSwitcher);
         // settings popup
-        mOtherKeys1 = new String[] {
+        mOtherKeys1 = new String[]{
                 CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.KEY_VIDEO_DURATION,
@@ -120,7 +118,7 @@ public class VideoMenu extends MenuController
                 CameraSettings.KEY_DIS,
                 CameraSettings.KEY_GRID
         };
-        mOtherKeys2 = new String[] {
+        mOtherKeys2 = new String[]{
                 CameraSettings.KEY_VIDEOCAMERA_FLASH_MODE,
                 CameraSettings.KEY_VIDEO_QUALITY,
                 CameraSettings.KEY_VIDEO_DURATION,
@@ -160,7 +158,7 @@ public class VideoMenu extends MenuController
             animateSlideOut(mListMenu, 1);
         } else if (mPopupStatus == POPUP_SECOND_LEVEL) {
             animateFadeOut(mListSubMenu, 2);
-            ((ListMenu) mListMenu).resetHighlight();
+            mListMenu.resetHighlight();
         }
         return true;
     }
@@ -171,7 +169,7 @@ public class VideoMenu extends MenuController
 
     public void tryToCloseSubList() {
         if (mListMenu != null)
-            ((ListMenu) mListMenu).resetHighlight();
+            mListMenu.resetHighlight();
 
         if (mPopupStatus == POPUP_SECOND_LEVEL) {
             mUI.dismissLevel2();
@@ -203,8 +201,7 @@ public class VideoMenu extends MenuController
                     initializePopup();
                     mPopupStatus = POPUP_NONE;
                     mUI.cleanupListview();
-                }
-                else if (level == 2) {
+                } else if (level == 2) {
                     mUI.dismissLevel2();
                     mPopupStatus = POPUP_FIRST_LEVEL;
                 }
@@ -217,8 +214,7 @@ public class VideoMenu extends MenuController
                     initializePopup();
                     mPopupStatus = POPUP_NONE;
                     mUI.cleanupListview();
-                }
-                else if (level == 2) {
+                } else if (level == 2) {
                     mUI.dismissLevel2();
                     mPopupStatus = POPUP_FIRST_LEVEL;
                 }
@@ -284,8 +280,7 @@ public class VideoMenu extends MenuController
                     initializePopup();
                     mPopupStatus = POPUP_NONE;
                     mUI.cleanupListview();
-                }
-                else if (level == 2) {
+                } else if (level == 2) {
                     mUI.dismissLevel2();
                     mPopupStatus = POPUP_FIRST_LEVEL;
                 }
@@ -298,8 +293,7 @@ public class VideoMenu extends MenuController
                     initializePopup();
                     mPopupStatus = POPUP_NONE;
                     mUI.cleanupListview();
-                }
-                else if (level == 2) {
+                } else if (level == 2) {
                     mUI.dismissLevel2();
                     mPopupStatus = POPUP_FIRST_LEVEL;
                 }
@@ -488,25 +482,22 @@ public class VideoMenu extends MenuController
         ((ImageView) switcher).setImageResource(resid);
         mPreferences.add(pref);
         mPreferenceMap.put(pref, switcher);
-        switcher.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IconListPreference pref = (IconListPreference) mPreferenceGroup
-                        .findPreference(prefKey);
-                if (pref == null)
-                    return;
-                int index = pref.findIndexOfValue(pref.getValue());
-                CharSequence[] values = pref.getEntryValues();
-                index = (index + 1) % values.length;
-                pref.setValueIndex(index);
-                int iconListLength = ((IconListPreference) pref).getLargeIconIds().length;
-                ((ImageView) v).setImageResource(
-                        ((IconListPreference) pref).getLargeIconIds()[index % iconListLength]);
-                if (prefKey.equals(CameraSettings.KEY_CAMERA_ID))
-                    mListener.onCameraPickerClicked(index);
-                reloadPreference(pref);
-                onSettingChanged(pref);
-            }
+        switcher.setOnClickListener(v -> {
+            IconListPreference pref1 = (IconListPreference) mPreferenceGroup
+                    .findPreference(prefKey);
+            if (pref1 == null)
+                return;
+            int index1 = pref1.findIndexOfValue(pref1.getValue());
+            CharSequence[] values = pref1.getEntryValues();
+            index1 = (index1 + 1) % values.length;
+            pref1.setValueIndex(index1);
+            int iconListLength = pref1.getLargeIconIds().length;
+            ((ImageView) v).setImageResource(
+                    pref1.getLargeIconIds()[index1 % iconListLength]);
+            if (prefKey.equals(CameraSettings.KEY_CAMERA_ID))
+                mListener.onCameraPickerClicked(index1);
+            reloadPreference(pref1);
+            onSettingChanged(pref1);
         });
     }
 
@@ -519,16 +510,13 @@ public class VideoMenu extends MenuController
 
         changeFilterModeControlIcon(pref.getValue());
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addFilterMode();
-                ViewGroup menuLayout = mUI.getPreviewMenuLayout();
-                if (menuLayout != null) {
-                    View view = menuLayout.getChildAt(0);
-                    mUI.adjustOrientation();
-                    animateSlideIn(view, previewMenuSize, false);
-                }
+        button.setOnClickListener(v -> {
+            addFilterMode();
+            ViewGroup menuLayout = mUI.getPreviewMenuLayout();
+            if (menuLayout != null) {
+                View view = menuLayout.getChildAt(0);
+                mUI.adjustOrientation();
+                animateSlideIn(view, previewMenuSize, false);
             }
         });
     }
@@ -645,8 +633,8 @@ public class VideoMenu extends MenuController
     }
 
     private void changeFilterModeControlIcon(String value) {
-        if(!value.equals("")) {
-            if(value.equalsIgnoreCase("none")) {
+        if (!value.equals("")) {
+            if (value.equalsIgnoreCase("none")) {
                 value = "Off";
             } else {
                 value = "On";
@@ -656,7 +644,7 @@ public class VideoMenu extends MenuController
             pref.setValue(value);
             int index = pref.getCurrentIndex();
             ImageView iv = (ImageView) mFilterModeSwitcher;
-            iv.setImageResource(((IconListPreference) pref).getLargeIconIds()[index]);
+            iv.setImageResource(pref.getLargeIconIds()[index]);
         }
     }
 
@@ -693,13 +681,14 @@ public class VideoMenu extends MenuController
             mListMenu.setPreferenceEnabled(CameraSettings.KEY_RECORD_LOCATION, false);
         }
     }
+
     private void overrideMenuFor4K() {
-        if(mUI.is4KEnabled() && !PERSIST_4K_NO_LIMIT) {
+        if (mUI.is4KEnabled() && !PERSIST_4K_NO_LIMIT) {
 
             mListMenu.setPreferenceEnabled(
-                     CameraSettings.KEY_DIS,false);
+                    CameraSettings.KEY_DIS, false);
             mListMenu.overrideSettings(
-                     CameraSettings.KEY_DIS, "disable");
+                    CameraSettings.KEY_DIS, "disable");
 
             mListMenu.setPreferenceEnabled(
                     CameraSettings.KEY_SEE_MORE, false);
@@ -710,10 +699,10 @@ public class VideoMenu extends MenuController
 
     private void overrideMenuForSeeMore() {
         ListPreference pref_SeeMore = mPreferenceGroup.findPreference(CameraSettings.KEY_SEE_MORE);
-        if(pref_SeeMore != null && pref_SeeMore.getValue() != null
+        if (pref_SeeMore != null && pref_SeeMore.getValue() != null
                 && pref_SeeMore.getValue().equals("on")) {
             mListMenu.setPreferenceEnabled(
-                    CameraSettings.KEY_VIDEO_CDS_MODE,false);
+                    CameraSettings.KEY_VIDEO_CDS_MODE, false);
             mListMenu.setPreferenceEnabled(
                     CameraSettings.KEY_VIDEO_TNR_MODE, false);
             mListMenu.setPreferenceEnabled(
@@ -743,7 +732,7 @@ public class VideoMenu extends MenuController
 
         if ((tnr != null) && !tnr.equals("off")) {
             mListMenu.setPreferenceEnabled(
-                    CameraSettings.KEY_VIDEO_CDS_MODE,false);
+                    CameraSettings.KEY_VIDEO_CDS_MODE, false);
             mListMenu.overrideSettings(
                     CameraSettings.KEY_VIDEO_CDS_MODE,
                     mActivity.getString(R.string.pref_camera_video_cds_value_off));
@@ -756,7 +745,7 @@ public class VideoMenu extends MenuController
             }
         } else if (tnr != null) {
             mListMenu.setPreferenceEnabled(
-                    CameraSettings.KEY_VIDEO_CDS_MODE,true);
+                    CameraSettings.KEY_VIDEO_CDS_MODE, true);
             if (mIsVideoTNREnabled) {
                 mListMenu.overrideSettings(
                         CameraSettings.KEY_VIDEO_CDS_MODE, mPrevSavedVideoCDS);
@@ -776,14 +765,14 @@ public class VideoMenu extends MenuController
                 .findPreference(CameraSettings.KEY_VIDEO_HDR);
         String disMode;
         if (disPref != null && disPref.getValue() != null) {
-                disMode = disPref.getValue();
+            disMode = disPref.getValue();
         } else {
-                disMode = "";
+            disMode = "";
         }
         String videoHDR = videoHDRPref == null ? "off" : videoHDRPref.getValue();
         String frameIntervalStr = frameIntervalPref.getValue();
         int timeLapseInterval = Integer.parseInt(frameIntervalStr);
-        int PERSIST_EIS_MAX_FPS =  android.os.SystemProperties
+        int PERSIST_EIS_MAX_FPS = android.os.SystemProperties
                 .getInt("persist.camcorder.eis.maxfps", 30);
         ListPreference hfrPref = mPreferenceGroup
                 .findPreference(CameraSettings.KEY_VIDEO_HIGH_FRAME_RATE);
@@ -794,10 +783,10 @@ public class VideoMenu extends MenuController
         } else {
             highFrameRate = hfrPref.getValue();
         }
-        boolean isHFR = "hfr".equals(highFrameRate.substring(0,3));
-        boolean isHSR = "hsr".equals(highFrameRate.substring(0,3));
+        boolean isHFR = "hfr".equals(highFrameRate.substring(0, 3));
+        boolean isHSR = "hsr".equals(highFrameRate.substring(0, 3));
         int rate = 0;
-        if ( isHFR || isHSR ) {
+        if (isHFR || isHSR) {
             String hfrRate = highFrameRate.substring(3);
             rate = Integer.parseInt(hfrRate);
         }
@@ -921,11 +910,6 @@ public class VideoMenu extends MenuController
 
         if (mListMenu != null)
             animateSlideOut(mListMenu, 1);
-    }
-
-    // Return true if the preference has the specified key but not the value.
-    private static boolean notSame(ListPreference pref, String key, String value) {
-        return (key.equals(pref.getKey()) && !value.equals(pref.getValue()));
     }
 
     @Override

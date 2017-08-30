@@ -46,12 +46,12 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.omnirom.snap.R;
-
 import com.android.camera.ui.DotsView;
 import com.android.camera.ui.DotsViewItem;
 import com.android.camera.ui.RotateImageView;
 import com.android.camera.util.CameraUtil;
+
+import org.omnirom.snap.R;
 
 public class SceneModeActivity extends Activity {
     private ViewPager mPager;
@@ -66,25 +66,6 @@ public class SceneModeActivity extends Activity {
     private int mNumElement;
     private int mElemPerPage = 12;
     private int mNumPage;
-
-    private static class PageItems implements DotsViewItem {
-        int number;
-
-        public PageItems(int number) {
-            this.number = number;
-        }
-
-        @Override
-        public int getTotalItemNums() {
-            return number;
-        }
-
-        @Override
-        public boolean isChosen(int index) {
-            return true;
-        }
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,12 +98,7 @@ public class SceneModeActivity extends Activity {
         mPager.setAdapter(mAdapter);
 
         mCloseButton = findViewById(R.id.close_button);
-        mCloseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        mCloseButton.setOnClickListener(v -> finish());
 
         int pageCount = mAdapter.getCount();
         mDotsView = (DotsView) findViewById(R.id.page_indicator);
@@ -141,14 +117,11 @@ public class SceneModeActivity extends Activity {
         }
 
         mButton = (RotateImageView) findViewById(R.id.setting_button);
-        mButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
-                intent.putExtra(CameraUtil.KEY_IS_SECURE_CAMERA, isSecureCamera);
-                startActivity(intent);
-                finish();
-            }
+        mButton.setOnClickListener(v -> {
+            Intent intent = new Intent(getBaseContext(), SettingsActivity.class);
+            intent.putExtra(CameraUtil.KEY_IS_SECURE_CAMERA, isSecureCamera);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -172,7 +145,6 @@ public class SceneModeActivity extends Activity {
         return mEntries;
     }
 
-
     public int[] getThumbnails() {
         return mThumbnails;
     }
@@ -194,6 +166,25 @@ public class SceneModeActivity extends Activity {
         super.onStop();
         finish();
     }
+
+    private static class PageItems implements DotsViewItem {
+        int number;
+
+        public PageItems(int number) {
+            this.number = number;
+        }
+
+        @Override
+        public int getTotalItemNums() {
+            return number;
+        }
+
+        @Override
+        public boolean isChosen(int index) {
+            return true;
+        }
+
+    }
 }
 
 class MyPagerAdapter extends PagerAdapter {
@@ -211,21 +202,18 @@ class MyPagerAdapter extends PagerAdapter {
         mGridView.setAdapter(new GridAdapter(mActivity, i));
         viewGroup.addView(mRootView);
 
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                int page = mActivity.getCurrentPage();
-                int index = page * mActivity.getElmentPerPage() + position;
-                for (int i = 0; i < parent.getChildCount(); i++) {
-                    View v = parent.getChildAt(i);
-                    if (v != null) {
-                        v.setBackground(null);
-                    }
+        mGridView.setOnItemClickListener((parent, view, position, id) -> {
+            int page = mActivity.getCurrentPage();
+            int index = page * mActivity.getElmentPerPage() + position;
+            for (int i1 = 0; i1 < parent.getChildCount(); i1++) {
+                View v = parent.getChildAt(i1);
+                if (v != null) {
+                    v.setBackground(null);
                 }
-                view.setBackgroundResource(R.drawable.scene_mode_view_border_selected);
-                SettingsManager.getInstance().setValueIndex(SettingsManager.KEY_SCENE_MODE, index);
-                mActivity.finish();
             }
+            view.setBackgroundResource(R.drawable.scene_mode_view_border_selected);
+            SettingsManager.getInstance().setValueIndex(SettingsManager.KEY_SCENE_MODE, index);
+            mActivity.finish();
         });
         return mRootView;
     }

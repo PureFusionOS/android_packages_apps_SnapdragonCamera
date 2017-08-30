@@ -1,13 +1,13 @@
 <animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
-   android:oneshot="true"
-   android:drawable="@drawable/shutter_vector_camera" >
-     <target
-         android:name="shutterGroup"
-         android:animation="@anim/rotation" />
-     <target
-         android:name="shutterGroup"
-         android:animation="@anim/scale" />
-     <target
-         android:name="shutter"
-         android:animation="@anim/color_red" />
+    android:drawable="@drawable/shutter_vector_camera"
+    android:oneshot="true">
+    <target
+        android:name="shutterGroup"
+        android:animation="@anim/rotation" />
+    <target
+        android:name="shutterGroup"
+        android:animation="@anim/scale" />
+    <target
+        android:name="shutter"
+        android:animation="@anim/color_red" />
 </animated-vector>

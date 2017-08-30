@@ -33,28 +33,49 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Environment;
-import android.os.storage.StorageVolume;
 import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.util.Log;
 
 public class SDCard {
     private static final String TAG = "SDCard";
 
     private static final int VOLUME_SDCARD_INDEX = 1;
-
+    private static SDCard sSDCard;
     private StorageManager mStorageManager = null;
     private StorageVolume mVolume = null;
     private String mPath = null;
     private String mRawpath = null;
-    private static SDCard sSDCard;
+    private BroadcastReceiver mMediaBroadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            initVolume();
+        }
+    };
+
+    private SDCard(Context context) {
+        try {
+            mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+            scanVolumes();
+        } catch (Exception e) {
+            Log.e(TAG, "couldn't talk to MountService", e);
+        }
+    }
+
+    public static void initialize(Context context) {
+        if (sSDCard == null) {
+            sSDCard = new SDCard(context);
+        }
+    }
+
+    public static synchronized SDCard instance() {
+        return sSDCard;
+    }
 
     public boolean isWriteable() {
         if (mVolume == null) return false;
         final String state = getSDCardStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
+        return Environment.MEDIA_MOUNTED.equals(state);
     }
 
     public String getRoot() {
@@ -84,16 +105,6 @@ public class SDCard {
         return mRawpath;
     }
 
-    public static void initialize(Context context) {
-        if (sSDCard == null) {
-            sSDCard = new SDCard(context);
-        }
-    }
-
-    public static synchronized SDCard instance() {
-        return sSDCard;
-    }
-
     private String getSDCardStorageState() {
         return mVolume.getState();
     }
@@ -110,15 +121,6 @@ public class SDCard {
         }
     }
 
-    private SDCard(Context context) {
-        try {
-            mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
-            scanVolumes();
-        } catch (Exception e) {
-            Log.e(TAG, "couldn't talk to MountService", e);
-        }
-    }
-
     private void initVolume() {
         final StorageVolume[] volumes = mStorageManager.getVolumeList();
         mVolume = (volumes.length > VOLUME_SDCARD_INDEX) ?
@@ -131,13 +133,6 @@ public class SDCard {
         IntentFilter filter = new IntentFilter(Intent.ACTION_MEDIA_MOUNTED);
         filter.addAction(Intent.ACTION_MEDIA_UNMOUNTED);
         filter.addDataScheme("file");
-        context.registerReceiver(mMediaBroadcastReceiver , filter);
+        context.registerReceiver(mMediaBroadcastReceiver, filter);
     }
-
-    private BroadcastReceiver mMediaBroadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            initVolume();
-        }
-    };
 }

@@ -16,33 +16,21 @@
 
 package com.android.camera.data;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.net.Uri;
 
 import com.android.camera.util.PhotoSphereHelper;
 import com.android.camera.util.PhotoSphereHelper.PanoramaMetadata;
 
+import java.util.ArrayList;
+
 /**
  * This class breaks out the off-thread panorama support.
  */
 public class PanoramaMetadataLoader {
-    /**
-     * Classes implementing this interface can get information about loaded
-     * photo sphere metadata.
-     */
-    public static interface PanoramaMetadataCallback {
-        /**
-         * Called with the loaded metadata or <code>null</code>.
-         */
-        public void onPanoramaMetadataLoaded(PanoramaMetadata metadata);
-    }
-
     private PanoramaMetadata mPanoramaMetadata;
     private ArrayList<PanoramaMetadataCallback> mCallbacksWaiting;
     private Uri mMediaUri;
-
     /**
      * Instantiated the meta data loader for the image resource with the given
      * URI.
@@ -59,13 +47,13 @@ public class PanoramaMetadataLoader {
      * will return immediately. Use {@link #clearCachedValues()} is called.
      */
     public synchronized void getPanoramaMetadata(final Context context,
-            PanoramaMetadataCallback callback) {
+                                                 PanoramaMetadataCallback callback) {
         if (mPanoramaMetadata != null) {
             // Return the cached data right away, no need to fetch it again.
             callback.onPanoramaMetadataLoaded(mPanoramaMetadata);
         } else {
             if (mCallbacksWaiting == null) {
-                mCallbacksWaiting = new ArrayList<PanoramaMetadataCallback>();
+                mCallbacksWaiting = new ArrayList<>();
 
                 // TODO: Don't create a new thread each time, use a pool or
                 // single instance.
@@ -90,7 +78,7 @@ public class PanoramaMetadataLoader {
         }
 
         // TODO: Cancel running loading thread if active.
-     }
+    }
 
     private synchronized void onLoadingDone(PanoramaMetadata metadata) {
         mPanoramaMetadata = metadata;
@@ -102,5 +90,16 @@ public class PanoramaMetadataLoader {
             cb.onPanoramaMetadataLoaded(mPanoramaMetadata);
         }
         mCallbacksWaiting = null;
+    }
+
+    /**
+     * Classes implementing this interface can get information about loaded
+     * photo sphere metadata.
+     */
+    public static interface PanoramaMetadataCallback {
+        /**
+         * Called with the loaded metadata or <code>null</code>.
+         */
+        public void onPanoramaMetadataLoaded(PanoramaMetadata metadata);
     }
 }

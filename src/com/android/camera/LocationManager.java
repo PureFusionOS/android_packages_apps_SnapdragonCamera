@@ -31,20 +31,15 @@ public class LocationManager {
     public static final int LOC_MNGR_ERR_PERM_DENY = 1;
 
     private static final String TAG = "LocationManager";
+    LocationListener[] mLocationListeners = new LocationListener[]{
+            new LocationListener(android.location.LocationManager.GPS_PROVIDER),
+            new LocationListener(android.location.LocationManager.NETWORK_PROVIDER)
+    };
     private Context mContext;
     private Listener mListener;
     private android.location.LocationManager mLocationManager;
     private boolean mRecordLocation;
     private boolean mWaitingLocPermResult = false;
-
-    LocationListener [] mLocationListeners = new LocationListener[] {
-            new LocationListener(android.location.LocationManager.GPS_PROVIDER),
-            new LocationListener(android.location.LocationManager.NETWORK_PROVIDER)
-    };
-
-    public interface Listener {
-        public void onErrorListener(int error);
-    }
 
     public LocationManager(Context context, Listener listener) {
         mContext = context;
@@ -55,8 +50,8 @@ public class LocationManager {
         if (!mRecordLocation) return null;
 
         // go in best to worst order
-        for (int i = 0; i < mLocationListeners.length; i++) {
-            Location l = mLocationListeners[i].current();
+        for (LocationListener mLocationListener : mLocationListeners) {
+            Location l = mLocationListener.current();
             if (l != null) return l;
         }
         Log.d(TAG, "No location received yet.");
@@ -84,7 +79,7 @@ public class LocationManager {
     }
 
     public void waitingLocationPermissionResult(boolean waitingResult) {
-       mWaitingLocPermResult = waitingResult;
+        mWaitingLocPermResult = waitingResult;
     }
 
     private void startReceivingLocationUpdates() {
@@ -127,15 +122,19 @@ public class LocationManager {
 
     private void stopReceivingLocationUpdates() {
         if (mLocationManager != null) {
-            for (int i = 0; i < mLocationListeners.length; i++) {
+            for (LocationListener mLocationListener : mLocationListeners) {
                 try {
-                    mLocationManager.removeUpdates(mLocationListeners[i]);
+                    mLocationManager.removeUpdates(mLocationListener);
                 } catch (Exception ex) {
                     Log.i(TAG, "fail to remove location listners, ignore", ex);
                 }
             }
             Log.d(TAG, "stopReceivingLocationUpdates");
         }
+    }
+
+    public interface Listener {
+        public void onErrorListener(int error);
     }
 
     private class LocationListener
@@ -175,7 +174,7 @@ public class LocationManager {
         @Override
         public void onStatusChanged(
                 String provider, int status, Bundle extras) {
-            switch(status) {
+            switch (status) {
                 case LocationProvider.OUT_OF_SERVICE:
                 case LocationProvider.TEMPORARILY_UNAVAILABLE: {
                     mValid = false;

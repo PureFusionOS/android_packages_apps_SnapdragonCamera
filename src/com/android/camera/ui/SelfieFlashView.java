@@ -68,7 +68,7 @@ public class SelfieFlashView extends View {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e){
+    public boolean onTouchEvent(MotionEvent e) {
         return true;
     }
 }

@@ -3,9 +3,8 @@
     <objectAnimator
         android:duration="@integer/shutter_animation_duration"
         android:propertyName="fillColor"
-        android:repeatMode="reverse"
         android:repeatCount="infinite"
+        android:repeatMode="reverse"
         android:valueFrom="@color/material_accent_icon"
-        android:valueTo="@color/red"
-        />
+        android:valueTo="@color/red" />
 </set>

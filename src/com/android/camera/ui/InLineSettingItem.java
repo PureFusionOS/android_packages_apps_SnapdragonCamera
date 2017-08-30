@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.camera.ListPreference;
+
 import org.omnirom.snap.R;
 
 /**
@@ -36,16 +37,12 @@ import org.omnirom.snap.R;
  * different types if possible.
  */
 public abstract class InLineSettingItem extends LinearLayout {
-    private Listener mListener;
     protected ListPreference mPreference;
     protected int mIndex;
     // Scene mode can override the original preference value.
     protected String mOverrideValue;
     protected TextView mTitle;
-
-    static public interface Listener {
-        public void onSettingChanged(ListPreference pref);
-    }
+    private Listener mListener;
 
     public InLineSettingItem(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -90,5 +87,9 @@ public abstract class InLineSettingItem extends LinearLayout {
     public void overrideSettings(String value) {
         mOverrideValue = value;
         updateView();
+    }
+
+    static public interface Listener {
+        public void onSettingChanged(ListPreference pref);
     }
 }

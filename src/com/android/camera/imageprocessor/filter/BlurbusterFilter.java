@@ -40,31 +40,46 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlurbusterFilter implements ImageFilter{
+public class BlurbusterFilter implements ImageFilter {
     public static final int NUM_REQUIRED_IMAGE = 5;
+    private static String TAG = "BlurbusterFilter";
+    private static boolean mIsSupported = false;
+
+    static {
+        try {
+            System.loadLibrary("jni_blurbuster");
+            mIsSupported = true;
+        } catch (UnsatisfiedLinkError e) {
+            Log.d(TAG, e.toString());
+            mIsSupported = false;
+        }
+    }
+
     private int mWidth;
     private int mHeight;
     private int mStrideY;
     private int mStrideVU;
-    private static String TAG = "BlurbusterFilter";
-    private static boolean mIsSupported = false;
     private ByteBuffer mOutBuf;
     private CaptureModule mModule;
-
-    private static void Log(String msg) {
-        if(DEBUG) {
-            Log.d(TAG, msg);
-        }
-    }
 
     public BlurbusterFilter(CaptureModule module) {
         mModule = module;
     }
 
+    private static void Log(String msg) {
+        if (DEBUG) {
+            Log.d(TAG, msg);
+        }
+    }
+
+    public static boolean isSupportedStatic() {
+        return mIsSupported;
+    }
+
     @Override
     public List<CaptureRequest> setRequiredImages(CaptureRequest.Builder builder) {
-        List<CaptureRequest> list = new ArrayList<CaptureRequest>();
-        for(int i=0; i < NUM_REQUIRED_IMAGE; i++) {
+        List<CaptureRequest> list = new ArrayList<>();
+        for (int i = 0; i < NUM_REQUIRED_IMAGE; i++) {
             list.add(builder.build());
         }
         return list;
@@ -83,12 +98,12 @@ public class BlurbusterFilter implements ImageFilter{
     @Override
     public void init(int width, int height, int strideY, int strideVU) {
         Log("init");
-        mWidth = width/2*2;
-        mHeight = height/2*2;
-        mStrideY = strideY/2*2;
-        mStrideVU = strideVU/2*2;
-        mOutBuf = ByteBuffer.allocate(mStrideY*mHeight*3/2);
-        Log("width: "+mWidth+" height: "+mHeight+" strideY: "+mStrideY+" strideVU: "+mStrideVU);
+        mWidth = width / 2 * 2;
+        mHeight = height / 2 * 2;
+        mStrideY = strideY / 2 * 2;
+        mStrideVU = strideVU / 2 * 2;
+        mOutBuf = ByteBuffer.allocate(mStrideY * mHeight * 3 / 2);
+        Log("width: " + mWidth + " height: " + mHeight + " strideY: " + mStrideY + " strideVU: " + mStrideVU);
         nativeInit(mWidth, mHeight, mStrideY, mStrideVU, NUM_REQUIRED_IMAGE);
     }
 
@@ -105,7 +120,7 @@ public class BlurbusterFilter implements ImageFilter{
         int yActualSize = bY.remaining();
         int vuActualSize = bVU.remaining();
         int status = nativeAddImage(bY, bVU, yActualSize, vuActualSize, imageNum);
-        if(status != 0) {
+        if (status != 0) {
             Log.e(TAG, "Fail to add image");
         }
     }
@@ -114,12 +129,12 @@ public class BlurbusterFilter implements ImageFilter{
     public ResultImage processImage() {
         Log("processImage ");
         int[] roi = new int[4];
-        int status = nativeProcessImage(mOutBuf.array(),roi);
+        int status = nativeProcessImage(mOutBuf.array(), roi);
         Log("processImage done");
-        if(status < 0) { //In failure case, library will return the first image as it is.
+        if (status < 0) { //In failure case, library will return the first image as it is.
             Log.w(TAG, "Fail to process the image.");
         }
-        return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0]+roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
+        return new ResultImage(mOutBuf, new Rect(roi[0], roi[1], roi[0] + roi[2], roi[1] + roi[3]), mWidth, mHeight, mStrideY);
     }
 
     @Override
@@ -143,22 +158,11 @@ public class BlurbusterFilter implements ImageFilter{
 
     }
 
-    public static boolean isSupportedStatic() {
-        return mIsSupported;
-    }
-
     private native int nativeInit(int width, int height, int yStride, int vuStride, int numImages);
-    private native int nativeDeinit();
-    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
-    private native int nativeProcessImage(byte[] buffer, int[] roi);
 
-    static {
-        try {
-            System.loadLibrary("jni_blurbuster");
-            mIsSupported = true;
-        }catch(UnsatisfiedLinkError e) {
-            Log.d(TAG, e.toString());
-            mIsSupported = false;
-        }
-    }
+    private native int nativeDeinit();
+
+    private native int nativeAddImage(ByteBuffer yB, ByteBuffer vuB, int ySize, int vuSize, int imageNum);
+
+    private native int nativeProcessImage(byte[] buffer, int[] roi);
 }

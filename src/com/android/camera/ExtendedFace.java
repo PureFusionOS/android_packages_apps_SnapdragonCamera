@@ -29,8 +29,6 @@
 
 package com.android.camera;
 
-import android.hardware.camera2.params.Face;
-
 public class ExtendedFace {
     private int mSmileDegree = 0;
     private int mSmileConfidence = 0;
@@ -52,6 +50,10 @@ public class ExtendedFace {
         return mBlinkDetected;
     }
 
+    public void setBlinkDetected(int blinkDetected) {
+        this.mBlinkDetected = blinkDetected;
+    }
+
     public int getLeyeBlink() {
         return mLeyeBlink;
     }
@@ -64,8 +66,16 @@ public class ExtendedFace {
         return mSmileDegree;
     }
 
+    public void setSmileDegree(byte smileDegree) {
+        this.mSmileDegree = smileDegree;
+    }
+
     public int getSmileConfidence() {
         return mSmileConfidence;
+    }
+
+    public void setSmileConfidence(int smileConfidence) {
+        this.mSmileConfidence = smileConfidence;
     }
 
     public int getLeftrightGaze() {
@@ -84,17 +94,9 @@ public class ExtendedFace {
         return mRollDirection;
     }
 
-    public void setBlinkDetected(int blinkDetected) {
-        this.mBlinkDetected = blinkDetected;
-    }
-
     public void setBlinkDegree(byte left, byte right) {
         this.mLeyeBlink = left;
         this.mReyeBlink = right;
-    }
-
-    public void setSmileDegree(byte smileDegree) {
-        this.mSmileDegree = smileDegree;
     }
 
     public void setGazeDirection(int topbottomGaze, int leftrightGaze, int rollDirection) {
@@ -105,9 +107,5 @@ public class ExtendedFace {
 
     public void setGazeAngle(byte gazeAngle) {
         this.mGazeAngle = gazeAngle;
-    }
-
-    public void setSmileConfidence(int smileConfidence) {
-        this.mSmileConfidence = smileConfidence;
     }
 }

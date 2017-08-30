@@ -24,18 +24,13 @@ import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.android.camera.ListPreference;
+
 import org.omnirom.snap.R;
 
 /* A check box setting control which turns on/off the setting. */
 public class InLineSettingCheckBox extends InLineSettingItem {
+    OnCheckedChangeListener mCheckedChangeListener = (buttonView, desiredState) -> changeIndex(desiredState ? 1 : 0);
     private CheckBox mCheckBox;
-
-    OnCheckedChangeListener mCheckedChangeListener = new OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean desiredState) {
-            changeIndex(desiredState ? 1 : 0);
-        }
-    };
 
     public InLineSettingCheckBox(Context context, AttributeSet attrs) {
         super(context, attrs);

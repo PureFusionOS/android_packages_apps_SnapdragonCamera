@@ -16,8 +16,6 @@
 
 package com.android.camera.ui;
 
-import java.util.Locale;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -28,7 +26,10 @@ import android.widget.NumberPicker;
 import android.widget.NumberPicker.OnValueChangeListener;
 
 import com.android.camera.ListPreference;
+
 import org.omnirom.snap.R;
+
+import java.util.Locale;
 
 /**
  * This is a popup window that allows users to specify a countdown timer
@@ -46,16 +47,12 @@ public class CountdownTimerPopup extends AbstractSettingPopup {
     private CheckBox mTimerSound;
     private View mSoundTitle;
 
-    static public interface Listener {
-        public void onListPrefChanged(ListPreference pref);
+    public CountdownTimerPopup(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
     public void setSettingChangedListener(Listener listener) {
         mListener = listener;
-    }
-
-    public CountdownTimerPopup(Context context, AttributeSet attrs) {
-        super(context, attrs);
     }
 
     public void initialize(ListPreference timer, ListPreference beep) {
@@ -70,30 +67,21 @@ public class CountdownTimerPopup extends AbstractSettingPopup {
         Locale locale = getResources().getConfiguration().locale;
         mDurations[0] = getResources().getString(R.string.setting_off); // Off
         for (int i = 1; i < entries.length; i++)
-            mDurations[i] =  String.format(locale, "%d", Integer.parseInt(entries[i].toString()));
+            mDurations[i] = String.format(locale, "%d", Integer.parseInt(entries[i].toString()));
         int durationCount = mDurations.length;
         mNumberSpinner = (NumberPicker) findViewById(R.id.duration);
         mNumberSpinner.setMinValue(0);
         mNumberSpinner.setMaxValue(durationCount - 1);
         mNumberSpinner.setDisplayedValues(mDurations);
         mNumberSpinner.setWrapSelectorWheel(false);
-        mNumberSpinner.setOnValueChangedListener(new OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldValue, int newValue) {
-                setTimeSelectionEnabled(newValue != 0);
-            }
-        });
+        mNumberSpinner.setOnValueChangedListener((picker, oldValue, newValue) -> setTimeSelectionEnabled(newValue != 0));
         mConfirmButton = (Button) findViewById(R.id.timer_set_button);
         mPickerTitle = findViewById(R.id.set_time_interval_title);
 
         // Disable focus on the spinners to prevent keyboard from coming up
         mNumberSpinner.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
 
-        mConfirmButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                updateInputState();
-            }
-        });
+        mConfirmButton.setOnClickListener(v -> updateInputState());
         mTimerSound = (CheckBox) findViewById(R.id.sound_check_box);
         mSoundTitle = findViewById(R.id.beep_title);
     }
@@ -141,5 +129,9 @@ public class CountdownTimerPopup extends AbstractSettingPopup {
             mListener.onListPrefChanged(mTimer);
             mListener.onListPrefChanged(mBeep);
         }
+    }
+
+    static public interface Listener {
+        public void onListPrefChanged(ListPreference pref);
     }
 }
